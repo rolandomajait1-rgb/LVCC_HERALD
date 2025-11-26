@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { notifications } from '@mantine/notifications';
+// import { notifications } from '@mantine/notifications';
 import axios from 'axios';
 import ArticleCard from './ArticleCard';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
@@ -30,12 +30,7 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   useEffect(() => {
     if (location.state?.published) {
-      notifications.show({
-        title: "Article Published Successfully!",
-        message: "Your article has been published and is now live on the homepage.",
-        color: "green",
-        autoClose: 5000,
-      });
+      console.log('Article published successfully!');
     }
   }, [location.state]);
 
