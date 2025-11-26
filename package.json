@@ -1,5 +1,6 @@
 {
   "name": "la-verdad-herald-backend",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "php artisan serve --host=0.0.0.0 --port=$PORT",
