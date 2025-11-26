@@ -5,3 +5,5 @@ node_modules/
 .github/
 *.md
 *.bat
+.gitignore
+nixpacks.toml
