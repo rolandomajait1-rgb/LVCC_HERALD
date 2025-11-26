@@ -144,4 +144,125 @@ class AuthorController extends Controller
 
         return redirect()->route('authors.index')->with('success', 'Author deleted successfully.');
     }
+
+    public function showByName($authorName)
+    {
+        Log::info('Looking for author/user: ' . $authorName);
+
+        // 1) Try to match by user display name first (e.g. "Admin User")
+        $userByName = \App\Models\User::where('name', $authorName)->first();
+        if ($userByName) {
+            $authorIds = \App\Models\Author::where('user_id', $userByName->id)->pluck('id')->toArray();
+            $articles = \App\Models\Article::with('author', 'categories')
+                ->whereIn('author_id', $authorIds)
+                ->latest('created_at')
+                ->get();
+
+            $formattedArticles = $articles->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'content' => $article->content,
+                    'excerpt' => $article->excerpt,
+                    'image_url' => $article->featured_image_url,
+                    'category' => $article->categories->first()?->name ?? 'Uncategorized',
+                    'author' => $article->author->name,
+                    'created_at' => $article->created_at,
+                    'slug' => $article->slug,
+                    'status' => $article->status
+                ];
+            });
+
+            return response()->json([
+                'author' => [
+                    'name' => $userByName->name,
+                    'articleCount' => $formattedArticles->count()
+                ],
+                'articles' => $formattedArticles
+            ])
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        }
+
+        // 2) Try to match by user email
+        $user = \App\Models\User::where('email', $authorName)->first();
+        if ($user) {
+            $authorIds = \App\Models\Author::where('user_id', $user->id)->pluck('id')->toArray();
+            $articles = \App\Models\Article::with('author', 'categories')
+                ->whereIn('author_id', $authorIds)
+                ->latest('created_at')
+                ->get();
+
+            $formattedArticles = $articles->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'content' => $article->content,
+                    'excerpt' => $article->excerpt,
+                    'image_url' => $article->featured_image_url,
+                    'category' => $article->categories->first()?->name ?? 'Uncategorized',
+                    'author' => $article->author->name,
+                    'created_at' => $article->created_at,
+                    'slug' => $article->slug,
+                    'status' => $article->status
+                ];
+            });
+
+            return response()->json([
+                'author' => [
+                    'name' => $user->name,
+                    'articleCount' => $formattedArticles->count()
+                ],
+                'articles' => $formattedArticles
+            ])
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        }
+
+        // 3) Finally, try to match the author record by its name
+        $author = \App\Models\Author::where('name', $authorName)->first();
+        if (!$author) {
+            return response()->json(['error' => 'Author not found'], 404)
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        }
+
+        $articles = \App\Models\Article::with('author', 'categories')
+            ->where('author_id', $author->id)
+            ->latest('created_at')
+            ->get();
+
+        $formattedArticles = $articles->map(function ($article) {
+            return [
+                'id' => $article->id,
+                'title' => $article->title,
+                'content' => $article->content,
+                'excerpt' => $article->excerpt,
+                'image_url' => $article->featured_image_url,
+                'category' => $article->categories->first()?->name ?? 'Uncategorized',
+                'author' => $article->author->name,
+                'created_at' => $article->created_at,
+                'slug' => $article->slug,
+                'status' => $article->status
+            ];
+        });
+
+        return response()->json([
+            'author' => [
+                'name' => $author->name,
+                'articleCount' => $formattedArticles->count()
+            ],
+            'articles' => $formattedArticles
+        ])
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Credentials', 'true')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    }
 }
