@@ -20,6 +20,7 @@ return [
 
     'allowed_origins' => [
         'http://localhost:5173',
+        'https://lvcc-herald-frontend-7i5vhnlnd-rolando-majaits-projects.vercel.app',
         env('FRONTEND_URL', 'http://localhost:5173')
     ],
 

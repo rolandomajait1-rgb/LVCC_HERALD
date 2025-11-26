@@ -5,7 +5,7 @@ nixPkgs = ['php82', 'php82Packages.composer']
 cmds = ['composer install --no-dev --optimize-autoloader']
 
 [phases.build]
-cmds = ['mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache', 'mkdir -p resources/views', 'chmod -R 755 storage bootstrap/cache', 'php artisan config:cache', 'php artisan route:cache']
+cmds = ['mkdir -p storage/framework/{sessions,views,cache,testing} storage/logs bootstrap/cache', 'mkdir -p resources/views', 'chmod -R 755 storage bootstrap/cache', 'php artisan config:cache', 'php artisan route:cache', 'php artisan migrate --force']
 
 [start]
 cmd = 'php artisan serve --host=0.0.0.0 --port=$PORT'
