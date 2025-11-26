@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "description": "News publishing platform built with Laravel + React",
   "private": true,
+  "main": "backend/public/index.php",
   "workspaces": [
     "frontend",
     "backend"
   ],
   "scripts": {
+    "start": "cd backend && php artisan serve --host=0.0.0.0 --port=$PORT",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:frontend": "npm run dev --workspace=frontend",
     "dev:backend": "cd backend && php artisan serve",
