@@ -43,15 +43,14 @@ class AuthController extends Controller
         if (Auth::attempt($request->only('email', 'password'))) {
             $user = Auth::user();
             
-            // Email verification disabled until Brevo SMTP is configured
-            // if (is_null($user->email_verified_at)) {
-            //     Auth::logout();
-            //     return response()->json(['message' => 'Please verify your email before logging in'], 403)
-            //        ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            //       ->header('Access-Control-Allow-Credentials', 'true')
-            //     ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            //        ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-            // }
+            if (is_null($user->email_verified_at)) {
+                Auth::logout();
+                return response()->json(['message' => 'Please verify your email before logging in'], 403)
+                   ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
+                  ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+                   ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-with');
+            }
             
             $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -109,11 +108,9 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'user',
-            'email_verified_at' => now(), // Auto-verify until Brevo is configured
         ]);
 
-        // TODO: Send verification email once Brevo SMTP is properly configured
-        // $user->sendEmailVerificationNotification();
+        $user->sendEmailVerificationNotification();
 
         return response()->json(['message' => 'Registration successful. You can now log in.'], 201)
             ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
@@ -210,5 +207,22 @@ class AuthController extends Controller
             ->header('Access-Control-Allow-Credentials', 'true')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
             ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    }
+
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        $user = \App\Models\User::findOrFail($id);
+
+        if (!hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+            return response()->json(['message' => 'Invalid verification link'], 403);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified'], 200);
+        }
+
+        $user->markEmailAsVerified();
+
+        return response()->json(['message' => 'Email verified successfully! You can now log in.'], 200);
     }
 }

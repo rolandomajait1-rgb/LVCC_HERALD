@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import { AdminSidebar } from "../components/AdminSidebar";
 import Navigation from "../components/HeaderLink";
 import { getUserRole } from '../utils/auth';
+import axios from '../utils/axiosConfig';
 
 export default function ManageModerators() {
   const [moderators, setModerators] = useState([]);
@@ -29,15 +30,8 @@ export default function ManageModerators() {
 
   const fetchModerators = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/admin/moderators', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      setModerators(data || []);
+      const response = await axios.get('/api/admin/moderators');
+      setModerators(response.data || []);
     } catch (error) {
       console.error('Error fetching moderators:', error);
     } finally {
@@ -52,46 +46,22 @@ export default function ManageModerators() {
     }
 
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/admin/moderators', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      });
-
-      if (response.ok) {
-        setEmail('');
-        fetchModerators();
-        alert('Moderator added successfully!');
-      } else {
-        const error = await response.json();
-        alert(error.message || 'Failed to add moderator');
-      }
+      await axios.post('/api/admin/moderators', { email });
+      setEmail('');
+      fetchModerators();
+      alert('Moderator added successfully!');
     } catch (error) {
       console.error('Error adding moderator:', error);
-      alert('Failed to add moderator');
+      alert(error.response?.data?.message || 'Failed to add moderator');
     }
   };
 
   const removeModerator = async (moderatorId) => {
     if (window.confirm('Are you sure you want to remove this moderator?')) {
       try {
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch(`http://localhost:8000/api/admin/moderators/${moderatorId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-
-        if (response.ok) {
-          setModerators(prev => prev.filter(mod => mod.id !== moderatorId));
-          alert('Moderator removed successfully!');
-        }
+        await axios.delete(`/api/admin/moderators/${moderatorId}`);
+        setModerators(prev => prev.filter(mod => mod.id !== moderatorId));
+        alert('Moderator removed successfully!');
       } catch (error) {
         console.error('Error removing moderator:', error);
         alert('Failed to remove moderator');

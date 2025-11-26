@@ -5,6 +5,7 @@ import { FiBarChart, FiPlus, FiFileText as FiFile, FiUsers, FiActivity } from 'r
 import Header from "../components/Header";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
+import axios from '../utils/axiosConfig';
 
 export default function EditArticleInline() {
   const navigate = useNavigate();
@@ -31,16 +32,10 @@ export default function EditArticleInline() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        const response = await axios.get(`/api/articles/${id}`);
         
-        if (response.ok) {
-          const article = await response.json();
+        if (response.status === 200) {
+          const article = response.data;
           setTitle(article.title || '');
           setContent(article.content || '');
           setAuthor(article.author?.name || '');
@@ -89,31 +84,23 @@ export default function EditArticleInline() {
       formData.append('content', content);
       formData.append('tags', tags);
       formData.append('author', author);
+      formData.append('_method', 'PUT');
 
       if (image) {
         formData.append('featured_image', image);
       }
 
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
-        method: 'PUT',
-        body: formData,
+      await axios.post(`/api/articles/${id}`, formData, {
         headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update article');
-      }
 
       alert("Article updated successfully!");
       navigate(-1); // Go back to previous page
     } catch (error) {
       console.error('Update error:', error);
-      alert(`Error: ${error.message}`);
+      alert(`Error: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsUpdating(false);
     }

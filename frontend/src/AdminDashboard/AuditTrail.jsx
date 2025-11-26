@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Navigation from "../components/HeaderLink";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
+import axios from '../utils/axiosConfig';
 
 export default function AuditTrail() {
   const [auditLogs, setAuditLogs] = useState([]);
@@ -27,15 +28,8 @@ export default function AuditTrail() {
 
   const fetchAuditLogs = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/admin/audit-logs', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      setAuditLogs(data || []);
+      const response = await axios.get('/api/admin/audit-logs');
+      setAuditLogs(response.data || []);
     } catch (error) {
       console.error('Error fetching audit logs:', error);
     } finally {

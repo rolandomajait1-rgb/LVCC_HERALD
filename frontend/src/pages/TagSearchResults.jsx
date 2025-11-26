@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import Footer from '../components/Footer';
 import { isAdmin, editArticle, deleteArticle } from '../utils/auth';
+import { getFullUrl } from '../utils/url';
 
 const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, articleId, slug, onClick }) => (
   <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row mb-6 hover:shadow-md transition-shadow cursor-pointer group">
@@ -87,7 +88,7 @@ export default function TagSearchResults() {
               date: "November 18, 2025 at 7:56 PM",
               excerpt: "Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. These cyberattacks are usually aimed at accessing, changing, or destroying sensitive information; extorting money from users through ransomware; or interrupting normal business processes.",
               author: "Admin User",
-              imageUrl: "http://localhost:8000/storage/articles/9E0LczTL6qwhm3FIBuK7l8CZKygzKTK2b8WlWF9v.jpg"
+              imageUrl: getFullUrl("articles/9E0LczTL6qwhm3FIBuK7l8CZKygzKTK2b8WlWF9v.jpg")
             }
           ];
         } else {
@@ -99,7 +100,7 @@ export default function TagSearchResults() {
               date: "September 10, 2025 at 5:52 PM",
               excerpt: "In preparation for the upcoming Q3 Nationwide Simultaneous Earthquake Drill, the Municipal Disaster Risk Reduction and Management Office...",
               author: "Hannah J. Gallego",
-              imageUrl: "http://localhost:8000/storage/articles/zYcKEebHjFm2CNABF2OhYFPDTffTUtGdfOCeKR7O.png"
+              imageUrl: getFullUrl("articles/zYcKEebHjFm2CNABF2OhYFPDTffTUtGdfOCeKR7O.png")
             }
           ];
         }

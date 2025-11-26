@@ -4,6 +4,7 @@ import { Calendar, Pencil, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import { isAdmin, isModerator } from '../utils/auth';
+import axios from '../utils/axiosConfig';
 
 const AuthorHero = ({ author, articles }) => (
   <div className="relative w-full h-80 md:h-60 bg-[#3a6080] overflow-hidden flex items-center">
@@ -79,24 +80,14 @@ export default function AuthorProfile() {
     const fetchAuthorData = async () => {
       try {
         console.log('Fetching data for author:', authorName);
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch(`http://localhost:8000/api/authors/${encodeURIComponent(authorName)}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        const response = await axios.get(`/api/authors/${encodeURIComponent(authorName)}`);
         
         console.log('Response status:', response.status);
-        const data = await response.json();
+        const data = response.data;
         console.log('Response data:', data);
         
-        if (response.ok) {
-          setAuthor(data.author);
-          setArticles(data.articles);
-        } else {
-          console.error('API error:', data);
-        }
+        setAuthor(data.author);
+        setArticles(data.articles);
       } catch (error) {
         console.error('Error fetching author data:', error);
       } finally {

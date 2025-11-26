@@ -21,9 +21,9 @@ class ArticleCreationTest extends TestCase
         $articleData = [
             'title' => 'Test Article',
             'content' => 'This is a test article.',
-            'category_id' => $category->id,
-            'tags' => ['test', 'tag'],
-            'author_name' => $author->name,
+            'category' => $category->name,
+            'tags' => 'test,tag',
+            'author' => $author->name,
         ];
 
         $response = $this->actingAs($admin, 'sanctum')->postJson('/api/articles', $articleData);
@@ -45,14 +45,14 @@ class ArticleCreationTest extends TestCase
         $articleData = [
             'title' => 'Test Article',
             'content' => 'This is a test article.',
-            'category_id' => $category->id,
-            'tags' => ['test', 'tag'],
-            'author_name' => 'Invalid Author',
+            'category' => $category->name,
+            'tags' => 'test,tag',
+            'author' => 'Invalid Author',
         ];
 
         $response = $this->actingAs($admin, 'sanctum')->postJson('/api/articles', $articleData);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors('author_name');
+            ->assertJsonValidationErrors('author');
     }
 }

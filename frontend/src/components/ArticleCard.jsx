@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { FaPencilAlt, FaTrash, FaCalendar } from 'react-icons/fa';
 import { Heart, Share2 } from 'lucide-react';
 import { isAdmin, isModerator, deleteArticle, getAuthToken } from '../utils/auth';
+import { getFullUrl } from '../utils/url';
+import axios from '../utils/axiosConfig';
+import getCategoryColor from '../utils/getCategoryColor';
 
 const getUserRole = () => {
   return localStorage.getItem('user_role');
 };
-import axios from 'axios';
-import getCategoryColor from '../utils/getCategoryColor';
 
 const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   // Handle both prop formats for backward compatibility
   const finalImageUrl = imageUrl || 
     (featured_image ? 
-      (featured_image.startsWith('http') ? featured_image : `http://localhost:8000/storage/${featured_image}`) 
+      getFullUrl(featured_image)
       : 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image');
   const finalCategory = category || (categories && categories.length > 0 ? categories[0].name : 'Uncategorized');
   const finalDate = date || (published_at ? new Date(published_at).toLocaleDateString('en-US', {

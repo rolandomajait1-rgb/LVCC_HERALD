@@ -7,6 +7,7 @@ import Calendar from '../components/Calendar';
 import IconMailSvg from '../assets/Request Coverage Button.svg';
 import IconHandSvg from '../assets/Send Feeback Button.svg';
 import IconDocumentSvg from '../assets/Join the Herald Button.svg';
+import axios from '../utils/axiosConfig';
 
 /* --- Main Contact Section --- */
 const ContactSection = ({ showFeedbackForm, setShowFeedbackForm }) => {
@@ -25,12 +26,8 @@ const ContactSection = ({ showFeedbackForm, setShowFeedbackForm }) => {
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:8000/api/contact/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feedback, email })
-      });
-      if (response.ok) {
+      const response = await axios.post('/api/contact/feedback', { feedback, email });
+      if (response.status === 200) {
         setIsSubmitted(true);
         setFeedback('');
         setEmail('');
@@ -58,12 +55,8 @@ const ContactSection = ({ showFeedbackForm, setShowFeedbackForm }) => {
         designation: requestData.designation
       };
       console.log('Submitting:', submitData);
-      const response = await fetch('http://localhost:8000/api/contact/request-coverage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData)
-      });
-      if (response.ok) {
+      const response = await axios.post('/api/contact/request-coverage', submitData);
+      if (response.status === 200) {
         setIsRequestSubmitted(true);
         setRequestData({ eventName: '', date: '', description: '', contactEmail: '', location: '', highlights: '', requestorName: '', designation: '' });
         setSelectedDate(new Date());
@@ -72,7 +65,7 @@ const ContactSection = ({ showFeedbackForm, setShowFeedbackForm }) => {
           setIsRequestSubmitted(false);
         }, 3000);
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         console.error('Server error:', errorData);
         alert('Failed to submit: ' + (errorData.message || 'Please check all required fields'));
       }

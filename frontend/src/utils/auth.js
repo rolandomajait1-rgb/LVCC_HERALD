@@ -1,3 +1,5 @@
+import axios from '../utils/axiosConfig';
+
 // Auth utility functions
 export const isAdmin = () => {
     const token = localStorage.getItem('auth_token');
@@ -30,23 +32,10 @@ export const deleteArticle = async(articleId) => {
     }
 
     try {
-        const token = getAuthToken();
-        const response = await fetch(`http://localhost:8000/api/articles/${articleId}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        if (response.ok) {
-            alert('Article deleted successfully');
-            window.location.reload();
-            return true;
-        } else {
-            alert('Failed to delete article');
-            return false;
-        }
+        await axios.delete(`/api/articles/${articleId}`);
+        alert('Article deleted successfully');
+        window.location.reload();
+        return true;
     } catch (error) {
         console.error('Error deleting article:', error);
         alert('Error deleting article');

@@ -28,36 +28,12 @@ class Article extends Model
         'published_at' => 'datetime',
     ];
 
-    protected $appends = ['featured_image_url', 'is_liked', 'likes_count'];
-    
-    public function getLikesCountAttribute()
-    {
-        return $this->interactions()->where('type', 'liked')->count();
-    }
-
-    public function getIsLikedAttribute()
-    {
-        if (Auth::check()) {
-            return $this->interactions()->where('user_id', Auth::id())->where('type', 'liked')->exists();
-        }
-        return false;
-    }
-
-    public function getFeaturedImageAttribute($value)
-    {
-        if ($value) {
-            return 'http://localhost:8000/storage/' . $value;
-        }
-        return null;
-    }
+    protected $appends = ['featured_image_url'];
 
     public function getFeaturedImageUrlAttribute()
     {
         if (isset($this->attributes['featured_image']) && $this->attributes['featured_image']) {
-            if (config('app.env') === 'local') {
-                return 'http://localhost:8000/storage/' . $this->attributes['featured_image'];
-            }
-            return url('storage/' . $this->attributes['featured_image']);
+            return \Illuminate\Support\Facades\Storage::url($this->attributes['featured_image']);
         }
         return null;
     }
@@ -104,15 +80,26 @@ class Article extends Model
         parent::boot();
 
         static::creating(function ($article) {
-            if (empty($article->slug)) {
-                $article->slug = Str::slug($article->title);
-            }
+            $article->slug = $article->generateUniqueSlug($article->title);
         });
 
         static::updating(function ($article) {
-            if ($article->isDirty('title') && empty($article->slug)) {
-                $article->slug = Str::slug($article->title);
+            if ($article->isDirty('title')) {
+                $article->slug = $article->generateUniqueSlug($article->title);
             }
         });
+    }
+
+    protected function generateUniqueSlug(string $title): string
+    {
+        $baseSlug = Str::slug($title);
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter++;
+        }
+
+        return $slug;
     }
 }

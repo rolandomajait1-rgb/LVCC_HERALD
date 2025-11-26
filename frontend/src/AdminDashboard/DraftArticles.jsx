@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
 import Navigation from "../components/HeaderLink";
+import axios from '../utils/axiosConfig';
 
 const DraftItem = ({ id, title, category, date, summary, author, featuredImage, onEdit, onDelete, onPublish }) => (
   <div className="flex flex-col lg:flex-row gap-4 mb-6">
@@ -84,19 +85,13 @@ export default function DraftArticles() {
 
   const fetchDrafts = async () => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/articles?status=draft', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.get('/api/articles?status=draft');
       
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error(`HTTP ${response.status}`);
       }
       
-      const data = await response.json();
+      const data = response.data;
       setDrafts(data || []);
     } catch (error) {
       console.error('Error fetching drafts:', error);
@@ -113,22 +108,15 @@ export default function DraftArticles() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this draft?')) {
       try {
-        const token = localStorage.getItem('auth_token');
-        const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
+        const response = await axios.delete(`/api/articles/${id}`);
         
         console.log('Delete response status:', response.status);
         
-        if (response.ok) {
+        if (response.status === 200) {
           fetchDrafts();
           alert('Draft deleted successfully!');
         } else {
-          const errorText = await response.text();
+          const errorText = response.data;
           console.error('Delete error:', errorText);
           alert(`Delete failed: ${response.status}`);
         }
@@ -142,25 +130,17 @@ export default function DraftArticles() {
   const handlePublish = async (id) => {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
-        const token = localStorage.getItem('auth_token');
-        console.log('Publishing article', id, 'with token:', token ? 'present' : 'missing');
+        console.log('Publishing article', id);
         
-        const response = await fetch(`http://localhost:8000/api/test-publish/${id}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ status: 'published' })
-        });
+        const response = await axios.put(`/api/test-publish/${id}`, { status: 'published' });
         
         console.log('Publish response status:', response.status);
         
-        if (response.ok) {
+        if (response.status === 200) {
           fetchDrafts();
           alert('Article published successfully!');
         } else {
-          const errorText = await response.text();
+          const errorText = response.data;
           console.error('Publish error response:', errorText);
           alert(`Publish failed: ${response.status} - ${errorText}`);
         }

@@ -11,6 +11,7 @@ import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import { getUserRole } from '../utils/auth';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import axios from '../utils/axiosConfig';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -44,19 +45,18 @@ export default function HomePage() {
       try {
         const categories = ['news', 'literary', 'specials', 'opinion', 'art', 'features', 'sports'];
         const promises = categories.map(category =>
-          fetch(`http://localhost:8000/api/categories/${category}/articles`)
-            .then(response => response.json())
+          axios.get(`/api/categories/${category}/articles`)
         );
 
         const responses = await Promise.all(promises);
 
-        setNewsArticles(responses[0].data || []);
-        setLiteraryArticles(responses[1].data || []);
-        setSpecialsArticles(responses[2].data || []);
-        setOpinionArticles(responses[3].data || []);
-        setArtArticles(responses[4].data || []);
-        setFeaturesArticles(responses[5].data || []);
-        setSportsArticles(responses[6].data || []);
+        setNewsArticles(responses[0].data.data || []);
+        setLiteraryArticles(responses[1].data.data || []);
+        setSpecialsArticles(responses[2].data.data || []);
+        setOpinionArticles(responses[3].data.data || []);
+        setArtArticles(responses[4].data.data || []);
+        setFeaturesArticles(responses[5].data.data || []);
+        setSportsArticles(responses[6].data.data || []);
       } catch (err) {
         console.error('Error fetching home page articles:', err);
         console.error('Error details:', err.response?.data || err.message);

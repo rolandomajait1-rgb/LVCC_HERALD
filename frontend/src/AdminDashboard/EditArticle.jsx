@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Upload, ChevronDown } from 'lucide-react';
 import Header from "../components/Header";
 import Navigation from '../components/HeaderLink';
+import axios from '../utils/axiosConfig';
+import { getFullUrl } from '../utils/url';
 
 export default function EditArticle() {
   const navigate = useNavigate();
@@ -23,21 +25,13 @@ export default function EditArticle() {
     const fetchArticle = async () => {
       try {
         console.log('Fetching article with ID:', id);
-        const token = localStorage.getItem('auth_token');
-        console.log('Using token:', token ? 'Token exists' : 'No token');
         
-        const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
-        });
+        const response = await axios.get(`/api/articles/${id}`);
         
         console.log('Response status:', response.status);
         
-        if (response.ok) {
-          const article = await response.json();
+        if (response.status === 200) {
+          const article = response.data;
           console.log('Article data:', article);
           setTitle(article.title || "");
           setAuthor(typeof article.author === 'string' ? article.author : (article.author?.name || ""));
@@ -49,7 +43,7 @@ export default function EditArticle() {
           setContent(article.content || "");
           setCurrentImage(article.featured_image || null);
         } else {
-          const errorText = await response.text();
+          const errorText = response.data;
           console.error('API Error:', response.status, errorText);
           alert(`Failed to load article: ${response.status}`);
         }
@@ -113,21 +107,19 @@ export default function EditArticle() {
       console.log('Sending update request for article ID:', id);
       console.log('FormData contents:', Object.fromEntries(formData));
       
-      const response = await fetch(`http://localhost:8000/api/articles/${id}`, {
-        method: 'POST',
+      const response = await axios.post(`/api/articles/${id}`, formData, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Content-Type': 'multipart/form-data',
         },
-        body: formData,
       });
 
       console.log('Response status:', response.status);
       
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Article updated successfully!");
         navigate(-1);
       } else {
-        const errorText = await response.text();
+        const errorText = response.data;
         console.log('Error response:', errorText);
         throw new Error(`Failed to update article: ${response.status} - ${errorText}`);
       }
@@ -200,7 +192,7 @@ export default function EditArticle() {
                   <img
                     src={image ? URL.createObjectURL(image) : 
                       (currentImage ? 
-                        (currentImage.startsWith('http') ? currentImage : `http://localhost:8000/storage/${currentImage}`) 
+                        getFullUrl(currentImage)
                         : 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image')}
                     alt="Cover Preview"
                     className="max-w-full max-h-64 rounded-lg object-cover"

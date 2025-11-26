@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import Navigation from "../components/HeaderLink";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
+import axios from '../utils/axiosConfig';
 
 export default function CreateArticle() {
   const navigate = useNavigate();
@@ -101,23 +102,19 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/articles', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('/api/articles', formData, {
         headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (response.status !== 201) {
+        const errorData = response.data;
         console.error('API Error:', errorData);
         throw new Error(errorData.message || 'Failed to save draft');
       }
 
-      const result = await response.json();
+      const result = response.data;
       console.log('Draft saved:', result);
       alert("Draft saved successfully!");
       navigate('/admin/draft-articles');
@@ -152,20 +149,16 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch('http://localhost:8000/api/articles', {
-        method: 'POST',
-        body: formData,
+      const response = await axios.post('/api/articles', formData, {
         headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (!response.ok) {
+      if (response.status !== 201) {
         let errorMessage = 'Failed to publish article';
         try {
-          const errorData = await response.json();
+          const errorData = response.data;
           errorMessage = errorData.message || errorData.error || errorMessage;
           if (errorData.errors) {
             errorMessage = Object.values(errorData.errors).flat().join(', ');
@@ -176,7 +169,7 @@ export default function CreateArticle() {
         throw new Error(errorMessage);
       }
 
-      await response.json();
+      await response.data;
       alert("Article published successfully!");
       navigate('/admin');
     } catch (error) {
@@ -209,7 +202,7 @@ export default function CreateArticle() {
       <div className="flex flex-1">
         {(() => {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
-          return <AdminSidebar links={filtered} />;
+          return <AdminSidebar links={filtered} />; 
         })()}
 
         <div className="flex-1 overflow-y-auto p-8">
@@ -352,7 +345,7 @@ export default function CreateArticle() {
                   type="button"
                   onClick={handlePublish}
                   disabled={!isFormValid || isPublishing}
-                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${ 
                     isFormValid && !isPublishing
                       ? 'bg-blue-600 text-white hover:bg-blue-700'
                       : 'bg-gray-400 text-gray-200 cursor-not-allowed'
@@ -364,7 +357,7 @@ export default function CreateArticle() {
                   type="button"
                   onClick={handleSaveDraft}
                   disabled={!title.trim() || isSavingDraft}
-                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${
+                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${ 
                     title.trim() && !isSavingDraft
                       ? 'bg-gray-600 text-white hover:bg-gray-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'

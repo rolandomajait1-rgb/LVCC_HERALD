@@ -8,7 +8,7 @@ import EmptyState from '../components/EmptyState';
 import Navigation from '../components/HeaderLink';
 import Feedback from '../components/Feedback';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
@@ -41,7 +41,7 @@ export default function AdminDashboard() {
 
   const handleDeleteArticle = (articleId) => {
     if (window.confirm('Are you sure you want to delete this article?')) {
-      axios.delete(`http://localhost:8000/api/articles/${articleId}`)
+      axios.delete(`/api/articles/${articleId}`)
         .then(() => {
           alert('Article deleted successfully!');
           window.location.reload();
@@ -60,19 +60,18 @@ export default function AdminDashboard() {
       try {
         const categories = ['news', 'literary', 'specials', 'opinion', 'art', 'features', 'sports'];
         const promises = categories.map(category =>
-          fetch(`http://localhost:8000/api/categories/${category}/articles`)
-            .then(response => response.json())
+          axios.get(`/api/categories/${category}/articles`)
         );
 
         const responses = await Promise.all(promises);
 
-        setNewsArticles(responses[0].data || []);
-        setLiteraryArticles(responses[1].data || []);
-        setSpecialsArticles(responses[2].data || []);
-        setOpinionArticles(responses[3].data || []);
-        setArtArticles(responses[4].data || []);
-        setFeaturesArticles(responses[5].data || []);
-        setSportsArticles(responses[6].data || []);
+        setNewsArticles(responses[0].data.data || []);
+        setLiteraryArticles(responses[1].data.data || []);
+        setSpecialsArticles(responses[2].data.data || []);
+        setOpinionArticles(responses[3].data.data || []);
+        setArtArticles(responses[4].data.data || []);
+        setFeaturesArticles(responses[5].data.data || []);
+        setSportsArticles(responses[6].data.data || []);
         
       } catch (err) {
         console.error('Error fetching home page articles:', err);
@@ -278,7 +277,7 @@ export default function AdminDashboard() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-css-2 lg:grid-cols-4 gap-6 mt-4">
               {sportsArticles.map(article => (
                 <ArticleCard
                   key={article.id}
