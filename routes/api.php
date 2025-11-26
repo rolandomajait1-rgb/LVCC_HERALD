@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberContr
 Route::middleware('throttle:5,1')->group(function () {
     Route::post('/login', [AuthController::class, 'loginApi']);
     Route::post('/register', [AuthController::class, 'registerApi']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // Email Verification Routes

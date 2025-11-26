@@ -8,6 +8,9 @@ use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -45,27 +48,15 @@ class AuthController extends Controller
             
             if (is_null($user->email_verified_at)) {
                 Auth::logout();
-                return response()->json(['message' => 'Please verify your email before logging in'], 403)
-                   ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-                  ->header('Access-Control-Allow-Credentials', 'true')
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                   ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-with');
+                return response()->json(['message' => 'Please verify your email before logging in'], 403);
             }
             
             $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
         }
 
-        return response()->json(['message' => 'Invalid credentials'], 401)
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
 
@@ -112,11 +103,7 @@ class AuthController extends Controller
 
         $user->sendEmailVerificationNotification();
 
-        return response()->json(['message' => 'Registration successful. You can now log in.'], 201)
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
     }
 
     public function logout(Request $request)
@@ -134,11 +121,7 @@ class AuthController extends Controller
         // Revoke the current access token
         $request->user()->tokens()->where('id', $request->user()->currentAccessToken()->id)->delete();
 
-        return response()->json(['message' => 'Logged out successfully'])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['message' => 'Logged out successfully']);
     }
 
     public function changePasswordApi(Request $request)
@@ -152,22 +135,14 @@ class AuthController extends Controller
 
         // Check if current password is correct
         if (!Hash::check($request->current_password, $user->password)) {
-            return response()->json(['message' => 'Current password is incorrect'], 400)
-                ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-                ->header('Access-Control-Allow-Credentials', 'true')
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+            return response()->json(['message' => 'Current password is incorrect'], 400);
         }
 
         // Update password
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return response()->json(['message' => 'Password changed successfully'])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['message' => 'Password changed successfully']);
     }
 
     public function deleteAccountApi(Request $request)
@@ -180,11 +155,7 @@ class AuthController extends Controller
 
         // Check if password is correct
         if (!Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Password is incorrect'], 400)
-                ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-                ->header('Access-Control-Allow-Credentials', 'true')
-                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+            return response()->json(['message' => 'Password is incorrect'], 400);
         }
 
         // Delete related records
@@ -202,11 +173,7 @@ class AuthController extends Controller
         // Delete the user
         $user->delete();
 
-        return response()->json(['message' => 'Account deleted successfully'])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json(['message' => 'Account deleted successfully']);
     }
 
     public function verifyEmail(Request $request, $id, $hash)
@@ -224,5 +191,44 @@ class AuthController extends Controller
         $user->markEmailAsVerified();
 
         return response()->json(['message' => 'Email verified successfully! You can now log in.'], 200);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['message' => __($status)], 400);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+            ? response()->json(['message' => __($status)], 200)
+            : response()->json(['message' => __($status)], 400);
     }
 }
