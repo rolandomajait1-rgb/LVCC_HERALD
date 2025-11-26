@@ -4,8 +4,9 @@ services:
     env: php
     region: oregon
     plan: free
-    buildCommand: cd backend && composer install --no-dev --optimize-autoloader
-    startCommand: cd backend && php artisan serve --host=0.0.0.0 --port=$PORT
+    buildCommand: composer install --no-dev --optimize-autoloader && php artisan migrate --force
+    startCommand: php artisan serve --host=0.0.0.0 --port=$PORT
+    rootDir: backend
     envVars:
       - key: APP_ENV
         value: production
