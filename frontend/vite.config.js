@@ -6,11 +6,7 @@ export default defineConfig({
     css: {
         postcss: './postcss.config.js',
     },
-    build: {
-        rollupOptions: {
-            external: ['@mantine/hooks', '@mantine/core', '@mantine/notifications']
-        }
-    },
+
     server: {
         proxy: {
             '/api': {
