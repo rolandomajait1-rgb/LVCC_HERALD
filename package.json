@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "News publishing platform built with Laravel + React",
   "private": true,
-  "main": "backend/public/index.php",
   "workspaces": [
     "frontend",
     "backend"
