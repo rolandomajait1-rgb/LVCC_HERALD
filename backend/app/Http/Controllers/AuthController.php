@@ -52,11 +52,6 @@ class AuthController extends Controller
         $user = $this->attemptLogin($request);
 
         if ($user) {
-            if (is_null($user->email_verified_at)) {
-                Auth::logout();
-                return response()->json(['message' => 'Please verify your email before logging in. Check your inbox.'], 403);
-            }
-            
             $token = $user->createToken('auth_token')->plainTextToken;
             return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
         }
@@ -102,11 +97,16 @@ class AuthController extends Controller
     {
         $user = $this->createUser($request);
         $user->role = 'user';
+        $user->email_verified_at = now();
         $user->save();
 
-        $user->sendEmailVerificationNotification();
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Exception $e) {
+            \Log::error('Email send failed: ' . $e->getMessage());
+        }
 
-        return response()->json(['message' => 'Registration successful. Please check your email to verify your account.'], 201);
+        return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
     }
 
     public function logout(Request $request)
