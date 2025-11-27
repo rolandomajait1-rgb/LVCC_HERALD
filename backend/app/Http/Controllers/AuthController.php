@@ -19,14 +19,25 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    private function attemptLogin(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($credentials)) {
+            return Auth::user();
+        }
+
+        return null;
+    }
+
+    public function login(Request $request)
+    {
+        $user = $this->attemptLogin($request);
+
+        if ($user) {
             $request->session()->regenerate();
             return redirect()->intended('/dashboard');
         }
@@ -38,14 +49,9 @@ class AuthController extends Controller
 
     public function loginApi(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $user = $this->attemptLogin($request);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
-            
+        if ($user) {
             if (is_null($user->email_verified_at)) {
                 Auth::logout();
                 return response()->json(['message' => 'Please verify your email before logging in'], 403);
@@ -53,7 +59,7 @@ class AuthController extends Controller
             
             $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
+            return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
         }
 
         return response()->json(['message' => 'Invalid credentials'], 401);
@@ -65,7 +71,7 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    public function register(Request $request)
+    private function createUser(Request $request): User
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -73,12 +79,19 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
         ]);
 
-        $user = User::create([
+        return new User([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user',
         ]);
+    }
+
+    public function register(Request $request)
+    {
+        $user = $this->createUser($request);
+        // Manually set role after creation to avoid mass assignment
+        $user->role = 'user';
+        $user->save();
 
 
         Auth::login($user);
@@ -88,18 +101,10 @@ class AuthController extends Controller
 
     public function registerApi(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-        ]);
+        $user = $this->createUser($request);
+        // Manually set role after creation to avoid mass assignment
+        $user->role = 'user';
+        $user->save();
 
         $user->sendEmailVerificationNotification();
 

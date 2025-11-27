@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
 
 class RoleMiddlewareTest extends TestCase
 {
@@ -31,5 +32,42 @@ class RoleMiddlewareTest extends TestCase
 
         $this->assertTrue($user->hasRole('user'));
         $this->assertFalse($user->hasRole('admin'));
+    }
+
+    public function test_admin_can_access_admin_route()
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+        Sanctum::actingAs($admin);
+
+        $response = $this->getJson('/api/admin/check-access');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_non_admin_cannot_access_admin_route()
+    {
+        $user = User::factory()->create(['role' => 'user']);
+        Sanctum::actingAs($user);
+
+        $response = $this->getJson('/api/admin/check-access');
+
+        $response->assertStatus(403);
+    }
+
+    public function test_guest_cannot_access_admin_route()
+    {
+        $response = $this->getJson('/api/admin/check-access');
+
+        $response->assertStatus(401);
+    }
+
+    public function test_moderator_can_access_moderator_route()
+    {
+        $moderator = User::factory()->create(['role' => 'moderator']);
+        Sanctum::actingAs($moderator);
+
+        $response = $this->getJson('/api/admin/dashboard-stats');
+
+        $response->assertStatus(200);
     }
 }
