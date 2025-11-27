@@ -3,10 +3,5 @@
   "outputDirectory": "frontend/dist",
   "framework": null,
   "devCommand": "cd frontend && npm run dev",
-  "installCommand": "npm install",
-  "build": {
-    "env": {
-      "NODE_VERSION": "20.x"
-    }
-  }
+  "installCommand": "npm install"
 }
