@@ -76,7 +76,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         return new User([
@@ -133,7 +133,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:8|confirmed|regex:/[a-z]/|regex:/[A-Z]/|regex:/[0-9]/',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         $user = $request->user();
