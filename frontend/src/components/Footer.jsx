@@ -51,20 +51,20 @@ function Footer() {
       }}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-12 mb-8 items-start">
+        <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-12 mb-8 items-start lg:items-start items-center">
           {/* Branding Section */}
-          <div className="lg:w-1/3">
+          <div className="lg:w-1/3 flex flex-col items-center lg:items-start">
             <div className="flex items-center gap-2 mb-2">
-              <img src={logo} alt="La Verdad Herald Logo" className="h-14 w-14" />
-              <img src={LaVerdadHerald} alt="La Verdad Herald" className="h-8 w-auto" />
+              <img src={logo} alt="La Verdad Herald Logo" className="h-12 md:h-14 w-auto" />
+              <img src={LaVerdadHerald} alt="La Verdad Herald" className="h-6 md:h-8 w-auto" />
             </div>
-            <p className="text-sm text-gray-300 leading-relaxed max-w-sm text-left">
+            <p className="text-sm text-gray-300 leading-relaxed max-w-sm text-center lg:text-left">
               The LA VERDAD HERALD is the Official Higher Education Student Publication of La Verdad Christian College, Inc.
             </p>
           </div>
 
           {/* Navigation Links */}
-          <div className="lg:w-1/3 grid grid-cols-3 gap-y-4 gap-x-2 text-sm font-bold text-left tracking-wider text-gray-100">
+          <div className="lg:w-1/3 grid grid-cols-3 gap-y-4 gap-x-2 text-xs md:text-sm font-bold text-center lg:text-left tracking-wider text-gray-100">
             <Link to="/category/news" onClick={(e) => handleCategoryClick(e, 'news')} className="hover:text-cyan-400 transition-colors">NEWS</Link>
             <Link to="/category/literary" onClick={(e) => handleCategoryClick(e, 'literary')} className="hover:text-cyan-400 transition-colors">LITERARY</Link>
             <Link to="/category/art" onClick={(e) => handleCategoryClick(e, 'art')} className="hover:text-cyan-400 transition-colors">ART</Link>
@@ -79,11 +79,11 @@ function Footer() {
           </div>
 
           {/* Subscribe Section */}
-          <div className="lg:w-1/3 flex flex-col lg:items-end w-full">
-            <p className="text-sm text-gray-200 mb-4 lg:text-right">
+          <div className="lg:w-1/3 flex flex-col items-center lg:items-end w-full">
+            <p className="text-sm text-gray-200 mb-4 text-center lg:text-right">
               Never miss a story. Subscribe for email updates from La Verdad Herald.
             </p>
-            <form onSubmit={handleSubscribe} className="flex w-full max-w-md items-center justify-center">
+            <form onSubmit={handleSubscribe} className="flex w-full max-w-md items-center">
               <input 
                 type="email"
                 name="email"
@@ -92,13 +92,13 @@ function Footer() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                className="grow p-2 text-gray-800 outline-none rounded-l-sm bg-white"
+                className="grow p-2 text-sm text-gray-800 outline-none rounded-l-sm bg-white"
                 required
               />
               <button 
                 type="submit"
                 disabled={subscribing}
-                className="bg-cyan-700 hover:bg-cyan-900 text-white font-bold px-4 py-3 rounded-r-sm transition-colors text-sm uppercase tracking-wide disabled:opacity-50"
+                className="bg-cyan-700 hover:bg-cyan-900 text-white font-bold px-3 md:px-4 py-3 rounded-r-sm transition-colors text-xs md:text-sm uppercase tracking-wide disabled:opacity-50"
               >
                 {subscribing ? 'Subscribing...' : 'Subscribe'}
               </button>

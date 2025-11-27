@@ -161,7 +161,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       {(horizontal) ? (
         <div className="flex flex-col sm:flex-row">
           <div className="sm:w-1/3 relative overflow-hidden">
-            <img src={finalImageUrl} alt={title} className={`w-full h-full object-cover ${getImageHeight()}`} />
+            <img src={finalImageUrl} alt={title} className={`w-full h-48 sm:h-full object-cover`} />
             {showAdminButtons && onEdit !== null && onDelete !== null && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
@@ -235,7 +235,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             <img
               src={finalImageUrl}
               alt={title}
-              className={`w-full object-cover ${getImageHeight()}`}
+              className={`w-full h-48 md:h-auto object-cover`}
             />
             {showAdminButtons && onEdit !== null && onDelete !== null && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">

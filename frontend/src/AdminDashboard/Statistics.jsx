@@ -76,14 +76,14 @@ export default function Statistics({ onResetData }) {
         </h1>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-col md:flex-row flex-1">
         {(() => {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />;
         })()}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="max-w-6xl mx-auto">
-            <div className="bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+            <div className="bg-white p-4 md:p-8 rounded-lg shadow-lg border border-gray-200">
           {error && (
             <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
               <p className="font-bold">Error loading statistics:</p>
@@ -102,18 +102,18 @@ export default function Statistics({ onResetData }) {
             </div>
           )}
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 justify-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 mb-8 justify-center">
             {stats.map((item) => (
-              <div key={item.label} className="bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-                <div className="flex justify-center mb-3">
-                  <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
+              <div key={item.label} className="bg-white border border-gray-200 rounded-lg shadow-sm p-3 md:p-4">
+                <div className="flex justify-center mb-2 md:mb-3">
+                  <div className="w-12 h-12 md:w-20 md:h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
                     {item.icon}
                   </div>
                 </div>
-                <h2 className="text-2xl font-bold text-center mt-2">
+                <h2 className="text-lg md:text-2xl font-bold text-center mt-1 md:mt-2">
                   {item.value.toLocaleString()}
                 </h2>
-                <p className="text-sm text-gray-500 text-center mt-1">
+                <p className="text-xs md:text-sm text-gray-500 text-center mt-1">
                   {item.label}
                 </p>
               </div>
@@ -123,18 +123,18 @@ export default function Statistics({ onResetData }) {
           <hr className="my-6" />
 
           {/* Recent Activity Table */}
-          <h4 className="text-lg font-semibold mb-4 text-center">
+          <h4 className="text-base md:text-lg font-semibold mb-4 text-center">
             Recent Activity
           </h4>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto -mx-4 md:mx-0">
             <table className="w-full border-collapse border border-gray-300 mt-4">
               <thead>
                 <tr>
                   {["Action", "Article Title", "User", "Timestamp"].map((header) => (
                     <th
                       key={header}
-                      className="text-center bg-blue-100 text-black border border-blue-300 p-3"
+                      className="text-center bg-blue-100 text-black border border-blue-300 p-2 md:p-3 text-xs md:text-sm"
                     >
                       {header}
                     </th>
@@ -144,16 +144,16 @@ export default function Statistics({ onResetData }) {
               <tbody>
                 {recentActivity.map((a, index) => (
                   <tr key={index}>
-                    <td className="text-center text-blue-900 border border-blue-300 p-3">
+                    <td className="text-center text-blue-900 border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
                       {a.action}
                     </td>
-                    <td className="text-center border border-blue-300 p-3">
+                    <td className="text-center border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
                       {a.title}
                     </td>
-                    <td className="text-center border border-blue-300 p-3">
+                    <td className="text-center border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
                       {a.user}
                     </td>
-                    <td className="text-center border border-blue-300 p-3">
+                    <td className="text-center border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
                       {a.timestamp}
                     </td>
                   </tr>

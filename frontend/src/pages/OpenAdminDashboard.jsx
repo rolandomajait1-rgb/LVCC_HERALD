@@ -38,7 +38,7 @@ export default function OpenAdminDashboard() {
         </h1>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-col md:flex-row flex-1">
         {(() => {
           const sidebarLinks = [
             { label: "Statistics", icon: <FiBarChart size={16} />, to: "/admin/statistics", active: true },
