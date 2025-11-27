@@ -101,7 +101,19 @@ class AuthController extends Controller
         $user->email_verified_at = now();
         $user->save();
 
-        return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
+        try {
+            \Illuminate\Support\Facades\Mail::raw(
+                "Welcome to La Verdad Herald!\n\nThank you for registering. Your account is now active and you can log in.\n\nBest regards,\nLa Verdad Herald Team",
+                function ($message) use ($user) {
+                    $message->to($user->email)
+                            ->subject('Welcome to La Verdad Herald');
+                }
+            );
+        } catch (\Exception $e) {
+            \Log::error('Failed to send welcome email: ' . $e->getMessage());
+        }
+
+        return response()->json(['message' => 'Registration successful. Check your email for confirmation.'], 201);
     }
 
     public function logout(Request $request)
