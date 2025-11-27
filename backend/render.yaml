@@ -1,0 +1,12 @@
+version: 1
+services:
+  - type: web
+    name: lvcc-herald-backend
+    env: php
+    buildCommand: bash build.sh
+    startCommand: bash start.sh
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
