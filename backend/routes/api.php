@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\DraftController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\DashboardController;
@@ -23,14 +24,19 @@ Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberContr
 
 // Public API Routes with Rate Limiting
 Route::middleware('throttle:5,1')->group(function () {
-    Route::post('/login', [AuthController::class, 'loginApi']);
-    Route::post('/register', [AuthController::class, 'registerApi']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/login', [AuthenticationController::class, 'login']);
+    Route::post('/register', [AuthenticationController::class, 'register']);
+    Route::post('/forgot-password', [AuthenticationController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthenticationController::class, 'resetPassword']);
 });
 
 // Email Verification Routes
-Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [AuthenticationController::class, 'verifyEmail'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+Route::post('/email/resend', [AuthenticationController::class, 'resendVerificationEmail'])
+    ->middleware('auth:sanctum');
 
 Route::middleware('throttle:10,1')->post('/contact/feedback', [ContactController::class, 'sendFeedback']);
 Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
@@ -60,10 +66,10 @@ Route::middleware('auth:sanctum')->group(function () {
 // API Routes with Sanctum authentication
 Route::middleware('auth:sanctum')->group(function () {
     // User API
-    Route::get('/user', [UserController::class, 'show']);
+    Route::get('/user', [AuthenticationController::class, 'userInfo']);
 
     // Logout API
-    Route::post('/logout', [AuthController::class, 'logoutApi']);
+    Route::post('/logout', [AuthenticationController::class, 'logOut']);
 
     // Change Password API
     Route::post('/change-password', [AuthController::class, 'changePasswordApi']);
