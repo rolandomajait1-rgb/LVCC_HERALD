@@ -50,10 +50,7 @@ class ArticleController extends Controller
             });
         }
 
-        if (request()->wantsJson()) {
-            return response()->json($articles);
-        }
-        return view('articles.index', compact('articles'));
+        return response()->json($articles);
     }
 
     public function create()
