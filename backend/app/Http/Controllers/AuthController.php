@@ -8,6 +8,7 @@ use App\Models\Author;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Str;
@@ -103,7 +104,7 @@ class AuthController extends Controller
         try {
             $user->sendEmailVerificationNotification();
         } catch (\Exception $e) {
-            \Log::error('Email send failed: ' . $e->getMessage());
+            Log::error('Email send failed: ' . $e->getMessage());
         }
 
         return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
