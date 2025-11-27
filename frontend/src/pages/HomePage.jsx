@@ -74,17 +74,18 @@ export default function HomePage() {
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-12 py-8 grow">
+      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
         
         {(userRole === 'admin' || userRole === 'moderator') && (
-          <header className="bg-cyan-700 text-white p-2 flex justify-between items-center shadow-md mb-6">
-            <h1 className="text-2xl font-serif">Welcome, Admin</h1>
+          <header className="bg-cyan-700 text-white p-3 md:p-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
+            <h1 className="text-xl md:text-2xl font-serif">Welcome, Admin</h1>
             <div className="flex items-center space-x-4">
               <button
                 onClick={handleOpenAdminDashboard}
-                className="flex items-center space-x-2 px-4 py-2 text-1xl font-medium text-white hover:text-blue-300"
+                className="flex items-center space-x-2 px-3 md:px-4 py-2 text-sm md:text-base font-medium text-white hover:text-blue-300"
               >
-                <span>OPEN ADMIN DASHBOARD</span>
+                <span className="hidden sm:inline">OPEN ADMIN DASHBOARD</span>
+                <span className="sm:hidden">DASHBOARD</span>
                 <FiExternalLink />
               </button>
             </div>

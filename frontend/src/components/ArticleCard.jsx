@@ -199,16 +199,16 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 </span>
               </div>
 
-              <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-4xl' : 'text-base'}`}>
+              <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
                 {title}
               </h3>
-              <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-xl' : 'text-xs'}`}>
+              <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
                 {finalSnippet}
               </p>
             </div>
 
             <div className="flex justify-between items-center">
-              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-lg' : 'text-xs'}`}>
+              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
                 By <span 
                   className="cursor-pointer hover:text-blue-600 hover:underline transition-colors"
                   onClick={(e) => { e.stopPropagation(); navigate(`/author/${encodeURIComponent(finalAuthor)}`); }}
@@ -259,7 +259,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             )}
           </div>
 
-          <div className={`flex flex-col grow ${isLarge ? 'p-6' : 'p-3'}`}>
+          <div className={`flex flex-col grow ${isLarge ? 'p-4 md:p-6' : 'p-3'}`}>
             <div className="flex justify-between items-start mb-2">
               <span 
                 className={`text-xs font-semibold uppercase px-2 py-1 rounded cursor-pointer hover:opacity-80 ${getCategoryColor(finalCategory)}`}
@@ -273,14 +273,14 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               </span>
             </div>
 
-            <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-4xl' : 'text-base'}`}>
+            <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
               {title}
             </h3>
-            <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-xl' : 'text-xs'}`}>
+            <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
             <div className="flex justify-between items-center">
-              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-lg' : 'text-xs'}`}>
+              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
                 By <span 
                   className="cursor-pointer hover:text-blue-600 hover:underline transition-colors"
                   onClick={(e) => { e.stopPropagation(); navigate(`/author/${encodeURIComponent(finalAuthor)}`); }}

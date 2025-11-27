@@ -98,9 +98,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-lg">      
-        <h2 className="mb-1 text-center text-4xl py-5 font-serif text-gray-800">Login</h2> 
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg">      
+        <h2 className="mb-1 text-center text-3xl md:text-4xl py-5 font-serif text-gray-800">Login</h2> 
       
 
         <form onSubmit={handleSubmit}>
@@ -185,7 +185,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-70 rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold  hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold  hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Signing In...' : 'Log in'}
           </button>

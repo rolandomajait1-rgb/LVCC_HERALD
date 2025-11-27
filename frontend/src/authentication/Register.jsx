@@ -49,12 +49,12 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg">
         <div className="mb-6 flex justify-center">
-          <img src="/logo.svg" alt="La Verdad Christian College Logo" className="h-20" />
+          <img src="/logo.svg" alt="La Verdad Christian College Logo" className="h-16 md:h-20" />
         </div>
-        <h2 className="mb-1 text-center text-4xl font-serif text-gray-800">Register</h2>
+        <h2 className="mb-1 text-center text-3xl md:text-4xl font-serif text-gray-800">Register</h2>
         {success && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
             Registration successful! You can now log in. Redirecting...
@@ -172,7 +172,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className="w-70 rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             Sign Up
           </button>
