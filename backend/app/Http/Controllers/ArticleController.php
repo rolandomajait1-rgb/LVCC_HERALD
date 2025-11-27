@@ -350,4 +350,26 @@ class ArticleController extends Controller
 
         return response()->json($articles);
     }
+
+    public function publicIndex(Request $request)
+    {
+        $query = Article::published()->with('author.user', 'categories', 'tags');
+
+        if ($request->has('category')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('name', 'LIKE', $request->category);
+            });
+        }
+
+        if ($request->has('latest') && $request->latest) {
+            $limit = $request->get('limit', 9);
+            $articles = $query->latest('published_at')->take($limit)->get();
+            return response()->json($articles);
+        }
+
+        $limit = $request->get('limit', 10);
+        $articles = $query->latest('published_at')->paginate($limit);
+
+        return response()->json($articles);
+    }
 }
