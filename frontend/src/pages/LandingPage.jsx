@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LoginButton from '../components/LoginButton';
 import SignUpButton from '../components/SignUpButton';
+import LoginModal from '../components/LoginModal';
+import RegisterModal from '../components/RegisterModal';
 import bgImage from '../assets/images/bg.jpg';
 import logo from '../assets/images/logo.svg';
 import laVerdadHerald from '../assets/images/la verdad herald.svg';
@@ -13,6 +15,9 @@ import LatestArticleCard from '../components/LatestArticleCard';
 
 // The main landing page component
 function LandingPage() {
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
   // Define the hero background style object
   const heroStyle = {
     backgroundImage: `linear-gradient(to bottom, rgba(18, 94, 124, 0.5), rgba(0, 0, 0, 0.7)), url(${bgImage})`,
@@ -44,8 +49,8 @@ function LandingPage() {
             </p>
           </div>
           <div className="flex justify-center space-x-2 scroll-px-40">
-            <LoginButton />
-            <SignUpButton />
+            <LoginButton onClick={() => setIsLoginOpen(true)} />
+            <SignUpButton onClick={() => setIsRegisterOpen(true)} />
           </div>
         </div>
       </section>
@@ -55,6 +60,17 @@ function LandingPage() {
       <LatestArticleCard />
 
       <Footer />
+
+      <LoginModal 
+        isOpen={isLoginOpen} 
+        onClose={() => setIsLoginOpen(false)} 
+        onSwitchToRegister={() => { setIsLoginOpen(false); setIsRegisterOpen(true); }} 
+      />
+      <RegisterModal 
+        isOpen={isRegisterOpen} 
+        onClose={() => setIsRegisterOpen(false)} 
+        onSwitchToLogin={() => { setIsRegisterOpen(false); setIsLoginOpen(true); }} 
+      />
     </>
   );
 }

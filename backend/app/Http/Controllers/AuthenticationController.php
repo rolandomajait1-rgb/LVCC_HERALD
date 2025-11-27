@@ -19,7 +19,6 @@ class AuthenticationController extends Controller
             'email' => [
                 'required',
                 'email',
-                'unique:users',
                 'regex:/@(student\.)?laverdad\.edu\.ph$/i'
             ],
             'password' => [
@@ -38,6 +37,19 @@ class AuthenticationController extends Controller
             'password.min' => 'Password must be at least 8 characters long.',
             'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
         ]);
+
+        // Check if email exists with unverified account
+        $existingUser = User::where('email', $request->email)->first();
+        if ($existingUser) {
+            if ($existingUser->hasVerifiedEmail()) {
+                return response()->json([
+                    'message' => 'The email has already been taken.',
+                    'errors' => ['email' => ['The email has already been taken.']]
+                ], 422);
+            }
+            // Delete unverified account to allow re-registration
+            $existingUser->delete();
+        }
 
         $user = User::create([
             'name' => $request->name,

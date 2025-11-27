@@ -138,7 +138,9 @@ class BrevoMailer
         </html>
         ";
 
-        $response = Http::withHeaders([
+        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::withoutVerifying();
+        
+        $response = $http->withHeaders([
             'api-key' => $apiKey,
             'accept' => 'application/json',
             'content-type' => 'application/json',
@@ -282,7 +284,9 @@ class BrevoMailer
         </html>
         ";
 
-        $response = Http::withHeaders([
+        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::withoutVerifying();
+        
+        $response = $http->withHeaders([
             'api-key' => $apiKey,
             'Content-Type' => 'application/json'
         ])->post('https://api.brevo.com/v3/smtp/email', [

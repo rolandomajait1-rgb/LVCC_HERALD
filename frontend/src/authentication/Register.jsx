@@ -21,6 +21,10 @@ export default function Register() {
       ...formData,
       [name]: value,
     });
+    // Clear errors for the field being edited
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: undefined });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -39,7 +43,12 @@ export default function Register() {
     } catch (error) {
       console.error('Registration error:', error.response?.data);
       if (error.response?.data?.errors) {
-        setErrors(error.response.data.errors);
+        const errors = error.response.data.errors;
+        // Add helpful message for email already taken
+        if (errors.email && errors.email[0].includes('already been taken')) {
+          errors.email = ['This email is already registered. Please check your email for a verification link, or try logging in.'];
+        }
+        setErrors(errors);
       } else if (error.response?.data?.message) {
         setErrors({ general: error.response.data.message });
       } else {
@@ -93,7 +102,11 @@ export default function Register() {
               required
               placeholder='Enter your email'
               autoComplete="email"
-              className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+              className={`w-full rounded-md border px-4 py-2 focus:ring focus:ring-opacity-50 ${
+                errors.email 
+                  ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                  : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
+              }`}
             />
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email[0]}</p>}
           </div>
@@ -109,8 +122,8 @@ export default function Register() {
                 onChange={handleChange}
                 required
                 minLength={8}
-                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}"
-                title="Password must contain at least 8 characters, including uppercase, lowercase, and numbers"
+                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[@$!%*#?&]).{8,}"
+                title="Password must contain at least 8 characters, including uppercase, lowercase, number, and special character (@$!%*#?&)"
                 placeholder='Enter your Password'
                 autoComplete="new-password"
                 className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
@@ -132,6 +145,7 @@ export default function Register() {
                 )}
               </button>
             </div>
+            <p className="mt-1 text-xs text-gray-500">Must be 8+ characters with uppercase, lowercase, number, and special character (@$!%*#?&)</p>
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password[0]}</p>}
           </div>
 

@@ -1,14 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-const LoginButton = () => {
+const LoginButton = ({ onClick }) => {
   return (
-    <Link
-      to="/login"
+    <button
+      onClick={onClick}
       className="w-40 px-12 py-3 bg-cyan-800 hover:bg-cyan-900 text-white font-medium rounded-lg shadow transition duration-150 border border-white"
     >
       Log In
-    </Link>
+    </button>
   );
 };
 

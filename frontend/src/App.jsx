@@ -13,8 +13,7 @@ import ManageModerators from './AdminDashboard/ManageModerators';
 import AuditTrail from './AdminDashboard/AuditTrail';
 import ArticlePage from './AdminDashboard/ArticlePage';
 import EditArticle from './AdminDashboard/EditArticle';
-import Login from './authentication/Login';
-import Register from './authentication/Register';
+
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
 import About from './pages/About';
 import News from './categories/News';
@@ -252,34 +251,7 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
-        <Route
-          path="/login"
-          element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <Login />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            > 
-              <Register />
-            </motion.div>
-          }
-        />
+
         <Route
           path="/forgot-password"
           element={

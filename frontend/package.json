@@ -10,10 +10,8 @@
     "test": "echo \"Frontend tests not configured yet\""
   },
   "dependencies": {
-
     "@reduxjs/toolkit": "^2.11.0",
     "@tabler/icons-react": "^3.35.0",
-
     "axios": "^1.13.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.552.0",
