@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Set base URL
-axios.defaults.baseURL = 'https://your-backend.railway.app';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 // Add auth token to requests
 axios.interceptors.request.use(
