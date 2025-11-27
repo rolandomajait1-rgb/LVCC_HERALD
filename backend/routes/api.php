@@ -42,6 +42,16 @@ Route::middleware('throttle:10,1')->post('/contact/feedback', [ContactController
 Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
 Route::middleware('throttle:5,1')->post('/contact/join-herald', [ContactController::class, 'joinHerald']);
 Route::middleware('throttle:10,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
+// Temporary: Delete user by email
+Route::delete('/temp/delete-user/{email}', function($email) {
+    $user = \App\Models\User::where('email', $email)->first();
+    if ($user) {
+        $user->delete();
+        return response()->json(['message' => 'User deleted']);
+    }
+    return response()->json(['message' => 'User not found'], 404);
+});
+
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/public', [ArticleController::class, 'publicIndex']);
