@@ -37,6 +37,7 @@ Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactCon
 Route::middleware('throttle:5,1')->post('/contact/join-herald', [ContactController::class, 'joinHerald']);
 Route::middleware('throttle:10,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
 Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/public', [ArticleController::class, 'publicIndex']);
 Route::get('/articles/search', [ArticleController::class, 'search']);
 Route::get('/articles/by-slug/{slug}', [ArticleController::class, 'showBySlug']);
@@ -48,7 +49,6 @@ Route::get('/categories/{category}/articles', [CategoryController::class, 'artic
 
 // Protected article routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/articles', [ArticleController::class, 'index']);
     Route::post('/articles', [ArticleController::class, 'store']);
     Route::get('/articles/{article}', [ArticleController::class, 'show']);
     Route::put('/articles/{article}', [ArticleController::class, 'update']);
