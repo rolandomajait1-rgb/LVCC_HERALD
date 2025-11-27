@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Set base URL
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+axios.defaults.timeout = 30000; // 30 second timeout
+axios.defaults.withCredentials = false; // Using Bearer token, not cookies
 
 // Add auth token to requests
 axios.interceptors.request.use(
@@ -10,18 +12,21 @@ axios.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    config.headers['X-Requested-With'] = 'XMLHttpRequest';
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Handle 401 responses globally
+// Handle responses and errors
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_email');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_role');
       window.location.href = '/login';
     }
     return Promise.reject(error);

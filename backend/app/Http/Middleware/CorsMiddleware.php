@@ -16,18 +16,49 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
-
-        $allowedOrigins = config('cors.allowed_origins');
         $origin = $request->header('Origin');
+        $allowedOrigins = config('cors.allowed_origins', []);
+        $allowedPatterns = config('cors.allowed_origins_patterns', []);
+        
+        // Check if origin is allowed
+        $isAllowed = in_array($origin, $allowedOrigins) || $this->matchesPattern($origin, $allowedPatterns);
 
-        if (in_array($origin, $allowedOrigins)) {
-            $response->header('Access-Control-Allow-Origin', $origin);
-            $response->header('Access-Control-Allow-Credentials', 'true');
-            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        // Handle preflight
+        if ($request->isMethod('OPTIONS')) {
+            return response('', 200)
+                ->header('Access-Control-Allow-Origin', $isAllowed ? $origin : '')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
+                ->header('Access-Control-Allow-Credentials', 'false')
+                ->header('Access-Control-Max-Age', '86400');
         }
 
+        $response = $next($request);
+
+        // Add CORS headers
+        if ($isAllowed && $origin) {
+            $response->header('Access-Control-Allow-Origin', $origin);
+            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+            $response->header('Access-Control-Allow-Credentials', 'false');
+        }
+
+        // Security headers
+        $response->header('X-Content-Type-Options', 'nosniff');
+        $response->header('X-Frame-Options', 'DENY');
+        $response->header('X-XSS-Protection', '1; mode=block');
+        $response->header('Referrer-Policy', 'strict-origin-when-cross-origin');
+
         return $response;
+    }
+
+    private function matchesPattern($origin, $patterns)
+    {
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $origin)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

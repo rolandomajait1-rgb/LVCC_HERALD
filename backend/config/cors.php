@@ -18,15 +18,15 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
+    'allowed_origins' => array_filter([
         'http://localhost:5173',
-        'https://lvcc-herald-frontend.vercel.app',
-        'https://lvcc-herald-frontend-qqokqxvy1-rolando-majaits-projects.vercel.app',
-        env('FRONTEND_URL', 'http://localhost:5173')
-    ],
+        'http://127.0.0.1:5173',
+        env('FRONTEND_URL'),
+    ]),
 
     'allowed_origins_patterns' => [
-        '/^https:\/\/lvcc-herald-frontend.*\.vercel\.app$/',
+        '/^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/',
+        '/^https:\/\/[a-zA-Z0-9-]+-[a-zA-Z0-9-]+\.vercel\.app$/',
     ],
 
     'allowed_headers' => ['*'],
