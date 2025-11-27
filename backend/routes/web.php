@@ -13,6 +13,11 @@ Route::get('/setup-db', function () {
     }
 });
 
+Route::get('/verify-all-users', function () {
+    \App\Models\User::whereNull('email_verified_at')->update(['email_verified_at' => now()]);
+    return response()->json(['success' => 'All users verified!']);
+});
+
 Route::get('/', function () {
     return response()->json(['message' => 'La Verdad Herald API']);
 });
