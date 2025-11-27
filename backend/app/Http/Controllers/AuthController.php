@@ -52,11 +52,6 @@ class AuthController extends Controller
         $user = $this->attemptLogin($request);
 
         if ($user) {
-            if (is_null($user->email_verified_at)) {
-                Auth::logout();
-                return response()->json(['message' => 'Please verify your email before logging in'], 403);
-            }
-            
             $token = $user->createToken('auth_token')->plainTextToken;
 
             return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
@@ -102,11 +97,9 @@ class AuthController extends Controller
     public function registerApi(Request $request)
     {
         $user = $this->createUser($request);
-        // Manually set role after creation to avoid mass assignment
         $user->role = 'user';
+        $user->email_verified_at = now();
         $user->save();
-
-        $user->sendEmailVerificationNotification();
 
         return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
     }
