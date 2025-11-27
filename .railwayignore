@@ -1,9 +1,0 @@
-frontend/
-package.json
-package-lock.json
-node_modules/
-.github/
-*.md
-*.bat
-.gitignore
-nixpacks.toml
