@@ -52,8 +52,12 @@ class AuthController extends Controller
         $user = $this->attemptLogin($request);
 
         if ($user) {
+            if (is_null($user->email_verified_at)) {
+                Auth::logout();
+                return response()->json(['message' => 'Please verify your email before logging in. Check your inbox.'], 403);
+            }
+            
             $token = $user->createToken('auth_token')->plainTextToken;
-
             return response()->json(['token' => $token, 'role' => $user->role, 'user' => $user]);
         }
 
@@ -98,22 +102,11 @@ class AuthController extends Controller
     {
         $user = $this->createUser($request);
         $user->role = 'user';
-        $user->email_verified_at = now();
         $user->save();
 
-        try {
-            \Illuminate\Support\Facades\Mail::raw(
-                "Welcome to La Verdad Herald!\n\nThank you for registering. Your account is now active and you can log in.\n\nBest regards,\nLa Verdad Herald Team",
-                function ($message) use ($user) {
-                    $message->to($user->email)
-                            ->subject('Welcome to La Verdad Herald');
-                }
-            );
-        } catch (\Exception $e) {
-            \Log::error('Failed to send welcome email: ' . $e->getMessage());
-        }
+        $user->sendEmailVerificationNotification();
 
-        return response()->json(['message' => 'Registration successful. Check your email for confirmation.'], 201);
+        return response()->json(['message' => 'Registration successful. Please check your email to verify your account.'], 201);
     }
 
     public function logout(Request $request)
