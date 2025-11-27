@@ -55,8 +55,8 @@ function Footer() {
           {/* Branding Section */}
           <div className="lg:w-1/3 flex flex-col items-center lg:items-start">
             <div className="flex items-center gap-2 mb-2">
-              <img src={logo} alt="La Verdad Herald Logo" className="h-12 md:h-14 w-auto" />
-              <img src={LaVerdadHerald} alt="La Verdad Herald" className="h-6 md:h-8 w-auto" />
+              <img src={logo} alt="La Verdad Herald Logo" className="h-10 sm:h-12 md:h-14 w-auto object-contain" />
+              <img src={LaVerdadHerald} alt="La Verdad Herald" className="h-5 sm:h-6 md:h-8 w-auto object-contain" />
             </div>
             <p className="text-sm text-gray-300 leading-relaxed max-w-sm text-center lg:text-left">
               The LA VERDAD HERALD is the Official Higher Education Student Publication of La Verdad Christian College, Inc.

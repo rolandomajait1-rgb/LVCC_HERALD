@@ -92,7 +92,7 @@ export default function LatestSection({ onEdit, onDelete }) {
         <hr className="mb-6" />
         
       {/* 3. Articles Layout */}
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
 
         {/* 3a. Featured Article (Left) */}
         <div className="w-full lg:w-2/3">
@@ -107,7 +107,7 @@ export default function LatestSection({ onEdit, onDelete }) {
         </div>
 
         {/* 3b. Side Articles (Right) */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-6">
+        <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6">
           {sideArticles.map((article, index) => (
             <ArticleCard key={latestArticles[index + 1].id || index} {...article} />
           ))}

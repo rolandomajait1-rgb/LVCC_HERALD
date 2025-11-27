@@ -38,7 +38,7 @@ function Header() {
           <img
             src="/logo.svg"
             alt="La Verdad Logo"
-            className="h-[50px] md:h-[70px] w-auto cursor-pointer"
+            className="h-[40px] sm:h-[50px] md:h-[70px] w-auto object-contain cursor-pointer"
             onClick={() => {
               if (isLoggedIn && (userRole === 'admin' || userRole === 'moderator')) {
                 navigate('/admin');
@@ -51,7 +51,7 @@ function Header() {
           <img
             src="/la verdad herald.svg"
             alt="La Verdad Herald"
-            className="h-[35px] md:h-[50px] w-auto cursor-pointer"
+            className="h-[30px] sm:h-[35px] md:h-[50px] w-auto object-contain cursor-pointer"
             onClick={() => {
               if (isLoggedIn && (userRole === 'admin' || userRole === 'moderator')) {
                 navigate('/admin');
