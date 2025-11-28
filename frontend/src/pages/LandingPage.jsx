@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import LoginButton from '../components/LoginButton';
 import SignUpButton from '../components/SignUpButton';
 import LoginModal from '../components/LoginModal';
@@ -17,26 +17,37 @@ import LatestArticleCard from '../components/LatestArticleCard';
 // The main landing page component
 function LandingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [showVerified, setShowVerified] = useState(false);
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('auth_token');
+    
     if (searchParams.get('verified') === 'true') {
-      setShowVerified(true);
-      setIsAlreadyVerified(false);
-      setIsLoginOpen(true);
-      setSearchParams({});
-      setTimeout(() => setShowVerified(false), 5000);
+      if (token) {
+        navigate('/home');
+      } else {
+        setShowVerified(true);
+        setIsAlreadyVerified(false);
+        setIsLoginOpen(true);
+        setSearchParams({});
+        setTimeout(() => setShowVerified(false), 5000);
+      }
     } else if (searchParams.get('already_verified') === 'true') {
-      setShowVerified(true);
-      setIsAlreadyVerified(true);
-      setIsLoginOpen(true);
-      setSearchParams({});
-      setTimeout(() => setShowVerified(false), 5000);
+      if (token) {
+        navigate('/home');
+      } else {
+        setShowVerified(true);
+        setIsAlreadyVerified(true);
+        setIsLoginOpen(true);
+        setSearchParams({});
+        setTimeout(() => setShowVerified(false), 5000);
+      }
     }
-  }, [searchParams, setSearchParams]);
+  }, [searchParams, setSearchParams, navigate]);
 
   // Define the hero background style object
   const heroStyle = {
