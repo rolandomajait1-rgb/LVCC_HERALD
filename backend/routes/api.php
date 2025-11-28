@@ -19,6 +19,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SetupController;
 
+// Ping route for testing
+Route::get('/ping', function () {
+    return response()->json(['message' => 'pong']);
+});
+
 // Team Members Routes
 Route::get('/team-members', [TeamMemberController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberController::class, 'update']);
