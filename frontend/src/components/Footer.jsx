@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FaFacebook, FaEnvelope } from 'react-icons/fa';
+import { FaFacebook, FaEnvelope, FaLinkedin } from 'react-icons/fa';
 import { getAuthToken } from '../utils/auth';
 import logo from '../assets/images/logo.svg';
 import Bgfooter from '../assets/images/bgfooter.png';
 import LaVerdadHerald from '../assets/images/la verdad herald.svg';
 
-function Footer() {
+function Footer({ onOpenLogin }) {
   const navigate = useNavigate();
   const location = useLocation();
   const isAuthenticated = !!getAuthToken();
@@ -18,7 +18,9 @@ function Footer() {
   const handleCategoryClick = (e) => {
     if (isLandingPage || !isAuthenticated) {
       e.preventDefault();
-      navigate('/login');
+      if (onOpenLogin) {
+        onOpenLogin();
+      }
     }
   };
 
@@ -112,10 +114,13 @@ function Footer() {
         {/* Bottom Socials & Copy */}
         <div className="flex flex-col items-center gap-6">
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
+            <a href="https://www.facebook.com/profile.php?id=100064162896406" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
               <FaFacebook size={18} />
             </a>
-            <a href="#" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
+            <a href="https://www.linkedin.com/company/la-verdad-herald/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
+              <FaLinkedin size={18} />
+            </a>
+            <a href="mailto:laverdadherald@laverdad.edu.ph" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
               <FaEnvelope size={18} />
             </a>
           </div>

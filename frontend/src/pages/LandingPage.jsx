@@ -86,7 +86,7 @@ function LandingPage() {
 
       <LatestArticleCard />
 
-      <Footer />
+      <Footer onOpenLogin={() => setIsLoginOpen(true)} />
 
       <LoginModal 
         isOpen={isLoginOpen} 
