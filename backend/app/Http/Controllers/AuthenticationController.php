@@ -101,7 +101,7 @@ class AuthenticationController extends Controller
 
         event(new Verified($user));
 
-        return redirect(env('APP_FRONTEND_URL') . '/dashboard');
+        return redirect(env('APP_FRONTEND_URL') . '/?verified=true');
     }
 
     public function resendVerificationEmail(Request $request)

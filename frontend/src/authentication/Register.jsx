@@ -39,7 +39,8 @@ export default function Register() {
       });
       console.log('Registration successful:', response.data);
       setSuccess(true);
-      setTimeout(() => navigate('/'), 3000);
+      // Don't auto-redirect, let user read the message
+      // setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       console.error('Registration error:', error.response?.data);
       if (error.response?.data?.errors) {
@@ -66,7 +67,8 @@ export default function Register() {
         <h2 className="mb-1 text-center text-3xl md:text-4xl font-serif text-gray-800">Register</h2>
         {success && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-            Registration successful! You can now log in. Redirecting...
+            <p className="font-semibold">Registration successful!</p>
+            <p className="text-sm mt-1">Please check your email for a verification link. You must verify your email before logging in.</p>
           </div>
         )}
         {errors.general && (
