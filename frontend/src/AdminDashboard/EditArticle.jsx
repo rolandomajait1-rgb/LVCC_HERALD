@@ -96,10 +96,11 @@ export default function EditArticle() {
       const formData = new FormData();
       formData.append('_method', 'PUT');
       formData.append('title', title);
-      formData.append('category', category);
+      const categoryMap = {'News': 1, 'Sports': 2, 'Opinion': 3, 'Literary': 4, 'Features': 5, 'Specials': 6, 'Art': 7};
+      formData.append('category_id', categoryMap[category] || 1);
       formData.append('content', content);
       formData.append('tags', tags);
-      formData.append('author', author);
+      formData.append('author_name', author);
       if (image) {
         formData.append('featured_image', image);
       }
