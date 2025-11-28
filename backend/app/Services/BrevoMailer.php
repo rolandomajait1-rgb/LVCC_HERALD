@@ -148,7 +148,7 @@ class BrevoMailer
         ])->post('https://api.brevo.com/v3/smtp/email', [
             'sender' => [
                 'name' => 'La Verdad Herald',
-                'email' => 'amberprincessrosana05@gmail.com',
+                'email' => 'rolandomajait1@gmail.com',
             ],
             'to' => [
                 ['email' => $email],
@@ -299,7 +299,7 @@ class BrevoMailer
             'api-key' => $apiKey,
             'Content-Type' => 'application/json'
         ])->post('https://api.brevo.com/v3/smtp/email', [
-            'sender' => ['name' => 'La Verdad Herald', 'email' => 'amberprincessrosana05@gmail.com'],
+            'sender' => ['name' => 'La Verdad Herald', 'email' => 'rolandomajait1@gmail.com'],
             'to' => [['email' => $email]],
             'subject' => 'Verify Your Email',
             'htmlContent' => $htmlContent,
