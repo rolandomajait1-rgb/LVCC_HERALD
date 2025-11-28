@@ -84,7 +84,7 @@ class ArticleController extends Controller
                 ]);
                 $imagePath = $uploadedFile->getSecurePath();
             } catch (\Exception $e) {
-                Log::error('Cloudinary upload failed: ' . $e->getMessage());
+                Log::error('Cloudinary upload failed: ' . (string)$e);
                 $image = $request->file('featured_image');
                 $imageData = base64_encode(file_get_contents($image->getRealPath()));
                 $mimeType = $image->getMimeType();
@@ -95,6 +95,7 @@ class ArticleController extends Controller
         $status = $request->get('status', 'published');
         $article = Article::create([
             'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
             'content' => $validated['content'],
             'author_id' => $author->id,
             'status' => $status,
@@ -182,7 +183,7 @@ class ArticleController extends Controller
                 ]);
                 $data['featured_image'] = $uploadedFile->getSecurePath();
             } catch (\Exception $e) {
-                Log::error('Cloudinary upload failed: ' . $e->getMessage());
+                Log::error('Cloudinary upload failed: ' . (string)$e);
                 $image = $request->file('featured_image');
                 $imageData = base64_encode(file_get_contents($image->getRealPath()));
                 $mimeType = $image->getMimeType();
