@@ -39,7 +39,7 @@ export default function Register() {
       });
       console.log('Registration successful:', response.data);
       setSuccess(true);
-      setTimeout(() => navigate('/login'), 3000);
+      setTimeout(() => navigate('/'), 3000);
     } catch (error) {
       console.error('Registration error:', error.response?.data);
       if (error.response?.data?.errors) {
