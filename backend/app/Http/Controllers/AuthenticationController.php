@@ -94,7 +94,7 @@ class AuthenticationController extends Controller
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json(['message' => 'Email already verified.']);
+            return redirect(env('APP_FRONTEND_URL') . '/?already_verified=true');
         }
 
         $user->markEmailAsVerified();
