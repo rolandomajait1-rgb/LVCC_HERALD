@@ -34,9 +34,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       setSuccessMessage('Welcome back to La Verdad Herald!');
       setTimeout(() => {
         onClose();
-        if (userRole === 'admin') navigate('/admin');
-        else if (userRole === 'moderator') navigate('/moderator');
-        else navigate('/home');
+        if (userRole === 'admin') navigate('/admin', { state: { fromLogin: true } });
+        else if (userRole === 'moderator') navigate('/moderator', { state: { fromLogin: true } });
+        else navigate('/home', { state: { fromLogin: true } });
       }, 1500);
     } catch (error) {
       if (error.response?.status === 401) setErrors({ general: 'Invalid email or password.' });

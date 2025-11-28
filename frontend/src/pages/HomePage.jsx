@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ContentSection from '../components/ContentSection';
@@ -15,15 +16,18 @@ import axios from '../utils/axiosConfig';
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const userRole = getUserRole();
+  const [showLoginSuccess, setShowLoginSuccess] = useState(false);
   
-  // Debug: Check what's in localStorage
   useEffect(() => {
-    console.log('=== HomePage Debug ===');
-    console.log('userRole:', userRole);
-    console.log('auth_token:', localStorage.getItem('auth_token'));
-    console.log('user_role:', localStorage.getItem('user_role'));
-  }, [userRole]);
+    if (location.state?.fromLogin) {
+      setShowLoginSuccess(true);
+      setTimeout(() => setShowLoginSuccess(false), 3000);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
+
   const [newsArticles, setNewsArticles] = useState([]);
   const [literaryArticles, setLiteraryArticles] = useState([]);
   const [specialsArticles, setSpecialsArticles] = useState([]);
@@ -71,6 +75,12 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      {showLoginSuccess && (
+        <div className="fixed top-20 right-4 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg animate-fade-in">
+          <p className="font-semibold">Login successful!</p>
+          <p className="text-sm">Welcome back to La Verdad Herald</p>
+        </div>
+      )}
       <Header />
       <Navigation />
 
