@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 use Illuminate\Support\Facades\Notification;
@@ -67,26 +68,30 @@ class AuthenticationTest extends TestCase
 
     public function test_user_can_register_with_valid_data()
     {
-        Notification::fake();
+        Http::fake([
+            'api.brevo.com/*' => Http::response(null, 200)
+        ]);
 
         $userData = [
             'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'Password123',
-            'password_confirmation' => 'Password123',
+            'email' => 'test@student.laverdad.edu.ph',
+            'password' => 'Password@123',
+            'password_confirmation' => 'Password@123',
         ];
 
         $response = $this->postJson('/api/register', $userData);
 
         $response->assertStatus(201)
-            ->assertJson(['message' => 'Registration successful. You can now log in.']);
+            ->assertJson(['message' => 'Registration successful! Please verify your email before logging in.']);
 
         $this->assertDatabaseHas('users', [
-            'email' => 'test@example.com',
+            'email' => 'test@student.laverdad.edu.ph',
         ]);
 
-        $user = User::where('email', 'test@example.com')->first();
-        Notification::assertSentTo($user, VerifyEmail::class);
+        Http::assertSent(function ($request) {
+            return $request->url() == 'https://api.brevo.com/v3/smtp/email' &&
+                   $request['to'][0]['email'] == 'test@student.laverdad.edu.ph';
+        });
     }
 
     public function test_user_cannot_register_with_invalid_data()
@@ -146,5 +151,53 @@ class AuthenticationTest extends TestCase
         $response = $this->getJson('/api/user');
 
         $response->assertStatus(401);
+    }
+
+    public function test_email_verification_flow()
+    {
+        Http::fake([
+            'api.brevo.com/*' => Http::response(null, 200)
+        ]);
+
+        $userData = [
+            'name' => 'Test User',
+            'email' => 'test@student.laverdad.edu.ph',
+            'password' => 'Password@123',
+            'password_confirmation' => 'Password@123',
+        ];
+
+        // 1. Register user
+        $response = $this->postJson('/api/register', $userData);
+        $response->assertStatus(201);
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@student.laverdad.edu.ph',
+        ]);
+        
+        $user = User::where('email', 'test@student.laverdad.edu.ph')->first();
+        $this->assertNull($user->email_verified_at);
+
+        // 2. Capture verification URL
+        $verificationUrl = '';
+        Http::assertSent(function ($request) use (&$verificationUrl) {
+            $data = $request->data();
+            // This is a bit brittle, but we need to get the URL from the email body
+            preg_match('/href="([^"]+)"/', $data['htmlContent'], $matches);
+            if (isset($matches[1])) {
+                $verificationUrl = $matches[1];
+            }
+            return true;
+        });
+
+        $this->assertNotEmpty($verificationUrl);
+
+        // 3. Visit verification URL
+        $response = $this->get($verificationUrl);
+
+        // 4. Assert user is verified and redirected
+        $response->assertStatus(302); // Redirect status
+        $user->refresh();
+        $this->assertNotNull($user->email_verified_at);
+        $response->assertRedirect(env('APP_FRONTEND_URL') . '/dashboard');
     }
 }

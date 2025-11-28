@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Events\Verified;
 
 class AuthenticationController extends Controller
 {
@@ -38,24 +39,30 @@ class AuthenticationController extends Controller
             'password.regex' => 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
         ]);
 
-        // Check if email exists with unverified account
-        $existingUser = User::where('email', $request->email)->first();
-        if ($existingUser) {
-            if ($existingUser->hasVerifiedEmail()) {
-                return response()->json([
-                    'message' => 'The email has already been taken.',
-                    'errors' => ['email' => ['The email has already been taken.']]
-                ], 422);
-            }
-            // Delete unverified account to allow re-registration
-            $existingUser->delete();
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && $user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'The email has already been taken.',
+                'errors' => ['email' => ['The email has already been taken.']]
+            ], 422);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+        if ($user && !$user->hasVerifiedEmail()) {
+            // Update user details and resend verification email
+            $user->fill([
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+            ]);
+            $user->save();
+        } else {
+            // Create a new user
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+        }
 
         $signedUrl = URL::temporarySignedRoute(
             'verification.verify',
@@ -91,6 +98,8 @@ class AuthenticationController extends Controller
         }
 
         $user->markEmailAsVerified();
+
+        event(new Verified($user));
 
         return redirect(env('APP_FRONTEND_URL') . '/dashboard');
     }
@@ -225,3 +234,9 @@ class AuthenticationController extends Controller
         return response()->json(['message' => 'Invalid or expired token. Please request a new password reset link.'], 400);
     }
 }
+
+
+
+
+
+
