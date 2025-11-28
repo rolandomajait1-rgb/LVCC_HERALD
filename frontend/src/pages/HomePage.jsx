@@ -74,9 +74,9 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
+    <div className="flex flex-col min-h-screen bg-gray-100 gap-4 ">
       {showLoginSuccess && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg animate-fade-in">
+        <div className="fixed top-6 right-24 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg animate-fade-in">
           <p className="font-semibold">Login successful!</p>
           <p className="text-sm">Welcome back to La Verdad Herald</p>
         </div>

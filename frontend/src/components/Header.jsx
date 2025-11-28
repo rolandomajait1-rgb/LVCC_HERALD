@@ -22,9 +22,10 @@ function Header() {
 
   return (
     <header
-      className="flex w-full items-center px-4 md:px-8 py-4 md:py-6 bg-cover bg-right"
+      className="flex w-full items-center px-4 md:px-8 py-4 md:py-6 bg-cover"
       style={{
-        backgroundImage: `linear-gradient(to right, #2a5a82 20%, rgba(42,90,130,0.2)), url('/header.png')`
+        backgroundImage: `linear-gradient(to left, rgba(42,90,130,0.2), #2a5a82 80%), url('/header.png')`,
+        backgroundPosition: 'right center'
       }}
     >
 
