@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
+import ForgotPasswordModal from './ForgotPasswordModal';
 
 export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '', remember: false });
@@ -8,6 +9,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
 
   if (!isOpen) return null;
@@ -65,7 +67,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
             {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email[0]}</p>}
           </div>
 
-          <div className="mb-6">
+          <div className="mb-4">
             <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700 text-left">Password</label>
             <div className="relative">
               <input type={showPassword ? 'text' : 'password'} id="password" name="password" value={formData.password} onChange={handleChange} required placeholder='Enter your Password' autoComplete="current-password" className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
@@ -80,6 +82,16 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
             {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password[0]}</p>}
           </div>
 
+          <div className="mb-6 flex items-center justify-between">
+            <label className="flex items-center">
+              <input type="checkbox" name="remember" checked={formData.remember} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+              <span className="ml-2 text-sm text-gray-600">Remember me</span>
+            </label>
+            <button type="button" onClick={() => setShowForgotPassword(true)} className="text-sm text-blue-600 hover:text-blue-500">
+              Forgot password?
+            </button>
+          </div>
+
           {errors.general && <p className="mt-1 text-xs text-red-500">{errors.general}</p>}
           {successMessage && <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md"><p className="text-sm text-green-800 text-center">{successMessage}</p></div>}
 
@@ -92,6 +104,8 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           <p className="text-sm text-gray-600">Don't have an account? <button onClick={onSwitchToRegister} className="text-blue-600 hover:text-blue-500">Sign up</button></p>
         </div>
       </div>
+
+      <ForgotPasswordModal isOpen={showForgotPassword} onClose={() => setShowForgotPassword(false)} />
     </div>
   );
 }

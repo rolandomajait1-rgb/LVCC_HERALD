@@ -315,4 +315,32 @@ class BrevoMailer
 
         return $response->successful();
     }
+
+    public function sendEmail($toEmail, $subject, $htmlContent)
+    {
+        $apiKey = env('BREVO_API_KEY');
+        
+        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::timeout(30);
+        
+        $response = $http->withHeaders([
+            'api-key' => $apiKey,
+            'Content-Type' => 'application/json'
+        ])->post('https://api.brevo.com/v3/smtp/email', [
+            'sender' => ['name' => 'La Verdad Herald', 'email' => 'rolandomajait1@gmail.com'],
+            'to' => [['email' => $toEmail]],
+            'subject' => $subject,
+            'htmlContent' => $htmlContent,
+        ]);
+
+        if (!$response->successful()) {
+            Log::error('Brevo email failed', [
+                'email' => $toEmail,
+                'subject' => $subject,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+        }
+
+        return $response->successful();
+    }
 }
