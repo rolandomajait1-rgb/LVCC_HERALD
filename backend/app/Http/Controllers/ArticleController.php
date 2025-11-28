@@ -78,7 +78,10 @@ class ArticleController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('featured_image')) {
-            $imagePath = $request->file('featured_image')->store('articles', 'public');
+            $image = $request->file('featured_image');
+            $imageData = base64_encode(file_get_contents($image->getRealPath()));
+            $mimeType = $image->getMimeType();
+            $imagePath = 'data:' . $mimeType . ';base64,' . $imageData;
         }
 
         $status = $request->get('status', 'published');
@@ -165,7 +168,10 @@ class ArticleController extends Controller
         }
 
         if ($request->hasFile('featured_image')) {
-            $data['featured_image'] = $request->file('featured_image')->store('articles', 'public');
+            $image = $request->file('featured_image');
+            $imageData = base64_encode(file_get_contents($image->getRealPath()));
+            $mimeType = $image->getMimeType();
+            $data['featured_image'] = 'data:' . $mimeType . ';base64,' . $imageData;
         }
 
         $article->update($data);

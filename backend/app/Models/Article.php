@@ -33,6 +33,15 @@ class Article extends Model
     public function getFeaturedImageUrlAttribute()
     {
         if (isset($this->attributes['featured_image']) && $this->attributes['featured_image']) {
+            // If it's base64 data URI, return as-is
+            if (str_starts_with($this->attributes['featured_image'], 'data:')) {
+                return $this->attributes['featured_image'];
+            }
+            // If it's a full URL, return as-is
+            if (filter_var($this->attributes['featured_image'], FILTER_VALIDATE_URL)) {
+                return $this->attributes['featured_image'];
+            }
+            // Otherwise, use local storage URL
             return \Illuminate\Support\Facades\Storage::url($this->attributes['featured_image']);
         }
         return null;
