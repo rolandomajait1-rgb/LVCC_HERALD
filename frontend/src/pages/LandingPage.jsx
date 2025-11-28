@@ -19,11 +19,14 @@ function LandingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [showVerified, setShowVerified] = useState(false);
 
   useEffect(() => {
     if (searchParams.get('verified') === 'true') {
+      setShowVerified(true);
       setIsLoginOpen(true);
       setSearchParams({});
+      setTimeout(() => setShowVerified(false), 5000);
     }
   }, [searchParams, setSearchParams]);
 
@@ -36,6 +39,13 @@ function LandingPage() {
 
   return (
     <>
+      {showVerified && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg">
+          <p className="font-semibold">Thank you for confirming your email!</p>
+          <p className="text-sm">You can now log in to your account.</p>
+        </div>
+      )}
+
       <section
         className="flex min-h-screen flex-col items-center justify-center text-white"
         style={heroStyle}
