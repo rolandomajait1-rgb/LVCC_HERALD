@@ -53,6 +53,22 @@ function AnimatedRoutes() {
         <Route
           path="/"
           element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <HomePage />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/landing"
+          element={
             <motion.div
               initial="initial"
               animate="in"
@@ -241,15 +257,17 @@ function AnimatedRoutes() {
         <Route
           path="/about"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <About />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <About />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
 
@@ -396,29 +414,33 @@ function AnimatedRoutes() {
         <Route
           path="/contact"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <ContactUs />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ContactUs />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/membership-form"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <MembershipForm />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <MembershipForm />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route
@@ -456,29 +478,33 @@ function AnimatedRoutes() {
         <Route
           path="/tag/:tag"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <TagSearchResults />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <TagSearchResults />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route
           path="/author/:authorName"
           element={
-            <motion.div
-              initial="initial"
-              animate="in"
-              exit="out"
-              variants={pageVariants}
-              transition={pageTransition}
-            >
-              <AuthorProfile />
-            </motion.div>
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AuthorProfile />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route

@@ -3,7 +3,7 @@ import { getAuthToken } from '../utils/auth';
 
 const ProtectedRoute = ({ children }) => {
   if (!getAuthToken()) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/landing" replace />;
   }
   return children;
 };
