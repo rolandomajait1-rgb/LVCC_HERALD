@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import LoginButton from '../components/LoginButton';
 import SignUpButton from '../components/SignUpButton';
 import LoginModal from '../components/LoginModal';
@@ -15,8 +16,16 @@ import LatestArticleCard from '../components/LatestArticleCard';
 
 // The main landing page component
 function LandingPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.get('verified') === 'true') {
+      setIsLoginOpen(true);
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   // Define the hero background style object
   const heroStyle = {
