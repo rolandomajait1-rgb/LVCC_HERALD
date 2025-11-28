@@ -24,7 +24,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
       const response = await axios.post('/api/register', { name: formData.name, email: formData.email, password: formData.password, password_confirmation: formData.password_confirmation });
       console.log('Registration successful:', response.data);
       setSuccess(true);
-      setTimeout(() => { onClose(); navigate('/login'); }, 3000);
+      setTimeout(() => { onClose(); onSwitchToLogin(); }, 3000);
     } catch (error) {
       console.error('Registration error:', error.response?.data);
       if (error.response?.data?.errors) setErrors(error.response.data.errors);
@@ -45,7 +45,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
           </button>
         </div>
 
-        {success && <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">Registration successful! You can now log in. Redirecting...</div>}
+        {success && <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"><p className="font-semibold">Registration successful!</p><p className="text-sm mt-1">Please check your email for a verification link. You must verify your email before logging in.</p></div>}
         {errors.general && <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">{errors.general}</div>}
 
         <form onSubmit={handleSubmit}>
