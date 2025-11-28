@@ -138,7 +138,7 @@ class BrevoMailer
         </html>
         ";
 
-        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::withoutVerifying();
+        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::timeout(30);
         
         $response = $http->withHeaders([
             'api-key' => $apiKey,
@@ -284,7 +284,7 @@ class BrevoMailer
         </html>
         ";
 
-        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::withoutVerifying();
+        $http = env('APP_ENV') === 'local' ? Http::withOptions(['verify' => false]) : Http::timeout(30);
         
         $response = $http->withHeaders([
             'api-key' => $apiKey,
