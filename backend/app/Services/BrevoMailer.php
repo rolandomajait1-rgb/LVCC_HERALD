@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class BrevoMailer
 {
@@ -156,6 +157,14 @@ class BrevoMailer
             'htmlContent' => $htmlContent,
         ]);
 
+        if (!$response->successful()) {
+            Log::error('Brevo password reset email failed', [
+                'email' => $email,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+        }
+
         return $response->successful();
     }
     public static function sendVerificationLink($email, $verificationUrl)
@@ -295,6 +304,14 @@ class BrevoMailer
             'subject' => 'Verify Your Email',
             'htmlContent' => $htmlContent,
         ]);
+
+        if (!$response->successful()) {
+            Log::error('Brevo verification email failed', [
+                'email' => $email,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+        }
 
         return $response->successful();
     }
