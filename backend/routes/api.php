@@ -17,6 +17,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SetupController;
 
 // Team Members Routes
 Route::get('/team-members', [TeamMemberController::class, 'index']);
@@ -61,6 +62,9 @@ Route::get('/articles/id/{id}', [ArticleController::class, 'showById']);
 Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
 Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
 Route::get('/latest-articles', [ArticleController::class, 'latest']);
+Route::post('/setup/seed-categories', [SetupController::class, 'seedCategories']);
+Route::post('/setup/run-migrations', [SetupController::class, 'runMigrations']);
+Route::post('/setup/clear-cache', [SetupController::class, 'clearCache']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
 
 // Protected article routes
