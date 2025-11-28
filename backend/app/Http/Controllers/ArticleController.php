@@ -64,13 +64,17 @@ class ArticleController extends Controller
     {
         $validated = $request->validated();
 
-        // Admin creates articles and assigns to authors
+        // Admin/Moderator creates articles
         $user = Auth::user();
-        if (!$user || !$user->isAdmin()) {
-            return response()->json(['error' => 'Admin access required'], 403);
+        if (!$user || (!$user->isAdmin() && !$user->isModerator())) {
+            return response()->json(['error' => 'Admin or Moderator access required'], 403);
         }
 
-        $author = Author::where('name', $validated['author'])->first();
+        // Find or create author by name
+        $author = Author::firstOrCreate(
+            ['name' => $validated['author_name']],
+            ['user_id' => $user->id]
+        );
 
         $imagePath = null;
         if ($request->hasFile('featured_image')) {
@@ -84,12 +88,11 @@ class ArticleController extends Controller
             'author_id' => $author->id,
             'status' => $status,
             'published_at' => $status === 'published' ? now() : null,
-            'excerpt' => Str::limit($validated['content'], 150),
+            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
             'featured_image' => $imagePath,
         ]);
 
-        $category = Category::firstOrCreate(['name' => $validated['category']]);
-        $article->categories()->attach($category->id);
+        $article->categories()->attach($validated['category_id']);
 
         if (!empty($validated['tags'])) {
             $tagIds = [];
@@ -136,7 +139,10 @@ class ArticleController extends Controller
         $this->authorize('update', $article);
 
         // Find or create author by name
-        $author = Author::firstOrCreate(['name' => $validated['author']], ['user_id' => Auth::id()]);
+        $author = Author::firstOrCreate(
+            ['name' => $validated['author_name']], 
+            ['user_id' => Auth::id()]
+        );
 
         // Keep the original slug to maintain URL consistency
         $slug = $article->slug;
@@ -147,7 +153,7 @@ class ArticleController extends Controller
             'content' => $validated['content'],
             'author_id' => $author->id,
             'slug' => $slug,
-            'excerpt' => Str::limit($validated['content'], 150),
+            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
         ];
         
         // Handle status update
@@ -165,9 +171,8 @@ class ArticleController extends Controller
         $article->update($data);
 
         // Handle category
-        if ($request->category) {
-            $category = Category::firstOrCreate(['name' => $request->category]);
-            $article->categories()->sync([$category->id]);
+        if ($request->has('category_id')) {
+            $article->categories()->sync([$validated['category_id']]);
         }
 
         // Handle tags

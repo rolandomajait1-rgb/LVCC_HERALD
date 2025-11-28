@@ -73,7 +73,7 @@ export default function ManageModerators() {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
       <Navigation/>
-      <div className="relative h-15 flex items-center justify-center bg-linear-to-b from-blue-600 to-blue-800">
+      <div className="relative h-20 flex items-center justify-center bg-gradient-to-b from-blue-600 to-blue-800">
         <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
           {getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard'}
         </h1>
@@ -85,7 +85,7 @@ export default function ManageModerators() {
           return <AdminSidebar links={filtered} />;
         })()}
 
-        <main className="flex-1 bg-white relative overflow-y-auto">
+        <main className="flex-1 bg-white relative h-[calc(100vh-180px)] overflow-y-auto">
           <div className="p-8">
             <h2 className="text-3xl font-serif font-bold text-black mb-6">
               Moderators

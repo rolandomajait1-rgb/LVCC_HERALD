@@ -155,7 +155,7 @@ export default function DraftArticles() {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
       <Navigation />
-      <div className={`relative h-15 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
+      <div className={`relative h-20 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
         <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
           {getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard'}
         </h1>
@@ -167,7 +167,7 @@ export default function DraftArticles() {
           return <AdminSidebar links={filtered} />;
         })()}
 
-        <div className="flex flex-col h-full bg-gray-50">
+        <div className="flex flex-col h-[calc(100vh-180px)] overflow-y-auto bg-gray-50">
           <div className="p-8 flex flex-col flex-1">
             <div className="flex items-center gap-4 mb-6">
               <h1 className="text-4xl font-serif font-bold text-black">Drafts</h1>

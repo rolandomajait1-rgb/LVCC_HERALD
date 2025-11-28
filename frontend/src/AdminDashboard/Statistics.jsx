@@ -70,7 +70,7 @@ export default function Statistics({ onResetData }) {
       <Header />
       <HeaderLink />
       
-      <div className={`relative h-15 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
+      <div className={`relative h-20 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
         <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
           {getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard'}
         </h1>
@@ -81,7 +81,7 @@ export default function Statistics({ onResetData }) {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />;
         })()}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8">
+        <div className="flex-1 p-4 md:p-8 h-[calc(100vh-180px)] overflow-y-auto">
           <div className="max-w-6xl mx-auto">
             <div className="bg-white p-4 md:p-8 rounded-lg shadow-lg border border-gray-200">
           {error && (
@@ -127,7 +127,7 @@ export default function Statistics({ onResetData }) {
             Recent Activity
           </h4>
 
-          <div className="overflow-x-auto -mx-4 md:mx-0">
+          <div className="overflow-x-auto -mx-4 md:mx-0 max-h-[400px] overflow-y-auto">
             <table className="w-full border-collapse border border-gray-300 mt-4">
               <thead>
                 <tr>

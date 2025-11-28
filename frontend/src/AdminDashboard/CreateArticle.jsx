@@ -193,7 +193,7 @@ export default function CreateArticle() {
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
       <Navigation/>
-      <div className={`relative h-15 flex items-center justify-center ${isMod ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
+      <div className={`relative h-20 flex items-center justify-center ${isMod ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
         <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
           {dashboardTitle}
         </h1>
@@ -205,7 +205,7 @@ export default function CreateArticle() {
           return <AdminSidebar links={filtered} />; 
         })()}
 
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 h-[calc(100vh-180px)] overflow-y-auto p-8">
           <div className="max-w-6xl mx-auto text-left">
             <div className="mb-6">
               <h2 className="text-2xl font-semibold">
