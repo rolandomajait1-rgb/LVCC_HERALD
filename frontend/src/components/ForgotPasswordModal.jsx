@@ -9,6 +9,13 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    setEmail('');
+    setMessage('');
+    setError('');
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -17,8 +24,10 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
 
     try {
       await axios.post('/api/forgot-password', { email });
-      setMessage('Password reset link has been sent to your email address.');
-      setEmail('');
+      setMessage('Password reset link has been sent to your email address. Please check your inbox.');
+      setTimeout(() => {
+        handleClose();
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
     } finally {
@@ -27,18 +36,18 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4" onClick={handleClose}>
       <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl md:text-4xl font-serif text-gray-800">Forgot Password</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-800">Forgot Password?</h2>
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <p className="text-sm text-gray-600 mb-6">Enter your email address and we'll send you a link to reset your password.</p>
+        <p className="text-sm text-gray-600 mb-6">No worries! Enter your email address and we'll send you a link to reset your password.</p>
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -68,10 +77,22 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading || message}
+            className="w-full rounded-2xl bg-cyan-700 px-4 py-3 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Sending...
+              </span>
+            ) : message ? (
+              'Email Sent!'
+            ) : (
+              'Send Reset Link'
+            )}
           </button>
         </form>
       </div>

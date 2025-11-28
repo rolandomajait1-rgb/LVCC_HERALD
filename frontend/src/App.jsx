@@ -15,6 +15,7 @@ import ArticlePage from './AdminDashboard/ArticlePage';
 import EditArticle from './AdminDashboard/EditArticle';
 
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import About from './pages/About';
 import News from './categories/News';
 import Literary from './categories/Literary';
@@ -263,6 +264,20 @@ function AnimatedRoutes() {
               transition={pageTransition}
             >
               <ForgotPasswordPage />
+            </motion.div>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <motion.div
+              initial="initial"
+              animate="in"
+              exit="out"
+              variants={pageVariants}
+              transition={pageTransition}
+            >
+              <ResetPasswordPage />
             </motion.div>
           }
         />
