@@ -80,10 +80,10 @@ class ArticleController extends Controller
             $imagePath = null;
             if ($request->hasFile('featured_image')) {
                 try {
-                    $uploadedFile = cloudinary()->upload($request->file('featured_image')->getRealPath(), [
+                    $uploadedFile = cloudinary()->uploadApi()->upload($request->file('featured_image')->getRealPath(), [
                         'folder' => 'laverdad-herald/articles'
                     ]);
-                    $imagePath = $uploadedFile->getSecurePath();
+                    $imagePath = $uploadedFile['secure_url'];
                 } catch (\Exception $e) {
                     Log::error('Cloudinary upload failed: ' . $e->getMessage());
                     $image = $request->file('featured_image');
@@ -183,12 +183,12 @@ class ArticleController extends Controller
 
         if ($request->hasFile('featured_image')) {
             try {
-                $uploadedFile = cloudinary()->upload($request->file('featured_image')->getRealPath(), [
+                $uploadedFile = cloudinary()->uploadApi()->upload($request->file('featured_image')->getRealPath(), [
                     'folder' => 'laverdad-herald/articles'
                 ]);
-                $data['featured_image'] = $uploadedFile->getSecurePath();
+                $data['featured_image'] = $uploadedFile['secure_url'];
             } catch (\Exception $e) {
-                Log::error('Cloudinary upload failed: ' . (string)$e);
+                Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 $image = $request->file('featured_image');
                 $imageData = base64_encode(file_get_contents($image->getRealPath()));
                 $mimeType = $image->getMimeType();
