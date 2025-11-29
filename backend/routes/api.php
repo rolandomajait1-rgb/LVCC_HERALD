@@ -72,6 +72,7 @@ Route::post('/setup/run-migrations', [SetupController::class, 'runMigrations']);
 Route::post('/setup/clear-cache', [SetupController::class, 'clearCache']);
 Route::post('/setup/fix-article-category', [SetupController::class, 'fixArticleCategory']);
 Route::post('/setup/remove-business-category', [SetupController::class, 'removeBusinessCategory']);
+Route::get('/setup/check-database', [SetupController::class, 'checkDatabase']);
 Route::post('/setup/update-user-role', [SetupController::class, 'updateUserRole']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
 

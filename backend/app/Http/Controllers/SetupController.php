@@ -111,6 +111,30 @@ class SetupController extends Controller
         }
     }
 
+    public function checkDatabase()
+    {
+        try {
+            $articles = \App\Models\Article::select('id', 'title', 'slug', 'status', 'featured_image')->get();
+            $categories = Category::all();
+            $users = \App\Models\User::count();
+            
+            return response()->json([
+                'success' => true,
+                'database' => config('database.default'),
+                'connection' => config('database.connections.pgsql.host'),
+                'articles_count' => $articles->count(),
+                'articles' => $articles,
+                'categories' => $categories,
+                'users_count' => $users
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function removeBusinessCategory()
     {
         try {
