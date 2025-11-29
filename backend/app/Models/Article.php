@@ -70,11 +70,7 @@ class Article extends Model
         parent::boot();
 
         static::creating(function ($article) {
-            $article->slug = $article->generateUniqueSlug($article->title);
-        });
-
-        static::updating(function ($article) {
-            if ($article->isDirty('title')) {
+            if (empty($article->slug)) {
                 $article->slug = $article->generateUniqueSlug($article->title);
             }
         });
