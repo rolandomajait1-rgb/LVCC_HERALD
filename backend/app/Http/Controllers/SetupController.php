@@ -70,4 +70,24 @@ class SetupController extends Controller
             ], 500);
         }
     }
+
+    public function fixArticleCategory(Request $request)
+    {
+        try {
+            $article = \App\Models\Article::where('slug', $request->slug)->firstOrFail();
+            $category = Category::where('name', $request->category)->firstOrFail();
+            $article->categories()->sync([$category->id]);
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Article category updated',
+                'article' => $article->load('categories')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
