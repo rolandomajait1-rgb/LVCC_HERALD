@@ -90,4 +90,50 @@ class SetupController extends Controller
             ], 500);
         }
     }
+
+    public function updateUserRole(Request $request)
+    {
+        try {
+            $user = \App\Models\User::where('email', $request->email)->firstOrFail();
+            $user->role = $request->role;
+            $user->save();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'User role updated',
+                'user' => $user
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function removeBusinessCategory()
+    {
+        try {
+            $business = Category::where('name', 'Business')->first();
+            if ($business) {
+                $literary = Category::where('name', 'Literary')->first();
+                if ($literary) {
+                    \Illuminate\Support\Facades\DB::table('article_category')
+                        ->where('category_id', $business->id)
+                        ->update(['category_id' => $literary->id]);
+                }
+                $business->delete();
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Business category removed and articles moved to Literary'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -71,6 +71,8 @@ Route::post('/setup/seed-categories', [SetupController::class, 'seedCategories']
 Route::post('/setup/run-migrations', [SetupController::class, 'runMigrations']);
 Route::post('/setup/clear-cache', [SetupController::class, 'clearCache']);
 Route::post('/setup/fix-article-category', [SetupController::class, 'fixArticleCategory']);
+Route::post('/setup/remove-business-category', [SetupController::class, 'removeBusinessCategory']);
+Route::post('/setup/update-user-role', [SetupController::class, 'updateUserRole']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
 
 // Protected article routes
