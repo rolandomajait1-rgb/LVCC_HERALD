@@ -117,7 +117,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
@@ -142,7 +142,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
@@ -167,7 +167,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
@@ -192,7 +192,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
@@ -217,7 +217,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
@@ -242,7 +242,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Features'}
@@ -267,7 +267,7 @@ export default function HomePage() {
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
+                  imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Sports'}

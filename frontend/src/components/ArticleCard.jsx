@@ -32,10 +32,12 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   }, []);
 
   // Handle both prop formats for backward compatibility
-  const finalImageUrl = imageUrl || 
-    (featured_image ? 
-      getFullUrl(featured_image)
-      : 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image');
+  const finalImageUrl = (() => {
+    const img = imageUrl || featured_image;
+    if (!img) return 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image';
+    if (img.includes('/storage/')) return 'https://via.placeholder.com/300x200/e2e8f0/64748b?text=No+Image';
+    return imageUrl || getFullUrl(featured_image);
+  })();
   const finalCategory = category || (categories && categories.length > 0 ? categories[0].name : 'Uncategorized');
   const finalDate = date || (published_at ? new Date(published_at).toLocaleDateString('en-US', {
     year: 'numeric',
