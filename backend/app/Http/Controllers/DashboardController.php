@@ -26,11 +26,7 @@ class DashboardController extends Controller
             'drafts' => $drafts,
             'views' => $views,
             'likes' => $likes
-        ])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        ]);
     }
 
     public function recentActivity(Request $request)
@@ -52,11 +48,7 @@ class DashboardController extends Controller
             ];
         }
 
-        return response()->json($activities)
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json($activities);
     }
 
     public function adminStats(Request $request)
@@ -74,10 +66,6 @@ class DashboardController extends Controller
             'totalUsers' => $totalUsers,
             'totalViews' => $totalViews,
             'recentArticles' => $recentArticles
-        ])
-            ->header('Access-Control-Allow-Origin', 'http://localhost:5173')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        ]);
     }
 }
