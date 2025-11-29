@@ -27,23 +27,6 @@ class Article extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
-
-    public function getFeaturedImageAttribute($value)
-    {
-        if ($value) {
-            // If it's base64 data URI, return as-is
-            if (str_starts_with($value, 'data:')) {
-                return $value;
-            }
-            // If it's a full URL (Cloudinary), return as-is
-            if (filter_var($value, FILTER_VALIDATE_URL)) {
-                return $value;
-            }
-            // Otherwise, use local storage URL
-            return \Illuminate\Support\Facades\Storage::url($value);
-        }
-        return null;
-    }
     
 
 

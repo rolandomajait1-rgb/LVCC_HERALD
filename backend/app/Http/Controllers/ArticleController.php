@@ -62,61 +62,66 @@ class ArticleController extends Controller
 
     public function store(ArticleRequest $request)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        // Admin/Moderator creates articles
-        $user = Auth::user();
-        if (!$user || (!$user->isAdmin() && !$user->isModerator())) {
-            return response()->json(['error' => 'Admin or Moderator access required'], 403);
-        }
-
-        // Find or create author by name
-        $author = Author::firstOrCreate(
-            ['name' => $validated['author_name']],
-            ['user_id' => $user->id]
-        );
-
-        $imagePath = null;
-        if ($request->hasFile('featured_image')) {
-            try {
-                $uploadedFile = cloudinary()->upload($request->file('featured_image')->getRealPath(), [
-                    'folder' => 'laverdad-herald/articles'
-                ]);
-                $imagePath = $uploadedFile->getSecurePath();
-            } catch (\Exception $e) {
-                Log::error('Cloudinary upload failed: ' . (string)$e);
-                $image = $request->file('featured_image');
-                $imageData = base64_encode(file_get_contents($image->getRealPath()));
-                $mimeType = $image->getMimeType();
-                $imagePath = 'data:' . $mimeType . ';base64,' . $imageData;
+            // Admin/Moderator creates articles
+            $user = Auth::user();
+            if (!$user || (!$user->isAdmin() && !$user->isModerator())) {
+                return response()->json(['error' => 'Admin or Moderator access required'], 403);
             }
-        }
 
-        $status = $request->get('status', 'published');
-        $article = Article::create([
-            'title' => $validated['title'],
-            'slug' => Str::slug($validated['title']),
-            'content' => $validated['content'],
-            'author_id' => $author->id,
-            'status' => $status,
-            'published_at' => $status === 'published' ? now() : null,
-            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
-            'featured_image' => $imagePath,
-        ]);
+            // Find or create author by name
+            $author = Author::firstOrCreate(
+                ['name' => $validated['author_name']],
+                ['user_id' => $user->id]
+            );
 
-        $article->categories()->attach($validated['category_id']);
-
-        if (!empty($validated['tags'])) {
-            $tagIds = [];
-            $tags = explode(',', $validated['tags']);
-            foreach ($tags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => trim($tagName)]);
-                $tagIds[] = $tag->id;
+            $imagePath = null;
+            if ($request->hasFile('featured_image')) {
+                try {
+                    $uploadedFile = cloudinary()->upload($request->file('featured_image')->getRealPath(), [
+                        'folder' => 'laverdad-herald/articles'
+                    ]);
+                    $imagePath = $uploadedFile->getSecurePath();
+                } catch (\Exception $e) {
+                    Log::error('Cloudinary upload failed: ' . $e->getMessage());
+                    $image = $request->file('featured_image');
+                    $imageData = base64_encode(file_get_contents($image->getRealPath()));
+                    $mimeType = $image->getMimeType();
+                    $imagePath = 'data:' . $mimeType . ';base64,' . $imageData;
+                }
             }
-            $article->tags()->sync($tagIds);
-        }
 
-        return response()->json($article->load('author.user', 'categories', 'tags'), 201);
+            $status = $request->get('status', 'published');
+            $article = Article::create([
+                'title' => $validated['title'],
+                'slug' => Str::slug($validated['title']),
+                'content' => $validated['content'],
+                'author_id' => $author->id,
+                'status' => $status,
+                'published_at' => $status === 'published' ? now() : null,
+                'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+                'featured_image' => $imagePath,
+            ]);
+
+            $article->categories()->attach($validated['category_id']);
+
+            if (!empty($validated['tags'])) {
+                $tagIds = [];
+                $tags = explode(',', $validated['tags']);
+                foreach ($tags as $tagName) {
+                    $tag = Tag::firstOrCreate(['name' => trim($tagName)]);
+                    $tagIds[] = $tag->id;
+                }
+                $article->tags()->sync($tagIds);
+            }
+
+            return response()->json($article->load('author.user', 'categories', 'tags'), 201);
+        } catch (\Exception $e) {
+            Log::error('Article creation failed: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function show(Article $article)
