@@ -114,7 +114,7 @@ class SetupController extends Controller
     public function removeBusinessCategory()
     {
         try {
-            $business = Category::where('name', 'Business')->first();
+            $business = Category::where('name', 'Business')->orWhere('name', 'LIKE', '%business%')->first();
             if ($business) {
                 $literary = Category::where('name', 'Literary')->first();
                 if ($literary) {
@@ -123,11 +123,15 @@ class SetupController extends Controller
                         ->update(['category_id' => $literary->id]);
                 }
                 $business->delete();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Business category removed and articles moved to Literary'
+                ]);
             }
             
             return response()->json([
                 'success' => true,
-                'message' => 'Business category removed and articles moved to Literary'
+                'message' => 'No Business category found'
             ]);
         } catch (\Exception $e) {
             return response()->json([
