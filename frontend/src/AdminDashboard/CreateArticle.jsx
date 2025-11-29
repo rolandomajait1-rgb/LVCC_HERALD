@@ -108,19 +108,21 @@ export default function CreateArticle() {
         },
       });
 
-      if (response.status !== 201) {
-        const errorData = response.data;
-        console.error('API Error:', errorData);
-        throw new Error(errorData.message || 'Failed to save draft');
-      }
-
-      const result = response.data;
-      console.log('Draft saved:', result);
       alert("Draft saved successfully!");
       navigate('/admin/draft-articles');
     } catch (error) {
       console.error('Save draft error:', error);
-      alert(`Error: ${error.message}`);
+      let errorMessage = 'Failed to save draft';
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.errors) {
+        errorMessage = Object.values(error.response.data.errors).flat().join(', ');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      alert(`Error: ${errorMessage}`);
     } finally {
       setIsSavingDraft(false);
     }
@@ -155,26 +157,21 @@ export default function CreateArticle() {
         },
       });
 
-      if (response.status !== 201) {
-        let errorMessage = 'Failed to publish article';
-        try {
-          const errorData = response.data;
-          errorMessage = errorData.message || errorData.error || errorMessage;
-          if (errorData.errors) {
-            errorMessage = Object.values(errorData.errors).flat().join(', ');
-          }
-        } catch {
-          // silent
-        }
-        throw new Error(errorMessage);
-      }
-
-      await response.data;
       alert("Article published successfully!");
       navigate('/admin');
     } catch (error) {
       console.error('Publish error:', error);
-      alert(`Error: ${error.message}`);
+      let errorMessage = 'Failed to publish article';
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.response?.data?.errors) {
+        errorMessage = Object.values(error.response.data.errors).flat().join(', ');
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      alert(`Error: ${errorMessage}`);
     } finally {
       setIsPublishing(false);
     }
