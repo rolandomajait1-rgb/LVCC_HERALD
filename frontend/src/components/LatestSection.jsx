@@ -55,7 +55,7 @@ export default function LatestSection({ onEdit, onDelete }) {
   }
 
   const featuredArticle = latestArticles[0] ? {
-    imageUrl: latestArticles[0].featured_image || PLACEHOLDER_IMAGE,
+    imageUrl: (latestArticles[0].featured_image && !latestArticles[0].featured_image.includes('/storage/')) ? latestArticles[0].featured_image : PLACEHOLDER_IMAGE,
     category: latestArticles[0].categories && latestArticles[0].categories.length > 0 ? latestArticles[0].categories[0].name : 'Latest',
     date: new Date(latestArticles[0].published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + new Date(latestArticles[0].published_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
     title: latestArticles[0].title,
@@ -71,7 +71,7 @@ export default function LatestSection({ onEdit, onDelete }) {
   } : null;
 
   const sideArticles = latestArticles.slice(1, 3).map(article => ({
-    imageUrl: article.featured_image || PLACEHOLDER_IMAGE,
+    imageUrl: (article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE,
     category: article.categories && article.categories.length > 0 ? article.categories[0].name : 'Latest',
     date: new Date(article.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
     title: article.title,
