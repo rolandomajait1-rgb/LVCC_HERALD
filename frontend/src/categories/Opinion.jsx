@@ -280,7 +280,7 @@ export default function Opinion() {
                 {articles[0] && (
                   <ArticleCard
                     key={articles[0].id}
-                    imageUrl={articles[0].featured_image || 'https://via.placeholder.com/300x200?text=No+Image'}
+                    imageUrl={articles[0].featured_image || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E'}
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
                     category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Opinion'}
@@ -338,7 +338,7 @@ export default function Opinion() {
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}
-                      imageUrl={article.featured_image || 'https://via.placeholder.com/300x200?text=No+Image'}
+                      imageUrl={article.featured_image || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E'}
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}

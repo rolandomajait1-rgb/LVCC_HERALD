@@ -116,7 +116,7 @@ const AccountPage = () => {
             ...article,
             author: article.author?.user?.name || article.author?.name || 'Unknown',
             category: article.categories?.[0]?.name || 'Uncategorized',
-            image: article.featured_image_url || article.featured_image || 'https://via.placeholder.com/800x600',
+            image: article.featured_image_url || article.featured_image || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E',
             date: formatDate(article.published_at || article.created_at),
             excerpt: article.excerpt || article.content?.substring(0, 100) + '...' || ''
           };
