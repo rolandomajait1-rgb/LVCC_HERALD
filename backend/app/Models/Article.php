@@ -27,6 +27,23 @@ class Article extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
+
+    protected $appends = ['featured_image_url'];
+
+    public function getFeaturedImageUrlAttribute()
+    {
+        if (!$this->featured_image) {
+            return null;
+        }
+        
+        // If it's already a full URL (Cloudinary), return as is
+        if (str_starts_with($this->featured_image, 'http://') || str_starts_with($this->featured_image, 'https://')) {
+            return $this->featured_image;
+        }
+        
+        // If it's a local path, prepend the app URL
+        return url($this->featured_image);
+    }
     
 
 
