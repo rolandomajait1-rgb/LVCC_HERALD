@@ -14,13 +14,14 @@ const MembershipFormContent = () => {
     name: '',
     course: '',
     gender: '',
-    photoName: null,
     pubName: '',
     classifications: {},
+    otherClassification: '',
     pubOption: {},
+    otherPubOption: '',
     designations: {},
+    otherDesignation: '',
     specificPosition: '',
-    consentFormName: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -188,194 +189,156 @@ const MembershipFormContent = () => {
                 </div>
               </div>
 
-              <div className="mt-2">
-                <label className="block font-bold text-lg mb-1 text-gray-900">
-                  Upload Photo (1 x 1)
-                </label>
-                <div className="relative w-full">
-                    <div className={`w-full border border-gray-400 p-3 rounded-sm cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-3 ${formData.photoName ? 'bg-blue-50 border-blue-300' : ''}`}>
-                    <Upload className="w-5 h-5 text-gray-400" />
-                    <span className={`${formData.photoName ? 'text-blue-800 font-medium' : 'text-gray-400'}`}>
-                        {formData.photoName || "Click to upload image..."}
-                    </span>
-                    </div>
-                    <input 
-                        type="file"
-                        id="photo"
-                        name="photo"
-                        accept="image/*"
-                        onChange={(e) => handleFileChange(e, 'photoName')}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                    />
-                </div>
-              </div>
-
-              <div className="flex justify-end mt-10 pt-2">
-                <button 
-                  type="button"
-                  onClick={nextStep}
-                  className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
-                >
-                  Next <ChevronRight size={20} />
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-             <h2 className="text-3xl font-serif font-bold mb-6 text-black border-b border-gray-200 pb-2">
-              Publication Information
-            </h2>
-
-            <form className="space-y-6 font-sans text-gray-800" onSubmit={(e) => e.preventDefault()}>
-                
-                <div>
-                    <label className="block font-bold text-lg mb-1 text-gray-900">Publication Name:</label>
-                    <input 
-                        type="text"
-                        id="pubName"
-                        name="pubName"
-                        value={formData.pubName}
-                        onChange={(e) => handleInputChange('pubName', e.target.value)}
-                        placeholder="Enter text here..." 
-                        className="w-full border border-gray-400 p-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#265C79] focus:ring-1 focus:ring-[#265C79] rounded-sm"
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-bold text-lg mb-2 text-gray-900">Publication Classification</label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-4">
-                        {['Broadsheet', 'Tabloid', 'Magazine/Issue', 'Literary Folio', 'News Letter', 'Radio Production'].map((item) => (
-                            <label key={item} className="flex items-center gap-2 cursor-pointer">
-                                <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.classifications[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
-                                    {formData.classifications[item] && <Check size={12} color="white" />}
-                                </div>
-                                <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('classifications', item)} checked={!!formData.classifications[item]} />
-                                <span className="text-sm text-gray-800">{item}</span>
-                            </label>
-                        ))}
-                    </div>
-                    <div className="mt-2">
-                        <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
-                        <input 
-                            type="text" 
-                            placeholder="Enter text here..." 
-                            className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block font-bold text-lg mb-2 text-gray-900">Publishing Option</label>
-                    <div className="flex gap-8 mb-2">
-                        {['Print', 'Online'].map((item) => (
-                            <label key={item} className="flex items-center gap-2 cursor-pointer">
-                                <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.pubOption[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
-                                    {formData.pubOption[item] && <Check size={12} color="white" />}
-                                </div>
-                                <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('pubOption', item)} checked={!!formData.pubOption[item]} />
-                                <span className="text-sm text-gray-800">{item}</span>
-                            </label>
-                        ))}
-                    </div>
-                    <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
-                     <input 
-                        type="text" 
-                        placeholder="Enter text here..." 
-                        className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-bold text-lg mb-2 text-gray-900">Membership Designation</label>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-4">
-                         {[
-                             'Photojournalist Staff', 'Cartoonist Staff', 'Graphic Artist Staff',
-                             'Layout Artist Staff', 'Technical Staff', 'Multimedia Staff',
-                             'Writer Staff', 'Editorial Board Member', 'Newscaster',
-                             'Contributor/Researcher', 'Reporter'
-                         ].map((item) => (
-                            <label key={item} className="flex items-center gap-2 cursor-pointer">
-                                <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.designations[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
-                                    {formData.designations[item] && <Check size={12} color="white" />}
-                                </div>
-                                <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('designations', item)} checked={!!formData.designations[item]} />
-                                <span className="text-sm text-gray-800">{item}</span>
-                            </label>
-                        ))}
-                    </div>
-                    <div className="mt-2">
-                        <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
-                        <input 
-                            type="text" 
-                            placeholder="Enter text here..." 
-                            className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
-                        />
-                    </div>
-                </div>
-
-                <div>
-                    <label className="block font-bold text-lg mb-1 text-gray-900">Specific Position:</label>
-                    <input 
-                        type="text"
-                        id="specificPosition"
-                        name="specificPosition"
-                        value={formData.specificPosition}
-                        onChange={(e) => handleInputChange('specificPosition', e.target.value)}
-                        placeholder="Enter text here..." 
-                        className="w-full border border-gray-400 p-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#265C79] focus:ring-1 focus:ring-[#265C79] rounded-sm"
-                    />
-                </div>
-
-                 <div className="mt-2">
-                    <label className="block font-bold text-lg mb-1 text-gray-900">
-                      Upload Parental Consent Form
-                    </label>
-                    <div className="relative w-full">
-                        <div className={`w-full border border-gray-400 p-3 rounded-sm cursor-pointer hover:bg-gray-50 transition-colors flex items-center gap-3 ${formData.consentFormName ? 'bg-blue-50 border-blue-300' : ''}`}>
-                        <Upload className="w-5 h-5 text-gray-400" />
-                        <span className={`${formData.consentFormName ? 'text-blue-800 font-medium' : 'text-gray-400'}`}>
-                            {formData.consentFormName || "Click to upload file..."}
-                        </span>
+                            <div className="flex justify-end mt-10 pt-2">
+                              <button
+                                type="button"
+                                onClick={nextStep}
+                                className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                              >
+                                Next <ChevronRight size={20} />
+                              </button>
+                            </div>
+                          </form>
                         </div>
-                        <input 
-                            type="file"
-                            id="consentForm"
-                            name="consentForm"
-                            onChange={(e) => handleFileChange(e, 'consentFormName')}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                        />
+                      )}
+              
+                      {step === 2 && (
+                        <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+                           <h2 className="text-3xl font-serif font-bold mb-6 text-black border-b border-gray-200 pb-2">
+                            Publication Information
+                          </h2>
+              
+                          <form className="space-y-6 font-sans text-gray-800" onSubmit={(e) => e.preventDefault()}>
+              
+                              <div>
+                                  <label className="block font-bold text-lg mb-1 text-gray-900">Publication Name:</label>
+                                  <input
+                                      type="text"
+                                      id="pubName"
+                                      name="pubName"
+                                      value={formData.pubName}
+                                      onChange={(e) => handleInputChange('pubName', e.target.value)}
+                                      placeholder="Enter text here..."
+                                      className="w-full border border-gray-400 p-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#265C79] focus:ring-1 focus:ring-[#265C79] rounded-sm"
+                                  />
+                              </div>
+              
+                              <div>
+                                  <label className="block font-bold text-lg mb-2 text-gray-900">Publication Classification</label>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-4">
+                                      {['Broadsheet', 'Tabloid', 'Magazine/Issue', 'Literary Folio', 'News Letter', 'Radio Production'].map((item) => (
+                                          <label key={item} className="flex items-center gap-2 cursor-pointer">
+                                              <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.classifications[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
+                                                  {formData.classifications[item] && <Check size={12} color="white" />}
+                                              </div>
+                                              <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('classifications', item)} checked={!!formData.classifications[item]} />
+                                              <span className="text-sm text-gray-800">{item}</span>
+                                          </label>
+                                      ))}
+                                  </div>
+                                  <div className="mt-2">
+                                      <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
+                                      <input
+                                          type="text"
+                                          placeholder="Enter text here..."
+                                          value={formData.otherClassification}
+                                          onChange={(e) => handleInputChange('otherClassification', e.target.value)}
+                                          className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
+                                      />
+                                  </div>
+                              </div>
+              
+                              <div>
+                                  <label className="block font-bold text-lg mb-2 text-gray-900">Publishing Option</label>
+                                  <div className="flex gap-8 mb-2">
+                                      {['Print', 'Online'].map((item) => (
+                                          <label key={item} className="flex items-center gap-2 cursor-pointer">
+                                              <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.pubOption[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
+                                                  {formData.pubOption[item] && <Check size={12} color="white" />}
+                                              </div>
+                                              <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('pubOption', item)} checked={!!formData.pubOption[item]} />
+                                              <span className="text-sm text-gray-800">{item}</span>
+                                          </label>
+                                      ))}
+                                  </div>
+                                  <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
+                                   <input
+                                      type="text"
+                                      placeholder="Enter text here..."
+                                      value={formData.otherPubOption}
+                                      onChange={(e) => handleInputChange('otherPubOption', e.target.value)}
+                                      className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
+                                  />
+                              </div>
+              
+                              <div>
+                                  <label className="block font-bold text-lg mb-2 text-gray-900">Membership Designation</label>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-y-3 gap-x-4">
+                                       {[
+                                           'Photojournalist Staff', 'Cartoonist Staff', 'Graphic Artist Staff',
+                                           'Layout Artist Staff', 'Technical Staff', 'Multimedia Staff',
+                                           'Writer Staff', 'Editorial Board Member', 'Newscaster',
+                                           'Contributor/Researcher', 'Reporter'
+                                       ].map((item) => (
+                                          <label key={item} className="flex items-center gap-2 cursor-pointer">
+                                              <div className={`w-4 h-4 border border-gray-500 flex-shrink-0 flex items-center justify-center ${formData.designations[item] ? 'bg-[#265C79] border-[#265C79]' : 'bg-white'}`}>
+                                                  {formData.designations[item] && <Check size={12} color="white" />}
+                                              </div>
+                                              <input type="checkbox" className="hidden" onChange={() => handleCheckboxChange('designations', item)} checked={!!formData.designations[item]} />
+                                              <span className="text-sm text-gray-800">{item}</span>
+                                          </label>
+                                      ))}
+                                  </div>
+                                  <div className="mt-2">
+                                      <label className="text-sm text-gray-800 block mb-1">Others, please specify:</label>
+                                      <input
+                                          type="text"
+                                          placeholder="Enter text here..."
+                                          value={formData.otherDesignation}
+                                          onChange={(e) => handleInputChange('otherDesignation', e.target.value)}
+                                          className="w-full border border-gray-400 p-2 text-gray-700 rounded-sm focus:outline-none focus:border-[#265C79]"
+                                      />
+                                  </div>
+                              </div>
+              
+                              <div>
+                                  <label className="block font-bold text-lg mb-1 text-gray-900">Specific Position:</label>
+                                  <input
+                                      type="text"
+                                      id="specificPosition"
+                                      name="specificPosition"
+                                      value={formData.specificPosition}
+                                      onChange={(e) => handleInputChange('specificPosition', e.target.value)}
+                                      placeholder="Enter text here..."
+                                      className="w-full border border-gray-400 p-2.5 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#265C79] focus:ring-1 focus:ring-[#265C79] rounded-sm"
+                                  />
+                              </div>
+              
+                              <div className="flex justify-between mt-10 pt-4 border-t border-gray-100">
+                                  <button
+                                      type="button"
+                                      onClick={prevStep}
+                                      className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
+                                  >
+                                      <ChevronLeft size={20} /> Back
+                                  </button>
+              
+                                  <button
+                                      type="submit"
+                                      onClick={handleSubmit}
+                                      disabled={isSubmitting}
+                                      className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                  >
+                                      {isSubmitting ? 'Submitting...' : 'Submit'}
+                                  </button>
+                              </div>
+              
+                          </form>
+                        </div>
+                      )}
+              
                     </div>
-                </div>
-
-                <div className="flex justify-between mt-10 pt-4 border-t border-gray-100">
-                    <button 
-                        type="button"
-                        onClick={prevStep}
-                        className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md flex items-center gap-2"
-                    >
-                        <ChevronLeft size={20} /> Back
-                    </button>
-                    
-                    <button 
-                        type="submit"
-                        onClick={handleSubmit}
-                        disabled={isSubmitting}
-                        className="bg-[#265C79] hover:bg-[#1e4a61] text-white font-bold py-2.5 px-8 rounded text-lg transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? 'Submitting...' : 'Submit'}
-                    </button>
-                </div>
-
-            </form>
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
+                  </div>  );
 };
 
 export default function MembershipForm() {
