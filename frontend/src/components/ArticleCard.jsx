@@ -34,7 +34,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   // Handle both prop formats for backward compatibility
   const finalImageUrl = (() => {
     const img = imageUrl || featured_image;
-    if (!img) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E";
+    if (!img) return "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image";
     return getFullUrl(img);
   })();
   const finalCategory = category || (categories && categories.length > 0 ? categories[0].name : 'Uncategorized');
@@ -162,7 +162,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       {(horizontal) ? (
         <div className="flex flex-col sm:flex-row">
           <div className="sm:w-1/3 relative overflow-hidden">
-            <img src={finalImageUrl} alt={title} className={`w-full h-48 sm:h-full object-cover`} onError={(e) => { e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E"; }} />
+            <img src={finalImageUrl} alt={title} className={`w-full h-48 sm:h-full object-cover`} onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
             {showAdminButtons && onEdit !== null && onDelete !== null && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
@@ -237,7 +237,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               src={finalImageUrl}
               alt={title}
               className={`w-full h-48 md:h-auto object-cover`}
-              onError={(e) => { e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E"; }}
+              onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }}
             />
             {showAdminButtons && onEdit !== null && onDelete !== null && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">

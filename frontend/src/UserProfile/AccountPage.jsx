@@ -116,7 +116,7 @@ const AccountPage = () => {
             ...article,
             author: article.author?.user?.name || article.author?.name || 'Unknown',
             category: article.categories?.[0]?.name || 'Uncategorized',
-            image: article.featured_image_url || article.featured_image || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27200%27%3E%3Crect width=%27300%27 height=%27200%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 fill=%27%2364748b%27%3ENo Image%3C/text%3E%3C/svg%3E',
+            image: article.featured_image_url || article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image',
             date: formatDate(article.published_at || article.created_at),
             excerpt: article.excerpt || article.content?.substring(0, 100) + '...' || ''
           };

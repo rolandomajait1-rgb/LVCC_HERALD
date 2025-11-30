@@ -43,7 +43,7 @@ export default function ArticlePage() {
     category: "News",
     author: "admin1@laverdad.edu.ph",
     date: "10/18/2025 10:30 AM",
-    image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E",
+    image: "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image",
     content: "This is the full content of the article. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     tag: "Sample Tag"
   };

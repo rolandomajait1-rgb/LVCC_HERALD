@@ -285,7 +285,7 @@ export default function Specials() {
                 {articles[0] && (
                   <ArticleCard
                     key={articles[0].id}
-                    imageUrl={articles[0].featured_image || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27200%27%3E%3Crect width=%27300%27 height=%27200%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 fill=%27%2364748b%27%3ENo Image%3C/text%3E%3C/svg%3E'}
+                    imageUrl={articles[0].featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
                     category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Specials'}
@@ -313,7 +313,7 @@ export default function Specials() {
                 {articles.slice(1, 3).map(article => (
                   <div key={article.id} className="flex-1">
                     <ArticleCard
-                      imageUrl={article.featured_image || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27200%27%3E%3Crect width=%27300%27 height=%27200%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 fill=%27%2364748b%27%3ENo Image%3C/text%3E%3C/svg%3E'}
+                      imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
@@ -348,7 +348,7 @@ export default function Specials() {
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}
-                      imageUrl={article.featured_image || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27200%27%3E%3Crect width=%27300%27 height=%27200%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 fill=%27%2364748b%27%3ENo Image%3C/text%3E%3C/svg%3E'}
+                      imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
