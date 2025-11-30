@@ -63,13 +63,12 @@ class ArticleController extends Controller
     public function store(ArticleRequest $request)
     {
         try {
+            $this->authorize('create', Article::class);
+
             $validated = $request->validated();
 
             // Admin/Moderator creates articles
             $user = Auth::user();
-            if (!$user || (!$user->isAdmin() && !$user->isModerator())) {
-                return response()->json(['error' => 'Admin or Moderator access required'], 403);
-            }
 
             // Find or create author by name
             $author = Author::firstOrCreate(
@@ -87,9 +86,9 @@ class ArticleController extends Controller
                 } catch (\Exception $e) {
                     Log::error('Cloudinary upload failed: ' . $e->getMessage());
                     $image = $request->file('featured_image');
-                    $imageData = base64_encode(file_get_contents($image->getRealPath()));
-                    $mimeType = $image->getMimeType();
-                    $imagePath = 'data:' . $mimeType . ';base64,' . $imageData;
+                    $imageName = time() . '.' . $image->getClientOriginalExtension();
+                    $image->move(public_path('storage/articles'), $imageName);
+                    $imagePath = '/storage/articles/' . $imageName;
                 }
             }
 
@@ -190,9 +189,9 @@ class ArticleController extends Controller
             } catch (\Exception $e) {
                 Log::error('Cloudinary upload failed: ' . $e->getMessage());
                 $image = $request->file('featured_image');
-                $imageData = base64_encode(file_get_contents($image->getRealPath()));
-                $mimeType = $image->getMimeType();
-                $data['featured_image'] = 'data:' . $mimeType . ';base64,' . $imageData;
+                $imageName = time() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('storage/articles'), $imageName);
+                $data['featured_image'] = '/storage/articles/' . $imageName;
             }
         }
 

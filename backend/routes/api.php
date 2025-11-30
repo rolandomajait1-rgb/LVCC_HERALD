@@ -17,7 +17,6 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\SetupController;
 
 // Ping route for testing
 Route::get('/ping', function () {
@@ -48,15 +47,6 @@ Route::middleware('throttle:10,1')->post('/contact/feedback', [ContactController
 Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
 Route::middleware('throttle:5,1')->post('/contact/join-herald', [ContactController::class, 'joinHerald']);
 Route::middleware('throttle:10,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
-// Temporary: Delete user by email
-Route::delete('/temp/delete-user/{email}', function($email) {
-    $user = \App\Models\User::where('email', $email)->first();
-    if ($user) {
-        $user->delete();
-        return response()->json(['message' => 'User deleted']);
-    }
-    return response()->json(['message' => 'User not found'], 404);
-});
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
@@ -67,13 +57,6 @@ Route::get('/articles/id/{id}', [ArticleController::class, 'showById']);
 Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
 Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
 Route::get('/latest-articles', [ArticleController::class, 'latest']);
-Route::post('/setup/seed-categories', [SetupController::class, 'seedCategories']);
-Route::post('/setup/run-migrations', [SetupController::class, 'runMigrations']);
-Route::post('/setup/clear-cache', [SetupController::class, 'clearCache']);
-Route::post('/setup/fix-article-category', [SetupController::class, 'fixArticleCategory']);
-Route::post('/setup/remove-business-category', [SetupController::class, 'removeBusinessCategory']);
-Route::get('/setup/check-database', [SetupController::class, 'checkDatabase']);
-Route::post('/setup/update-user-role', [SetupController::class, 'updateUserRole']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
 
 // Protected article routes
@@ -130,7 +113,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin/check-access', [UserController::class, 'checkAdmin']);
-        Route::post('/admin/reset-data', [AdminController::class, 'resetData']);
         Route::get('/admin/stats', [DashboardController::class, 'adminStats']);
         Route::get('/admin/moderators', [UserController::class, 'getModerators']);
         Route::post('/admin/moderators', [UserController::class, 'addModerator']);

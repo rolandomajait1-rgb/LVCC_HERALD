@@ -10,8 +10,13 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->has('for_dropdown')) {
+            $categories = Category::orderBy('name')->get();
+            return response()->json($categories);
+        }
+
         if (Auth::check()) {
             $categories = Category::paginate(10);
         } else {

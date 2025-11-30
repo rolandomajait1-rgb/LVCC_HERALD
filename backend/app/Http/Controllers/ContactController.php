@@ -36,12 +36,24 @@ class ContactController extends Controller
             'eventName' => 'required|string',
             'date' => 'required|date',
             'description' => 'required|string',
-            'contactEmail' => 'required|string'
+            'contactEmail' => 'required|string',
+            'location' => 'nullable|string',
+            'highlights' => 'nullable|string',
+            'requestorName' => 'nullable|string',
+            'designation' => 'nullable|string',
         ]);
 
         $adminEmail = env('MAIL_TO_ADDRESS', 'rolandomajait1@gmail.com');
         $subject = 'Coverage Request - La Verdad Herald';
-        $htmlContent = "<h3>New Coverage Request</h3><p><strong>Event:</strong> {$request->eventName}</p><p><strong>Date:</strong> {$request->date}</p><p><strong>Contact:</strong> {$request->contactEmail}</p><p><strong>Description:</strong><br>{$request->description}</p>";
+        $htmlContent = "<h3>New Coverage Request</h3>
+                        <p><strong>Event:</strong> {$request->eventName}</p>
+                        <p><strong>Date:</strong> {$request->date}</p>
+                        <p><strong>Contact:</strong> {$request->contactEmail}</p>
+                        <p><strong>Description:</strong><br>{$request->description}</p>
+                        <p><strong>Location:</strong> {$request->location}</p>
+                        <p><strong>Highlights:</strong> {$request->highlights}</p>
+                        <p><strong>Requestor Name:</strong> {$request->requestorName}</p>
+                        <p><strong>Designation:</strong> {$request->designation}</p>";
 
         $this->brevoMailer->sendEmail($adminEmail, $subject, $htmlContent);
 
@@ -55,7 +67,10 @@ class ContactController extends Controller
             'course' => 'required|string',
             'gender' => 'required|string',
             'pubName' => 'required|string',
-            'specificPosition' => 'required|string'
+            'specificPosition' => 'required|string',
+            'otherClassification' => 'nullable|string',
+            'otherPubOption' => 'nullable|string',
+            'otherDesignation' => 'nullable|string',
         ]);
 
         $classifications = json_encode($request->classifications ?? []);
@@ -72,8 +87,17 @@ class ContactController extends Controller
         $htmlContent .= "<h4>Publication Information:</h4>";
         $htmlContent .= "<p><strong>Publication Name:</strong> {$request->pubName}</p>";
         $htmlContent .= "<p><strong>Classifications:</strong> {$classifications}</p>";
+        if ($request->filled('otherClassification')) {
+            $htmlContent .= "<p><strong>Other Classification:</strong> {$request->otherClassification}</p>";
+        }
         $htmlContent .= "<p><strong>Publishing Option:</strong> {$pubOption}</p>";
+        if ($request->filled('otherPubOption')) {
+            $htmlContent .= "<p><strong>Other Publishing Option:</strong> {$request->otherPubOption}</p>";
+        }
         $htmlContent .= "<p><strong>Designations:</strong> {$designations}</p>";
+        if ($request->filled('otherDesignation')) {
+            $htmlContent .= "<p><strong>Other Designation:</strong> {$request->otherDesignation}</p>";
+        }
         $htmlContent .= "<p><strong>Specific Position:</strong> {$request->specificPosition}</p>";
 
         $this->brevoMailer->sendEmail($adminEmail, $subject, $htmlContent);
