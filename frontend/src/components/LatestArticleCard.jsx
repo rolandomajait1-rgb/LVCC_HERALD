@@ -53,7 +53,7 @@ export default function LatestArticles() {
               {articles.map((article) => (
                 <ArticleCard
                   key={article.id}
-                  featured_image={article.featured_image_url || 'data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200'%3E%3Crect width='300' height='200' fill='%23e2e8f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%2364748b'%3ENo Image%3C/text%3E%3C/svg%3E'}
+                  featured_image={article.featured_image_url || 'data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27300%27 height=%27200%27%3E%3Crect width=%27300%27 height=%27200%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%25%27 y=%2750%25%27 dominant-baseline=%27middle%27 text-anchor=%27middle%27 fill=%27%2364748b%27%3ENo Image%3C/text%3E%3C/svg%3E'}
                   categories={article.categories}
                   published_at={article.published_at}
                   title={article.title}
