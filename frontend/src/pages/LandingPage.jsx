@@ -26,7 +26,10 @@ function LandingPage() {
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
     
-    if (searchParams.get('verified') === 'true') {
+    if (searchParams.get('openLogin') === 'true') {
+      setIsLoginOpen(true);
+      setSearchParams({});
+    } else if (searchParams.get('verified') === 'true') {
       if (token) {
         navigate('/home');
       } else {
