@@ -13,7 +13,8 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->has('for_dropdown')) {
-            $categories = Category::orderBy('name')->get();
+            $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
+            $categories = Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
             return response()->json($categories);
         }
 
