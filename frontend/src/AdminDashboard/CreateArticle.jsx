@@ -34,6 +34,8 @@ export default function CreateArticle() {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
     const valid = title.trim() && category && content.trim() && tags.length > 0 && authorName.trim();
     setIsFormValid(valid);
   }, [title, category, content, tags, authorName]);
