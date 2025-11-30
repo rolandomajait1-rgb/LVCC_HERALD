@@ -190,10 +190,9 @@ export default function CreateArticle() {
   
   const dashboardTitle = getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard';
   const isMod = getUserRole() === 'moderator';
-  
-  console.log('CreateArticle - Role:', getUserRole(), 'isMod:', isMod);
-  
+
   useEffect(() => {
+    console.log('CreateArticle - Role:', getUserRole(), 'isMod:', isMod);
     document.title = dashboardTitle;
   }, [dashboardTitle]);
 
