@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchArticles, clearError } from '../store/slices/articlesSlice';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
@@ -9,29 +10,25 @@ import ArticleCard from '../components/ArticleCard';
 export default function CategoryPage() {
   const { category } = useParams();
   const navigate = useNavigate();
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { articles, loading, error } = useSelector((state) => state.articles);
+  
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    const fetchCategoryArticles = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`/api/categories/${category}/articles?page=${currentPage}`);
-        setArticles(response.data.data || []);
-        setTotalPages(response.data.last_page || 1);
-      } catch (err) {
-        console.error('Error fetching category articles:', err);
-        setError('Failed to load articles');
-      } finally {
-        setLoading(false);
-      }
-    };
+    dispatch(fetchArticles({ category, page: currentPage }));
 
-    fetchCategoryArticles();
-  }, [category, currentPage]);
+    return () => {
+      dispatch(clearError());
+    };
+  }, [category, currentPage, dispatch]);
+
+  useEffect(() => {
+    if (articles) {
+      setTotalPages(articles.last_page || 1);
+    }
+  }, [articles]);
 
   const categoryColors = {
     news: 'bg-blue-600',
@@ -73,14 +70,14 @@ export default function CategoryPage() {
 
         {error ? (
           <div className="text-center text-red-600 py-8">{error}</div>
-        ) : articles.length === 0 ? (
+        ) : !articles || articles.data?.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
             No articles found in {category} category.
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-              {articles.map(article => (
+              {articles.data.map(article => (
                 <ArticleCard
                   key={article.id}
                   article={{

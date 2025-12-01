@@ -43,6 +43,7 @@ class DashboardController extends Controller
             $activities[] = [
                 'action' => 'Published',
                 'title' => $article->title,
+                'slug' => $article->slug,
                 'user' => $article->author->user->email ?? 'Unknown',
                 'timestamp' => $article->published_at->format('n/j/Y g:i A')
             ];

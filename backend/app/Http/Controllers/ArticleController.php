@@ -40,8 +40,9 @@ class ArticleController extends Controller
 
         // Filter by category if provided
         if ($request->has('category') && $request->category) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('name', 'LIKE', $request->category);
+            $validated = $request->validate(['category' => 'string|max:255']);
+            $query->whereHas('categories', function ($q) use ($validated) {
+                $q->where('name', $validated['category']);
             });
         }
 
@@ -350,24 +351,31 @@ class ArticleController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->get('q', '');
+        try {
+            $validated = $request->validate(['q' => 'nullable|string|max:255']);
+            $query = $validated['q'] ?? '';
 
-        if (strlen(trim($query)) < 3) {
-            return response()->json(['data' => []]);
+            if (strlen(trim($query)) < 3) {
+                return response()->json(['data' => []]);
+            }
+
+            $searchTerm = '%' . addslashes($query) . '%';
+            $articles = Article::published()
+                ->with('author.user', 'categories')
+                ->where(function($q) use ($searchTerm) {
+                    $q->where('title', 'LIKE', $searchTerm)
+                    ->orWhere('content', 'LIKE', $searchTerm)
+                    ->orWhere('excerpt', 'LIKE', $searchTerm);
+                })
+                ->latest('published_at')
+                ->take(20)
+                ->get();
+
+            return response()->json(['data' => $articles]);
+        } catch (\Exception $e) {
+            Log::error('Article search failed: ' . $e->getMessage());
+            return response()->json(['data' => []], 500);
         }
-
-        $articles = Article::published()
-            ->with('author.user', 'categories')
-            ->where(function($q) use ($query) {
-                $q->where('title', 'LIKE', "%{$query}%")
-                ->orWhere('content', 'LIKE', "%{$query}%")
-                ->orWhere('excerpt', 'LIKE', "%{$query}%");
-            })
-            ->latest('published_at')
-            ->take(20)
-            ->get();
-
-        return response()->json(['data' => $articles]);
     }
 
     public function showBySlug($slug)
@@ -406,8 +414,9 @@ class ArticleController extends Controller
         $query = Article::published()->with('author.user', 'categories', 'tags');
 
         if ($request->has('category')) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('name', 'LIKE', $request->category);
+            $validated = $request->validate(['category' => 'string|max:255']);
+            $query->whereHas('categories', function ($q) use ($validated) {
+                $q->where('name', $validated['category']);
             });
         }
 

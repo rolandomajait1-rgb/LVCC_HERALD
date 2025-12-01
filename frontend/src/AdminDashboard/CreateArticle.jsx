@@ -7,17 +7,18 @@ import Navigation from "../components/HeaderLink";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
 import axios from '../utils/axiosConfig';
+import useStickyState from "../hooks/useStickyState";
 
 export default function CreateArticle() {
   const navigate = useNavigate();
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [tags, setTags] = useState([]);
+  const [title, setTitle] = useStickyState("", "create-article-title");
+  const [category, setCategory] = useStickyState("", "create-article-category");
+  const [tags, setTags] = useStickyState([], "create-article-tags");
   const [newTag, setNewTag] = useState("");
-  const [content, setContent] = useState("");
+  const [content, setContent] = useStickyState("", "create-article-content");
   const [image, setImage] = useState(null);
-  const [authorName, setAuthorName] = useState("");
+  const [authorName, setAuthorName] = useStickyState("", "create-article-authorName");
   const [isFormValid, setIsFormValid] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
@@ -81,6 +82,15 @@ export default function CreateArticle() {
     return true;
   };
 
+  const clearFormState = () => {
+    setTitle("");
+    setCategory("");
+    setTags([]);
+    setContent("");
+    setImage(null);
+    setAuthorName("");
+  }
+
   const handleSaveDraft = async () => {
     if (!title.trim()) {
       alert("Please enter a title before saving draft.");
@@ -120,6 +130,7 @@ export default function CreateArticle() {
       });
 
       alert("Draft saved successfully!");
+      clearFormState();
       navigate('/admin/draft-articles');
     } catch (error) {
       console.error('Save draft error:', error);
@@ -170,6 +181,7 @@ export default function CreateArticle() {
 
       const categoryName = categories.find(c => c.id == category)?.name?.toLowerCase() || '';
       alert("Article published successfully!");
+      clearFormState();
       window.location.href = categoryName ? `/category/${categoryName}` : '/admin';
     } catch (error) {
       console.error('Publish error:', error);

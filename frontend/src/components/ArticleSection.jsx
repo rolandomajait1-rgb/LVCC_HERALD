@@ -14,8 +14,8 @@ export default function ArticleSection({ title, articles = [], totalPages = 1 })
 
       {/* Article Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {articles.map((article, index) => (
-          <ArticleCard key={index} article={article} />
+        {articles.map((article) => (
+          <ArticleCard key={article.id || article.slug} article={article} />
         ))}
       </div>
 

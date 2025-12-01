@@ -262,7 +262,7 @@ export default function HomePage() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-css-2 lg:grid-cols-4 gap-6 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
               {sportsArticles.map(article => (
                 <ArticleCard
                   key={article.id}

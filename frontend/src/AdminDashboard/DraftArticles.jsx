@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { DndContext, closestCenter } from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { FiBarChart, FiPlus, FiFileText as FiFile, FiUsers, FiActivity } from 'react-icons/fi';
 import { Plus, Pencil, Trash2, Upload, Calendar } from 'lucide-react';
 import Header from "../components/Header";
@@ -7,61 +15,82 @@ import { getUserRole } from '../utils/auth';
 import Navigation from "../components/HeaderLink";
 import axios from '../utils/axiosConfig';
 
-const DraftItem = ({ id, title, category, date, summary, author, featuredImage, onEdit, onDelete, onPublish }) => (
-  <div className="flex flex-col lg:flex-row gap-4 mb-6">
-    <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row">
-      <div className="sm:w-1/3 relative bg-gray-200">
-        <img 
-          src={featuredImage || "https://placehold.co/600x350/333/FFF?text=NO+IMAGE"} 
-          alt="Article Banner" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div className="sm:w-2/3 p-6 flex flex-col justify-between">
-        <div>
-          <div className="flex justify-between items-start mb-2">
-            <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 uppercase rounded-sm">
-              {category}
-            </span>
-            <div className="flex items-center text-gray-400 text-xs">
-              <Calendar size={12} className="mr-1" />
-              {date}
+const SortableDraftItem = ({ id, title, category, date, summary, author, featuredImage, onEdit, onDelete, onPublish }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="flex flex-col lg:flex-row gap-4 mb-6"
+    >
+      <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row">
+        <div className="sm:w-1/3 relative bg-gray-200">
+          <img
+            src={featuredImage || "https://placehold.co/600x350/333/FFF?text=NO+IMAGE"}
+            alt="Article Banner"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="sm:w-2/3 p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex justify-between items-start mb-2">
+              <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 uppercase rounded-sm">
+                {category}
+              </span>
+              <div className="flex items-center text-gray-400 text-xs">
+                <Calendar size={12} className="mr-1" />
+                {date}
+              </div>
             </div>
+            <h3 className="text-2xl font-serif font-bold text-black mb-3">
+              {title}
+            </h3>
+            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+              {summary}
+            </p>
           </div>
-          <h3 className="text-2xl font-serif font-bold text-black mb-3">
-            {title}
-          </h3>
-          <p className="text-gray-600 text-sm leading-relaxed mb-4">
-            {summary}
-          </p>
-        </div>
-        <div className="text-right text-xs text-gray-500 font-medium">
-          {author}
+          <div className="text-right text-xs text-gray-500 font-medium">
+            {author}
+          </div>
         </div>
       </div>
+      <div className="w-full lg:w-48 bg-gray-100 rounded-lg border border-gray-200 flex lg:flex-col items-center justify-center gap-6 p-4 shadow-sm">
+        <button onClick={() => onEdit(id)} className="flex items-center gap-3 text-gray-800 hover:text-black transition-colors font-medium group">
+          <div className="bg-transparent group-hover:bg-gray-200 p-1 rounded">
+            <Pencil size={24} strokeWidth={2} />
+          </div>
+          <span className="text-lg">Edit</span>
+        </button>
+        <button onClick={() => onDelete(id)} className="flex items-center gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group">
+          <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
+            <Trash2 size={24} strokeWidth={2} />
+          </div>
+          <span className="text-lg">Delete</span>
+        </button>
+        <button onClick={() => onPublish(id)} className="flex items-center gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group">
+          <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
+            <Upload size={24} strokeWidth={2} />
+          </div>
+          <span className="text-lg">Publish</span>
+        </button>
+      </div>
     </div>
-    <div className="w-full lg:w-48 bg-gray-100 rounded-lg border border-gray-200 flex lg:flex-col items-center justify-center gap-6 p-4 shadow-sm">
-      <button onClick={() => onEdit(id)} className="flex items-center gap-3 text-gray-800 hover:text-black transition-colors font-medium group">
-        <div className="bg-transparent group-hover:bg-gray-200 p-1 rounded">
-          <Pencil size={24} strokeWidth={2} />
-        </div>
-        <span className="text-lg">Edit</span>
-      </button>
-      <button onClick={() => onDelete(id)} className="flex items-center gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group">
-        <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
-          <Trash2 size={24} strokeWidth={2} />
-        </div>
-        <span className="text-lg">Delete</span>
-      </button>
-      <button onClick={() => onPublish(id)} className="flex items-center gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group">
-        <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
-          <Upload size={24} strokeWidth={2} />
-        </div>
-        <span className="text-lg">Publish</span>
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 export default function DraftArticles() {
   const [drafts, setDrafts] = useState([]);
@@ -86,11 +115,11 @@ export default function DraftArticles() {
   const fetchDrafts = async () => {
     try {
       const response = await axios.get('/api/articles?status=draft');
-      
+
       if (response.status !== 200) {
         throw new Error(`HTTP ${response.status}`);
       }
-      
+
       const data = response.data;
       setDrafts(data || []);
     } catch (error) {
@@ -109,9 +138,9 @@ export default function DraftArticles() {
     if (window.confirm('Are you sure you want to delete this draft?')) {
       try {
         const response = await axios.delete(`/api/articles/${id}`);
-        
+
         console.log('Delete response status:', response.status);
-        
+
         if (response.status === 200) {
           fetchDrafts();
           alert('Draft deleted successfully!');
@@ -131,11 +160,11 @@ export default function DraftArticles() {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
         console.log('Publishing article', id);
-        
+
         const response = await axios.put(`/api/test-publish/${id}`, { status: 'published' });
-        
+
         console.log('Publish response status:', response.status);
-        
+
         if (response.status === 200) {
           fetchDrafts();
           alert('Article published successfully!');
@@ -148,6 +177,18 @@ export default function DraftArticles() {
         console.error('Error publishing article:', error);
         alert('Failed to publish article: ' + error.message);
       }
+    }
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setDrafts((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
     }
   };
 
@@ -179,23 +220,33 @@ export default function DraftArticles() {
               {loading ? (
                 <div className="text-center">Loading drafts...</div>
               ) : drafts.length > 0 ? (
-                <div className="space-y-2">
-                  {drafts.map((draft) => (
-                    <DraftItem
-                      key={draft.id}
-                      id={draft.id}
-                      title={draft.title}
-                      category={draft.categories?.[0]?.name || 'Uncategorized'}
-                      date={new Date(draft.created_at).toLocaleDateString()}
-                      summary={draft.content?.substring(0, 200) + '...' || 'No content available'}
-                      author={draft.author?.user?.name || 'Unknown Author'}
-                      featuredImage={draft.featured_image}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
-                      onPublish={handlePublish}
-                    />
-                  ))}
-                </div>
+                <DndContext
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext
+                    items={drafts}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    <div className="space-y-2">
+                      {drafts.map((draft) => (
+                        <SortableDraftItem
+                          key={draft.id}
+                          id={draft.id}
+                          title={draft.title}
+                          category={draft.categories?.[0]?.name || 'Uncategorized'}
+                          date={new Date(draft.created_at).toLocaleDateString()}
+                          summary={draft.content?.substring(0, 200) + '...' || 'No content available'}
+                          author={draft.author?.user?.name || 'Unknown Author'}
+                          featuredImage={draft.featured_image}
+                          onEdit={handleEdit}
+                          onDelete={handleDelete}
+                          onPublish={handlePublish}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               ) : (
                 <div className="text-center">
                   <p className="text-gray-500">No drafts found.</p>

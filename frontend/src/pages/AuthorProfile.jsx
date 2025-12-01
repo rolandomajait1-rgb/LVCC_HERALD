@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Calendar, Pencil, Trash2 } from 'lucide-react';
 import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import { isAdmin, isModerator } from '../utils/auth';
 import axios from '../utils/axiosConfig';
+import { setArticles, setLoading, setError, clearError } from '../store/slices/articlesSlice';
 
-const AuthorHero = ({ author, articles }) => (
+const AuthorHero = ({ author, articlesData }) => (
   <div className="relative w-full h-80 md:h-60 bg-[#3a6080] overflow-hidden flex items-center">
     <div className="absolute inset-0">
       <img 
@@ -31,7 +33,7 @@ const AuthorHero = ({ author, articles }) => (
       </div>
 
       <div className="text-white font-bold text-lg md:text-xl tracking-wide mt-4 md:mt-0">
-        Articles Found: {articles?.length || 0}
+        Articles Found: {articlesData?.length || 0}
       </div>
     </div>
   </div>
@@ -72,12 +74,13 @@ const ArticleCard = ({ article, onClick, navigate }) => (
 export default function AuthorProfile() {
   const { authorName } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { articles, loading, error } = useSelector((state) => state.articles);
   const [author, setAuthor] = useState(null);
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAuthorData = async () => {
+      dispatch(setLoading(true));
       try {
         console.log('Fetching data for author:', authorName);
         const response = await axios.get(`/api/authors/${encodeURIComponent(authorName)}`);
@@ -87,18 +90,25 @@ export default function AuthorProfile() {
         console.log('Response data:', data);
         
         setAuthor(data.author);
-        setArticles(data.articles);
+        dispatch(setArticles(data.articles));
       } catch (error) {
         console.error('Error fetching author data:', error);
+        dispatch(setError('Failed to load author articles'));
       } finally {
-        setLoading(false);
+        dispatch(setLoading(false));
       }
     };
 
     if (authorName) {
       fetchAuthorData();
     }
-  }, [authorName]);
+
+    return () => {
+      dispatch(clearError());
+    };
+  }, [authorName, dispatch]);
+
+  const articlesData = articles?.data;
 
   if (loading) {
     return (
@@ -117,24 +127,30 @@ export default function AuthorProfile() {
       <Header />
       <Navigation />
       
-      <AuthorHero author={author} articles={articles} />
+      <AuthorHero author={author} articlesData={articlesData} />
       
       <main className="grow container mx-auto px-4 md:px-12 py-12">
         <div>
           <h2 className="text-3xl font-serif font-normal text-gray-800 mb-6 pb-4 border-b text-left border-gray-300">
             Latest Articles
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {articles.map((article, idx) => (
-              <ArticleCard key={idx} article={article} onClick={() => navigate(`/article/${article.slug}`)} navigate={navigate} />
-            ))}
-          </div>
-          {articles.length === 0 && (
-            <div className="text-center text-gray-500 py-10">
-              No articles found for this author: {authorName}
-              <br />
-              <small>Check console for debugging info</small>
-            </div>
+          {error ? (
+            <div className="text-center text-red-500">{error}</div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                {articlesData && articlesData.map((article, idx) => (
+                  <ArticleCard key={idx} article={article} onClick={() => navigate(`/article/${article.slug}`)} navigate={navigate} />
+                ))}
+              </div>
+              {articlesData?.length === 0 && (
+                <div className="text-center text-gray-500 py-10">
+                  No articles found for this author: {authorName}
+                  <br />
+                  <small>Check console for debugging info</small>
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>

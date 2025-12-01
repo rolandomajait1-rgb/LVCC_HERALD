@@ -2,16 +2,25 @@ import axios from 'axios';
 
 // Set base URL
 axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-axios.defaults.timeout = 30000; // 30 second timeout
-axios.defaults.withCredentials = false; // Using Bearer token, not cookies
+axios.defaults.timeout = 30000;
+axios.defaults.withCredentials = true; // Enable for CSRF cookies
 
-// Add auth token to requests
+// Add auth token and CSRF protection to requests
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Add CSRF token for state-changing requests
+    if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      if (csrfToken) {
+        config.headers['X-CSRF-TOKEN'] = csrfToken;
+      }
+    }
+    
     config.headers['X-Requested-With'] = 'XMLHttpRequest';
     return config;
   },

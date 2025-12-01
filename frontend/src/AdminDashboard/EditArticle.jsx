@@ -5,18 +5,19 @@ import Header from "../components/Header";
 import Navigation from '../components/HeaderLink';
 import axios from '../utils/axiosConfig';
 import { getFullUrl } from '../utils/url';
+import useStickyState from "../hooks/useStickyState";
 
 export default function EditArticle() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("");
-  const [tags, setTags] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useStickyState("", `edit-article-${id}-title`);
+  const [category, setCategory] = useStickyState("", `edit-article-${id}-category`);
+  const [tags, setTags] = useStickyState("", `edit-article-${id}-tags`);
+  const [content, setContent] = useStickyState("", `edit-article-${id}-content`);
   const [image, setImage] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
-  const [author, setAuthor] = useState("");
+  const [author, setAuthor] = useStickyState("", `edit-article-${id}-author`);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,7 +59,7 @@ export default function EditArticle() {
     if (id) {
       fetchArticle();
     }
-  }, [id]);
+  }, [id, setTitle, setAuthor, setCategory, setTags, setContent]);
 
   useEffect(() => {
     const valid = title.trim() && category && content.trim() && tags.trim() && String(author).trim();
@@ -79,6 +80,14 @@ export default function EditArticle() {
     }
     return true;
   };
+
+  const clearFormState = () => {
+    window.localStorage.removeItem(`edit-article-${id}-title`);
+    window.localStorage.removeItem(`edit-article-${id}-category`);
+    window.localStorage.removeItem(`edit-article-${id}-tags`);
+    window.localStorage.removeItem(`edit-article-${id}-content`);
+    window.localStorage.removeItem(`edit-article-${id}-author`);
+  }
 
   const handleUpdate = async () => {
     console.log('Save button clicked');
@@ -118,6 +127,7 @@ export default function EditArticle() {
       
       if (response.status === 200) {
         alert("Article updated successfully!");
+        clearFormState();
         navigate(-1);
       } else {
         const errorText = response.data;

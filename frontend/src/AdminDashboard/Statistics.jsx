@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { IconUser, IconEye, IconArticle, IconHeart } from "@tabler/icons-react";
 import { FiBarChart, FiPlus, FiFileText, FiUsers, FiActivity } from 'react-icons/fi';
 import Header from "../components/Header";
@@ -148,7 +148,9 @@ export default function Statistics({ onResetData }) {
                       {a.action}
                     </td>
                     <td className="text-center border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
-                      {a.title}
+                      <Link to={`/article/${a.slug}`} className="text-blue-600 hover:underline">
+                        {a.title}
+                      </Link>
                     </td>
                     <td className="text-center border border-blue-300 p-2 md:p-3 text-xs md:text-sm">
                       {a.user}
