@@ -169,7 +169,7 @@ export default function CreateArticle() {
       });
 
       alert("Article published successfully!");
-      navigate('/admin');
+      window.location.href = '/admin';
     } catch (error) {
       console.error('Publish error:', error);
       let errorMessage = 'Failed to publish article';
