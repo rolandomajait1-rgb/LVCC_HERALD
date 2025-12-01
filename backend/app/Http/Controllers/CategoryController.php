@@ -12,16 +12,17 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
+        $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
+        
         if ($request->has('for_dropdown')) {
-            $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
             $categories = Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
             return response()->json($categories);
         }
 
         if (Auth::check()) {
-            $categories = Category::paginate(10);
+            $categories = Category::whereIn('name', $allowedCategories)->paginate(10);
         } else {
-            $categories = Category::orderBy('name')->get();
+            $categories = Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
         }
 
         if (request()->wantsJson()) {
@@ -54,8 +55,10 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
+        
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
+            'name' => 'required|string|max:255|unique:categories|in:' . implode(',', $allowedCategories),
             'description' => 'nullable|string',
         ]);
 
@@ -108,8 +111,10 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
+        $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
+        
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id . '|in:' . implode(',', $allowedCategories),
             'description' => 'nullable|string',
         ]);
 

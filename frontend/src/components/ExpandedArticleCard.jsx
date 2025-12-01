@@ -25,7 +25,7 @@ const ArticleHeader = ({ article, navigate }) => (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
       <div className="text-sm text-gray-600">
         <p>Written by <span className="font-bold text-blue-600">
-          {article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+          {article.author ? article.author.name : 'Unknown Author'}
         </span></p>
         <p className="text-gray-500 text-xs mt-1">
           {new Date(article.published_at).toLocaleDateString('en-US', {
@@ -171,7 +171,7 @@ export default function ExpandedArticleCard() {
                     month: 'short',
                     day: 'numeric'
                   }),
-                  author: article.author && article.author.user ? article.author.user.name : 'Unknown Author',
+                  author: article.author ? article.author.name : 'Unknown Author',
                   imageUrl: article.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image'
                 }}
                 onClick={() => navigate('/article/' + article.slug)}

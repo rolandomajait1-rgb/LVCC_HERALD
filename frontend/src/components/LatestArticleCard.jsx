@@ -52,7 +52,7 @@ export default function LatestArticles({ onArticleClick }) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {articles.map((article) => {
                 const category = article.categories && article.categories.length > 0 ? article.categories[0].name : 'Uncategorized';
-                const author = article.author && article.author.user ? article.author.user.name : 'Unknown Author';
+                const author = article.author ? article.author.name : 'Unknown Author';
                 const date = new Date(article.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
                 const time = new Date(article.published_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                 

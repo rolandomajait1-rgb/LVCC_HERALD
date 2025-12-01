@@ -49,7 +49,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     hour12: true
   }) : '';
   const finalSnippet = snippet || excerpt || '';
-  const finalAuthor = author && author.user ? author.user.name : (typeof author === 'string' ? author : 'Unknown Author');
+  const finalAuthor = author && author.name ? author.name : (typeof author === 'string' ? author : 'Unknown Author');
 
   useEffect(() => {
     if (expanded && showRelated && finalCategory) {
