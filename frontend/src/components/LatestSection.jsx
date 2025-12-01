@@ -86,7 +86,7 @@ export default function LatestSection({ onEdit, onDelete }) {
       onDelete,
       articleId: article.id,
     };
-  }, [latestArticles, onEdit, onDelete]);
+  }, [latestArticles]);
 
   const sideArticles = useMemo(() => 
     latestArticles.slice(1, 3).map(article => ({
@@ -103,7 +103,7 @@ export default function LatestSection({ onEdit, onDelete }) {
       onEdit,
       onDelete,
       articleId: article.id
-    })), [latestArticles, navigate, onEdit, onDelete]);
+    })), [latestArticles, navigate]);
 
   return (
     <section className="mb-12" aria-label="Latest articles section">
