@@ -161,8 +161,8 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       {/* Horizontal layout for medium cards (image left, text right) */}
       {(horizontal) ? (
         <div className="flex flex-col sm:flex-row">
-          <div className="sm:w-1/3 relative overflow-hidden">
-            <img src={finalImageUrl} alt={title} className={`w-full h-48 sm:h-full object-cover`} onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
+          <div className="sm:w-1/3 relative h-48 sm:h-64 overflow-hidden">
+            <img src={finalImageUrl} alt={title} className="w-full h-full object-cover" onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
             {showAdminButtons && onEdit !== null && onDelete !== null && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
@@ -232,11 +232,11 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className="relative">
+          <div className="relative h-48 overflow-hidden">
             <img
               src={finalImageUrl}
               alt={title}
-              className={`w-full h-48 md:h-auto object-cover`}
+              className="w-full h-full object-cover"
               onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }}
             />
             {showAdminButtons && onEdit !== null && onDelete !== null && (

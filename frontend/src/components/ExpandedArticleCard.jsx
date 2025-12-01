@@ -83,7 +83,7 @@ const ActionButtons = ({ likes }) => (
 
 const RelatedCard = ({ article, onClick, navigate }) => (
   <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all">
-    <div className="relative h-40 md:h-48 overflow-hidden">
+    <div className="relative h-48 overflow-hidden">
       <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       {(isAdmin() || isModerator()) && (
         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
