@@ -4,7 +4,7 @@ const API_URL = '/api/articles';
 
 // Fetch all articles
 const getArticles = async (params = {}) => {
-  const response = await axios.get(API_URL, { params });
+  const response = await axios.get('/api/public/articles', { params });
   return response.data;
 };
 
