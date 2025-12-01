@@ -81,14 +81,16 @@ export default function LatestArticles({ onArticleClick }) {
                           {date} {time}
                         </span>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
-                        {article.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="text-lg font-bold text-gray-900 line-clamp-2 flex-1">
+                          {article.title}
+                        </h3>
+                        <p className="text-sm text-gray-700 font-medium ml-3 whitespace-nowrap">
+                          {author}
+                        </p>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2 text-left">
                         {article.excerpt}
-                      </p>
-                      <p className="text-sm text-gray-700 font-medium">
-                        {author}
                       </p>
                     </div>
                   </div>
