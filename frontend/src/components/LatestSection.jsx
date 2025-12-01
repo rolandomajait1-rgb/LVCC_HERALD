@@ -36,8 +36,8 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   if (loading) {
     return (
-      <section className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-5">Latest</h2>
+      <section className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">Latest</h2>
         <div className="text-center text-gray-500">Loading latest articles...</div>
       </section>
     );
@@ -45,8 +45,8 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   if (error || latestArticles.length === 0) {
     return (
-      <section className="mb-12">
-        <h2 className="text-3xl font-bold text-gray-800 mb-5">Latest</h2>
+      <section className="mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-3">Latest</h2>
         <div className="text-center text-gray-500">
           {error || 'No latest articles available'}
         </div>
@@ -87,12 +87,12 @@ export default function LatestSection({ onEdit, onDelete }) {
   }));
 
   return (
-    <section className="mb-12">
-      <h2 className="text-3xl font-bold text-gray-800 text-left  mb-5">Latest</h2>
-        <hr className="mb-6" />
-        
+    <section className="mb-8">
+      <h2 className="text-3xl font-bold text-gray-800 text-left  mb-3">Latest</h2>
+        <hr className="mb-4" />
+
       {/* 3. Articles Layout */}
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
+      <div className="flex flex-col lg:flex-row gap-2 md:gap-4">
 
         {/* 3a. Featured Article (Left) */}
         <div className="w-full lg:w-2/3">
@@ -107,7 +107,7 @@ export default function LatestSection({ onEdit, onDelete }) {
         </div>
 
         {/* 3b. Side Articles (Right) */}
-        <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6">
+        <div className="w-full lg:w-1/3 flex flex-col gap-2 md:gap-4">
           {sideArticles.map((article, index) => (
             <ArticleCard key={latestArticles[index + 1].id || index} {...article} />
           ))}

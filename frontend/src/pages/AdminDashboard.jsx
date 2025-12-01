@@ -90,14 +90,14 @@ export default function AdminDashboard() {
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
-        
-        <header className="bg-cyan-700 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
-          <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
-          <div className="flex items-center space-x-4">
+      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-4 grow">
+
+        <header className="bg-cyan-700 text-white px-4 py-2 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
+          <h1 className="text-lg md:text-xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
+          <div className="flex items-center space-x-2">
             <button
               onClick={handleOpenAdminDashboard}
-              className="flex items-center space-x-2 px-3 md:px-4 py-2 text-sm md:text-base font-medium text-white hover:text-blue-300"
+              className="flex items-center space-x-2 px-2 md:px-4 py-1 text-sm md:text-base font-medium text-white hover:text-blue-300"
             >
               <span className="hidden sm:inline">OPEN ADMIN DASHBOARD</span>
               <span className="sm:hidden">DASHBOARD</span>
@@ -116,8 +116,8 @@ export default function AdminDashboard() {
           ) : newsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No news articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {newsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {newsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -143,8 +143,8 @@ export default function AdminDashboard() {
           ) : literaryArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No literary articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {literaryArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {literaryArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -170,8 +170,8 @@ export default function AdminDashboard() {
           ) : specialsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No specials articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {specialsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {specialsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -197,8 +197,8 @@ export default function AdminDashboard() {
           ) : opinionArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No opinion articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {opinionArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {opinionArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -224,8 +224,8 @@ export default function AdminDashboard() {
           ) : artArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No art articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {artArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {artArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -251,8 +251,8 @@ export default function AdminDashboard() {
           ) : featuresArticles.length === 0 ? (
             <EmptyState categoryName="Features" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {featuresArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {featuresArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -278,8 +278,8 @@ export default function AdminDashboard() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-css-2 lg:grid-cols-4 gap-6 mt-4">
-              {sportsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+              {sportsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
