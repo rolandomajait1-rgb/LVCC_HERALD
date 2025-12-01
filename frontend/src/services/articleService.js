@@ -4,7 +4,7 @@ const API_URL = '/api/articles';
 
 // Fetch all articles
 const getArticles = async (params = {}) => {
-  const response = await axios.get('/api/public/articles', { params });
+  const response = await axios.get('/api/articles/public', { params });
   return response.data;
 };
 
@@ -26,6 +26,7 @@ const createArticle = async (articleData) => {
 
 // Update an article
 const updateArticle = async (id, articleData) => {
+  articleData.append('_method', 'PUT');
   const response = await axios.post(`${API_URL}/${id}`, articleData, {
     headers: {
       'Content-Type': 'multipart/form-data',
