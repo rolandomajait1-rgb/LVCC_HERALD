@@ -2,23 +2,23 @@ import axios from '../utils/axiosConfig';
 
 // Auth utility functions
 export const isAdmin = () => {
-    const token = localStorage.getItem('auth_token');
-    const userRole = localStorage.getItem('user_role');
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const userRole = localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
     return token && userRole === 'admin';
 };
 
 export const isModerator = () => {
-    const token = localStorage.getItem('auth_token');
-    const userRole = localStorage.getItem('user_role');
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const userRole = localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
     return token && userRole === 'moderator';
 };
 
 export const getAuthToken = () => {
-    return localStorage.getItem('auth_token');
+    return localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
 };
 
 export const getUserRole = () => {
-    return localStorage.getItem('user_role');
+    return localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
 };
 
 // Article management functions
