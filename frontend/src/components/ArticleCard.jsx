@@ -8,7 +8,7 @@ import axios from '../utils/axiosConfig';
 import getCategoryColor from '../utils/getCategoryColor';
 
 const getUserRole = () => {
-  return localStorage.getItem('user_role');
+  return localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
 };
 
 const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
