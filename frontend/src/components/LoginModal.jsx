@@ -26,11 +26,22 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     try {
       const response = await axios.post('/api/login', { email: formData.email, password: formData.password });
       const token = response.data.token;
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('user_email', formData.email);
-      localStorage.setItem('user_name', response.data.user.name);
       const userRole = response.data.role;
-      localStorage.setItem('user_role', userRole);
+      const userData = response.data.user;
+      
+      if (formData.remember) {
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user_email', formData.email);
+        localStorage.setItem('user_name', userData.name);
+        localStorage.setItem('user_role', userRole);
+        localStorage.setItem('remember_me', 'true');
+      } else {
+        sessionStorage.setItem('auth_token', token);
+        sessionStorage.setItem('user_email', formData.email);
+        sessionStorage.setItem('user_name', userData.name);
+        sessionStorage.setItem('user_role', userRole);
+      }
+      
       setSuccessMessage('Welcome back to La Verdad Herald!');
       setTimeout(() => {
         onClose();

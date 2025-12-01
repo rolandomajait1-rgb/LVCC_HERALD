@@ -93,7 +93,7 @@ export default function AdminDashboard() {
       <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
         
         <header className="bg-cyan-700 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
-          <h1 className="text-xl md:text-2xl font-serif">Welcome, Admin</h1>
+          <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
           <div className="flex items-center space-x-4">
             <button
               onClick={handleOpenAdminDashboard}
