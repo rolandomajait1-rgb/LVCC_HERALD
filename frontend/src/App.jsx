@@ -542,10 +542,10 @@ export default function App() {
 
   useEffect(() => {
     const handleBeforeUnload = () => {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_email');
-      localStorage.removeItem('user_name');
-      localStorage.removeItem('user_role');
+      // Only clear sessionStorage, keep localStorage for "remember me"
+      if (!localStorage.getItem('remember_me')) {
+        sessionStorage.clear();
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
