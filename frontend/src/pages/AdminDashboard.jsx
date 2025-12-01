@@ -91,7 +91,7 @@ export default function AdminDashboard() {
       <Navigation />
 
       <main className="container mx-auto px-4 md:px-8 lg:px-12 py-4 grow">
-        <div className="border-l-2 border-r-2 border-black px-4">
+        <div className="border-l-2 border-r-2 border-gray-300 px-4">
 
         <header className="bg-cyan-700 text-white px-5 py-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
           <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
