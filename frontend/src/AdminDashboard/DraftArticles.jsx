@@ -161,7 +161,12 @@ export default function DraftArticles() {
       try {
         console.log('Publishing article', id);
 
-        const response = await axios.put(`/api/test-publish/${id}`, { status: 'published' });
+        const formData = new FormData();
+        formData.append('status', 'published');
+
+        const response = await axios.post(`/api/articles/${id}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
 
         console.log('Publish response status:', response.status);
 

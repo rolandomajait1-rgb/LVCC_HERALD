@@ -103,7 +103,6 @@ export default function EditArticle() {
     
     try {
       const formData = new FormData();
-      formData.append('_method', 'PUT');
       formData.append('title', title);
       const categoryMap = {'News': 1, 'Sports': 2, 'Opinion': 3, 'Literary': 4, 'Features': 5, 'Specials': 6, 'Art': 7};
       formData.append('category_id', categoryMap[category] || 1);

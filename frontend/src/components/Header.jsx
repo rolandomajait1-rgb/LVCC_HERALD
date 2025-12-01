@@ -9,8 +9,8 @@ function Header() {
 
   useEffect(() => {
     const updateAuthState = () => {
-      const token = localStorage.getItem('auth_token');
-      const role = localStorage.getItem('user_role');
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const role = localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
       setIsLoggedIn(!!token);
       setUserRole(role);
     };
