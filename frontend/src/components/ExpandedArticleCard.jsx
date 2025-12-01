@@ -100,7 +100,8 @@ const RelatedCard = ({ article, onClick, navigate }) => (
       <h3 className="text-md font-serif font-bold text-gray-900 mb-2 leading-snug group-hover:text-blue-800 transition-colors line-clamp-2">
         {article.title}
       </h3>
-      <p className="text-xs text-gray-500 mt-auto">{article.author}</p>
+      <p className="text-xs text-gray-600 mb-2 line-clamp-2">{article.excerpt || ''}</p>
+      <p className="text-xs text-gray-700 font-medium text-right">{article.author}</p>
     </div>
   </div>
 );
@@ -172,6 +173,7 @@ export default function ExpandedArticleCard() {
                     day: 'numeric'
                   }),
                   author: article.author ? article.author.name : 'Unknown Author',
+                  excerpt: article.excerpt || '',
                   imageUrl: article.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image'
                 }}
                 onClick={() => navigate('/article/' + article.slug)}

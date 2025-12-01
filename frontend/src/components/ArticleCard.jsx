@@ -203,30 +203,14 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
                 {title}
               </h3>
-              <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
+              <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
                 {finalSnippet}
               </p>
             </div>
 
-            <div className="flex justify-between items-center">
-              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
-                By <span 
-                  className="cursor-pointer hover:text-blue-600 hover:underline transition-colors"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/author/${encodeURIComponent(finalAuthor)}`); }}
-                >
-                  {finalAuthor}
-                </span>
-              </p>
-              <div className="flex items-center space-x-2">
-                <button onClick={handleLike} className={`flex items-center space-x-1 px-2 py-1 rounded transition-colors ${liked ? 'text-red-600 hover:text-red-700' : 'text-gray-400 hover:text-red-500'}`}>
-                  <Heart size={isLarge ? 18 : 14} className={liked ? 'fill-current' : ''} />
-                  <span className={`${isLarge ? 'text-sm' : 'text-xs'}`}>{likeCount}</span>
-                </button>
-                <button onClick={handleShare} className="text-gray-400 hover:text-blue-500 transition-colors">
-                  <Share2 size={isLarge ? 18 : 14} />
-                </button>
-              </div>
-            </div>
+            <p className={`text-gray-700 font-medium text-right ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
+              {finalAuthor}
+            </p>
           </div>
         </div>
       ) : (
@@ -278,38 +262,12 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
               {title}
             </h3>
-            <p className={`text-gray-600 mb-4 line-clamp-3 grow text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
+            <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
-            <div className="flex justify-between items-center">
-              <p className={`text-gray-700 italic font-semibold ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
-                By <span 
-                  className="cursor-pointer hover:text-blue-600 hover:underline transition-colors"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/author/${encodeURIComponent(finalAuthor)}`); }}
-                >
-                  {finalAuthor}
-                </span>
-              </p>
-              <div className="flex items-center space-x-2">
-                <button 
-                  onClick={handleLike}
-                  className={`flex items-center space-x-1 px-2 py-1 rounded transition-colors ${
-                    liked 
-                      ? 'text-red-600 hover:text-red-700' 
-                      : 'text-gray-400 hover:text-red-500'
-                  }`}
-                >
-                  <Heart size={isLarge ? 18 : 14} className={liked ? 'fill-current' : ''} />
-                  <span className={`${isLarge ? 'text-sm' : 'text-xs'}`}>{likeCount}</span>
-                </button>
-                <button 
-                  onClick={handleShare}
-                  className="text-gray-400 hover:text-blue-500 transition-colors"
-                >
-                  <Share2 size={isLarge ? 18 : 14} />
-                </button>
-              </div>
-            </div>
+            <p className={`text-gray-700 font-medium text-right ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
+              {finalAuthor}
+            </p>
           </div>
         </>
       )}
