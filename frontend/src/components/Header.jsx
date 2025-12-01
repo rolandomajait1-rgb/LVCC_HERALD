@@ -8,10 +8,21 @@ function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    const role = localStorage.getItem('user_role');
-    setIsLoggedIn(!!token);
-    setUserRole(role);
+    const updateAuthState = () => {
+      const token = localStorage.getItem('auth_token');
+      const role = localStorage.getItem('user_role');
+      setIsLoggedIn(!!token);
+      setUserRole(role);
+    };
+
+    updateAuthState();
+    window.addEventListener('storage', updateAuthState);
+    window.addEventListener('authChange', updateAuthState);
+
+    return () => {
+      window.removeEventListener('storage', updateAuthState);
+      window.removeEventListener('authChange', updateAuthState);
+    };
   }, []);
 
 

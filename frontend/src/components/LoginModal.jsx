@@ -42,6 +42,8 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
         sessionStorage.setItem('user_role', userRole);
       }
       
+      window.dispatchEvent(new Event('authChange'));
+      
       setSuccessMessage('Welcome back to La Verdad Herald!');
       setTimeout(() => {
         onClose();

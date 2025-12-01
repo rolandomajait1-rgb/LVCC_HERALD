@@ -156,6 +156,8 @@ const AccountPage = () => {
     } finally {
       localStorage.removeItem('auth_token');
       localStorage.removeItem('user_email');
+      localStorage.removeItem('user_role');
+      window.dispatchEvent(new Event('authChange'));
       navigate('/');
     }
   };
