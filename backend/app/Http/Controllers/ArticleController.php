@@ -21,9 +21,15 @@ class ArticleController extends Controller
         $query = Article::with('author.user', 'categories', 'tags')->withCount('interactions');
 
         if (Auth::check()) {
-            // Authenticated users can see all articles
-            if ($request->has('status') && $request->status) {
-                $query->where('status', $request->status);
+            $user = Auth::user();
+            // Admins and moderators can see all articles
+            if ($user->isAdmin() || $user->isModerator()) {
+                if ($request->has('status') && $request->status) {
+                    $query->where('status', $request->status);
+                }
+            } else {
+                // Regular users only see published articles
+                $query->published();
             }
         } else {
             // Unauthenticated users can only see published articles
@@ -219,12 +225,24 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         try {
-            // Ensure user is authorized to delete (policy allows only admins)
             $this->authorize('delete', $article);
 
+            $article->categories()->detach();
+            $article->tags()->detach();
+            $article->interactions()->delete();
             $article->delete();
 
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'deleted',
+                'model_type' => 'Article',
+                'model_id' => $article->id,
+                'old_values' => $article->toArray(),
+            ]);
+
             return response()->json(['message' => 'Article deleted successfully']);
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return response()->json(['error' => 'Unauthorized. Only admins can delete articles.'], 403);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to delete article: ' . $e->getMessage()], 500);
         }

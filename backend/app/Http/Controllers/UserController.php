@@ -67,6 +67,7 @@ class UserController extends Controller
         ]);
 
         $oldValues = $user->toArray();
+        $roleChanged = $oldValues['role'] !== $request->role;
 
         $user->update($request->only(['name', 'email', 'role']));
 
@@ -78,6 +79,10 @@ class UserController extends Controller
             'old_values' => $oldValues,
             'new_values' => $user->toArray(),
         ]);
+
+        if ($roleChanged && $request->expectsJson()) {
+            return response()->json(['message' => 'User role updated successfully. User has been notified.', 'user' => $user]);
+        }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
@@ -130,7 +135,7 @@ class UserController extends Controller
                 'new_values' => $user->toArray(),
             ]);
 
-            return response()->json(['message' => 'Moderator created successfully']);
+            return response()->json(['message' => 'Moderator created successfully. User has been notified.']);
         }
 
         if ($user->role === 'moderator') {
@@ -149,7 +154,7 @@ class UserController extends Controller
             'new_values' => $user->toArray(),
         ]);
 
-        return response()->json(['message' => 'Moderator added successfully']);
+        return response()->json(['message' => 'Moderator added successfully. User has been notified.']);
     }
 
     public function removeModerator($id)
@@ -173,6 +178,26 @@ class UserController extends Controller
         ]);
 
         return response()->json(['message' => 'Moderator removed successfully']);
+    }
+
+    public function revokeAccess($id)
+    {
+        $user = User::findOrFail($id);
+        $oldValues = $user->toArray();
+        $user->update(['is_active' => false]);
+
+        $user->tokens()->delete();
+
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'revoked_access',
+            'model_type' => 'User',
+            'model_id' => $user->id,
+            'old_values' => $oldValues,
+            'new_values' => $user->toArray(),
+        ]);
+
+        return response()->json(['message' => 'User access revoked successfully']);
     }
 
     public function checkAdmin(Request $request)

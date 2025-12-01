@@ -117,6 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/moderators', [UserController::class, 'getModerators']);
         Route::post('/admin/moderators', [UserController::class, 'addModerator']);
         Route::delete('/admin/moderators/{id}', [UserController::class, 'removeModerator']);
+        Route::post('/admin/users/{id}/revoke', [UserController::class, 'revokeAccess']);
         Route::apiResource('admin/users', UserController::class);
         Route::apiResource('staff', StaffController::class);
         Route::apiResource('authors', AuthorController::class);
@@ -124,7 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Moderator API Routes
     Route::middleware(['role:moderator'])->group(function () {
-        Route::apiResource('drafts', DraftController::class)->except(['store']);
+        Route::apiResource('drafts', DraftController::class);
     });
 
     // Author API Routes

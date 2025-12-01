@@ -11,10 +11,12 @@ class DraftController extends Controller
 {
     public function index()
     {
-        if (Auth::user()->isAdmin()) {
+        $user = Auth::user();
+        
+        if ($user->isAdmin() || $user->isModerator()) {
             $drafts = Draft::with('author.user')->paginate(10);
         } else {
-            $drafts = Draft::with('author.user')->where('author_id', Auth::user()->author->id)->paginate(10);
+            $drafts = Draft::with('author.user')->where('author_id', $user->author->id)->paginate(10);
         }
         return response()->json($drafts)
             ->header('Access-Control-Allow-Origin', '*')
@@ -33,12 +35,20 @@ class DraftController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
+            'author_id' => 'nullable|exists:authors,id',
         ]);
+
+        $user = Auth::user();
+        $authorId = $validated['author_id'] ?? ($user->author ? $user->author->id : null);
+
+        if (!$authorId) {
+            return response()->json(['error' => 'Author not found'], 400);
+        }
 
         $draft = Draft::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
-            'author_id' => Auth::user()->author->id,
+            'author_id' => $authorId,
         ]);
 
         Log::create([
@@ -49,11 +59,18 @@ class DraftController extends Controller
             'new_values' => $draft->toArray(),
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Draft created successfully', 'draft' => $draft->load('author.user')], 201);
+        }
+
         return redirect()->route('drafts.index')->with('success', 'Draft created successfully.');
     }
 
     public function show(Draft $draft)
     {
+        if (request()->expectsJson()) {
+            return response()->json($draft->load('author.user'));
+        }
         return view('drafts.show', compact('draft'));
     }
 
@@ -64,14 +81,14 @@ class DraftController extends Controller
 
     public function update(Request $request, Draft $draft)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
         ]);
 
         $oldValues = $draft->toArray();
 
-        $draft->update($request->all());
+        $draft->update($validated);
 
         Log::create([
             'user_id' => Auth::id(),
@@ -81,6 +98,10 @@ class DraftController extends Controller
             'old_values' => $oldValues,
             'new_values' => $draft->toArray(),
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['message' => 'Draft updated successfully', 'draft' => $draft->load('author.user')]);
+        }
 
         return redirect()->route('drafts.index')->with('success', 'Draft updated successfully.');
     }
@@ -98,6 +119,10 @@ class DraftController extends Controller
             'model_id' => $draft->id,
             'old_values' => $oldValues,
         ]);
+
+        if (request()->expectsJson()) {
+            return response()->json(['message' => 'Draft deleted successfully']);
+        }
 
         return redirect()->route('drafts.index')->with('success', 'Draft deleted successfully.');
     }

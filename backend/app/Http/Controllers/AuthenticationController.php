@@ -136,7 +136,12 @@ class AuthenticationController extends Controller
         }
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Incorrect password.'], 401);
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        if (!$user->is_active) {
+            Auth::logout();
+            return response()->json(['message' => 'Access revoked. Your account has been deactivated.'], 403);
         }
 
         if (!$user->hasVerifiedEmail()) {

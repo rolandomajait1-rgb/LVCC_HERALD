@@ -57,6 +57,7 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
+        // Only admins can delete articles, moderators cannot
         return $user->isAdmin();
     }
 }
