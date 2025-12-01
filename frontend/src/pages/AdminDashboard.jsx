@@ -91,13 +91,14 @@ export default function AdminDashboard() {
       <Navigation />
 
       <main className="container mx-auto px-4 md:px-8 lg:px-12 py-4 grow">
+        <div className="border-t-2 border-l-2 border-r-2 border-black px-4">
 
-        <header className="bg-cyan-700 text-white px-4 py-2 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
-          <h1 className="text-lg md:text-xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
+        <header className="bg-cyan-700 text-white px-5 py-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
+          <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
           <div className="flex items-center space-x-2">
             <button
               onClick={handleOpenAdminDashboard}
-              className="flex items-center space-x-2 px-2 md:px-4 py-1 text-sm md:text-base font-medium text-white hover:text-blue-300"
+              className="flex items-center space-x-2 px-2 md:px-5 py-1 text-s md:text-base font-medium text-white hover:text-blue-300"
             >
               <span className="hidden sm:inline">OPEN ADMIN DASHBOARD</span>
               <span className="sm:hidden">DASHBOARD</span>
@@ -296,6 +297,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
+        </div>
       </main>
       <Footer />
     </div>

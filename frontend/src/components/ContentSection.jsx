@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react';
 export default function ContentSection({ title, bgColor, viewAllUrl, children }) {
   return (
     <section className="mb-6">
+      <hr className="border-black mb-1" />
       <div className={`flex justify-between items-center p-1 ${bgColor} text-white rounded-t-lg`}>
         <h2 className="text-lg font-bold">{title}</h2>
         <a href={viewAllUrl} className="text-white hover:underline flex items-center font-bold text-base">
@@ -14,6 +15,7 @@ export default function ContentSection({ title, bgColor, viewAllUrl, children })
       <div className="bg-white p-1 rounded-b-lg shadow">
         {children}
       </div>
+      <hr className="border-black mt-2" />
     </section>
   );
 }

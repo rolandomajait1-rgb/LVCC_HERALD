@@ -89,7 +89,8 @@ export default function LatestSection({ onEdit, onDelete }) {
   return (
     <section className="mb-8">
       <h2 className="text-3xl font-bold text-gray-800 text-left  mb-3">Latest</h2>
-        <hr className="mb-4" />
+        <hr className="mb-4 border-black" />
+      <div>
 
       {/* 3. Articles Layout */}
       <div className="flex flex-col lg:flex-row gap-2 md:gap-4">
@@ -113,6 +114,7 @@ export default function LatestSection({ onEdit, onDelete }) {
           ))}
         </div>
 
+      </div>
       </div>
     </section>
   );
