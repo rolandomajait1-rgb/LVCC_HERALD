@@ -17,7 +17,8 @@ export default function CategoryPage() {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    dispatch(fetchArticles({ category, page: currentPage }));
+    const capitalizedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : '';
+    dispatch(fetchArticles({ category: capitalizedCategory, page: currentPage }));
 
     return () => {
       dispatch(clearError());
