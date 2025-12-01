@@ -42,7 +42,7 @@ class ArticleController extends Controller
         if ($request->has('category') && $request->category) {
             $validated = $request->validate(['category' => 'string|max:255']);
             $query->whereHas('categories', function ($q) use ($validated) {
-                $q->where('name', $validated['category']);
+                $q->whereRaw('LOWER(name) = ?', [strtolower($validated['category'])]);
             });
         }
 
