@@ -168,8 +168,9 @@ export default function CreateArticle() {
         },
       });
 
+      const categoryName = categories.find(c => c.id == category)?.name?.toLowerCase() || '';
       alert("Article published successfully!");
-      window.location.href = '/admin';
+      window.location.href = categoryName ? `/category/${categoryName}` : '/admin';
     } catch (error) {
       console.error('Publish error:', error);
       let errorMessage = 'Failed to publish article';
