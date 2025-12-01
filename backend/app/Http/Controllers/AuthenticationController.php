@@ -139,7 +139,7 @@ class AuthenticationController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        if (!$user->is_active) {
+        if (isset($user->is_active) && $user->is_active === false) {
             Auth::logout();
             return response()->json(['message' => 'Access revoked. Your account has been deactivated.'], 403);
         }
