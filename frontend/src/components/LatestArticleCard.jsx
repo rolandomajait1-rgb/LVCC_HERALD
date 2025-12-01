@@ -14,7 +14,7 @@ export default function LatestArticles({ onArticleClick }) {
       setError(null);
       try {
         const response = await axios.get('/api/articles/public', {
-          params: { latest: true, limit: 9 },
+          params: { latest: true, limit: 6 },
         });
         const articlesData = response.data.data || response.data || [];
         setArticles(Array.isArray(articlesData) ? articlesData : []);
@@ -31,12 +31,12 @@ export default function LatestArticles({ onArticleClick }) {
   }, []);
 
   return (
-    <section id="articles" aria-labelledby="articles-heading" className="py-12 bg-gray-50 border-t border-gray-200 flex items-center justify-center min-h-screen">
+    <section id="articles" aria-labelledby="articles-heading" className="py-16 bg-gray-100 flex items-center justify-center min-h-screen">
       <div className="max-w-6xl mx-auto px-4 w-full">
-        <h2 id="articles-heading" className="text-4xl  text-cyan-800 text-center font-serif">
+        <h2 id="articles-heading" className="text-5xl text-gray-800 text-center font-serif mb-4">
           Latest Articles
         </h2>
-        <p className="text-gray-600 text-center mt-2 mb-10 text-2xl">
+        <p className="text-gray-700 text-center mb-12 text-lg">
           Sign in to read the full articles.
         </p>
 
@@ -49,28 +49,58 @@ export default function LatestArticles({ onArticleClick }) {
         ) : (
           <>
             {/* Article Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {articles.map((article) => (
-                <ArticleCard
-                  key={article.id}
-                  featured_image={article.featured_image_url || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
-                  categories={article.categories}
-                  published_at={article.published_at}
-                  title={article.title}
-                  excerpt={article.excerpt}
-                  author={article.author}
-                  onClick={onArticleClick}
-                  onEdit={null}
-                  onDelete={null}
-                />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {articles.map((article) => {
+                const category = article.categories && article.categories.length > 0 ? article.categories[0].name : 'Uncategorized';
+                const author = article.author && article.author.user ? article.author.user.name : 'Unknown Author';
+                const date = new Date(article.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                const time = new Date(article.published_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                
+                return (
+                  <div 
+                    key={article.id} 
+                    className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
+                    onClick={onArticleClick}
+                  >
+                    <div className="relative h-64 overflow-hidden">
+                      <img 
+                        src={article.featured_image_url || 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image'} 
+                        alt={article.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="p-5">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-xs font-bold uppercase px-3 py-1 rounded bg-cyan-100 text-cyan-700">
+                          {category}
+                        </span>
+                        <span className="text-xs text-gray-500 flex items-center">
+                          <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                          </svg>
+                          {date} {time}
+                        </span>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                        {article.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        {article.excerpt}
+                      </p>
+                      <p className="text-sm text-gray-700 font-medium">
+                        {author}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             {/* "Sign In" Button */}
-            <div className="text-center mt-12">
+            <div className="text-center mt-16">
               <Link
                 to="/landing?openLogin=true"
-                className="bg-cyan-700 text-white px-10 py-3.5 rounded-lg font-semibold text-lg hover:bg-cyan-800 transition-colors"
+                className="inline-block bg-cyan-700 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:bg-cyan-800 transition-colors shadow-md"
               >
                 Sign in to Read More
               </Link>
