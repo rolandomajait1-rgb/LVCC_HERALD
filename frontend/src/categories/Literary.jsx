@@ -266,7 +266,7 @@ export default function Literary() {
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
                     category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Literary'}
-                    author={articles[0].author && articles[0].author.user ? articles[0].author.user.name : 'Unknown Author'}
+                    author={articles[0].author && articles[0].author.user ? { name: articles[0].author.user.name } : { name: 'Unknown Author' }}
                     date={new Date(articles[0].published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -289,7 +289,7 @@ export default function Literary() {
                         title={article.title}
                         snippet={article.excerpt}
                         category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
-                        author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                        author={article.author && article.author.user ? { name: article.author.user.name } : { name: 'Unknown Author' }}
                         date={new Date(article.published_at).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
@@ -320,7 +320,7 @@ export default function Literary() {
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
-                      author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                      author={article.author && article.author.user ? { name: article.author.user.name } : { name: 'Unknown Author' }}
                       date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
