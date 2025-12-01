@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
@@ -69,41 +69,36 @@ export default function LatestSection({ onEdit, onDelete }) {
     );
   }
 
-  const featuredArticle = useMemo(() => {
-    if (!latestArticles[0]) return null;
-    const article = latestArticles[0];
-    return {
-      featured_image: article.featured_image || PLACEHOLDER_IMAGE,
-      category: article.categories?.[0]?.name || 'Latest',
-      date: formatArticleDate(article.published_at),
-      title: article.title,
-      snippet: article.excerpt,
-      author: article.author?.name || 'Unknown Author',
-      published_at: article.published_at,
-      isLarge: true,
-      slug: article.slug,
-      onEdit,
-      onDelete,
-      articleId: article.id,
-    };
-  }, [latestArticles]);
+  const featuredArticle = latestArticles[0] ? {
+    featured_image: latestArticles[0].featured_image || PLACEHOLDER_IMAGE,
+    category: latestArticles[0].categories?.[0]?.name || 'Latest',
+    date: formatArticleDate(latestArticles[0].published_at),
+    title: latestArticles[0].title,
+    snippet: latestArticles[0].excerpt,
+    author: latestArticles[0].author?.name || 'Unknown Author',
+    published_at: latestArticles[0].published_at,
+    isLarge: true,
+    slug: latestArticles[0].slug,
+    onEdit,
+    onDelete,
+    articleId: latestArticles[0].id,
+  } : null;
 
-  const sideArticles = useMemo(() => 
-    latestArticles.slice(1, 3).map(article => ({
-      featured_image: article.featured_image || PLACEHOLDER_IMAGE,
-      category: article.categories?.[0]?.name || 'Latest',
-      date: formatArticleDate(article.published_at),
-      title: article.title,
-      snippet: article.excerpt,
-      author: article.author?.name || 'Unknown Author',
-      published_at: article.published_at,
-      isMedium: true,
-      slug: article.slug,
-      onClick: () => article.slug && navigate(`/article/${article.slug}`),
-      onEdit,
-      onDelete,
-      articleId: article.id
-    })), [latestArticles, navigate]);
+  const sideArticles = latestArticles.slice(1, 3).map(article => ({
+    featured_image: article.featured_image || PLACEHOLDER_IMAGE,
+    category: article.categories?.[0]?.name || 'Latest',
+    date: formatArticleDate(article.published_at),
+    title: article.title,
+    snippet: article.excerpt,
+    author: article.author?.name || 'Unknown Author',
+    published_at: article.published_at,
+    isMedium: true,
+    slug: article.slug,
+    onClick: () => article.slug && navigate(`/article/${article.slug}`),
+    onEdit,
+    onDelete,
+    articleId: article.id
+  }));
 
   return (
     <section className="mb-12" aria-label="Latest articles section">
