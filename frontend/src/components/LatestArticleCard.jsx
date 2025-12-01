@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
 import { Link } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
+import getCategoryColor from '../utils/getCategoryColor';
 
 export default function LatestArticles({ onArticleClick }) {
   const [articles, setArticles] = useState([]);
@@ -71,7 +72,7 @@ export default function LatestArticles({ onArticleClick }) {
                     </div>
                     <div className="p-5">
                       <div className="flex justify-between items-center mb-3">
-                        <span className="text-xs font-bold uppercase px-3 py-1 rounded bg-cyan-100 text-cyan-700">
+                        <span className={`text-xs font-bold uppercase px-3 py-1 rounded ${getCategoryColor(category)}`}>
                           {category}
                         </span>
                         <span className="text-xs text-gray-500 flex items-center">
@@ -84,14 +85,12 @@ export default function LatestArticles({ onArticleClick }) {
                       <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 text-left">
                         {article.title}
                       </h3>
-                      <div className="flex justify-between items-end">
-                        <p className="text-sm text-gray-600 line-clamp-2 text-left flex-1">
-                          {article.excerpt}
-                        </p>
-                        <p className="text-sm text-gray-700 font-medium ml-3 whitespace-nowrap text-right">
-                          {author}
-                        </p>
-                      </div>
+                      <p className="text-sm text-gray-600 line-clamp-2 text-left mb-3">
+                        {article.excerpt}
+                      </p>
+                      <p className="text-sm text-gray-700 font-medium text-right">
+                        {author}
+                      </p>
                     </div>
                   </div>
                 );
