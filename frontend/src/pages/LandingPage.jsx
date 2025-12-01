@@ -98,7 +98,7 @@ function LandingPage() {
 
       <Welcome />
 
-      <LatestArticleCard />
+      <LatestArticleCard onArticleClick={() => setIsLoginOpen(true)} />
 
       <Footer onOpenLogin={() => setIsLoginOpen(true)} />
 

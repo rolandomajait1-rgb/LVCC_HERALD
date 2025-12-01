@@ -3,7 +3,7 @@ import ArticleCard from './ArticleCard';
 import { Link } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
 
-export default function LatestArticles() {
+export default function LatestArticles({ onArticleClick }) {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,6 +59,7 @@ export default function LatestArticles() {
                   title={article.title}
                   excerpt={article.excerpt}
                   author={article.author}
+                  onClick={onArticleClick}
                   onEdit={null}
                   onDelete={null}
                 />
