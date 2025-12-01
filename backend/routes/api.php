@@ -121,6 +121,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('admin/users', UserController::class);
         Route::apiResource('staff', StaffController::class);
         Route::apiResource('authors', AuthorController::class);
+        Route::post('/admin/fix-categories', function() {
+            $literary = \App\Models\Category::where('name', 'Literary')->first();
+            if(!$literary) return response()->json(['error' => 'Category not found'], 404);
+            $articles = \App\Models\Article::doesntHave('categories')->where('status', 'published')->get();
+            foreach($articles as $a) { $a->categories()->attach($literary->id); }
+            return response()->json(['fixed' => $articles->count()]);
+        });
     });
 
     // Moderator API Routes
