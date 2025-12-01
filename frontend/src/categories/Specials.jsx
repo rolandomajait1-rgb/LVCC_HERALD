@@ -289,7 +289,7 @@ export default function Specials() {
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
                     category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Specials'}
-                    author={articles[0].author && articles[0].author.user ? articles[0].author.user.name : 'Unknown Author'}
+                    author={articles[0].author && articles[0].author.user ? { name: articles[0].author.user.name } : { name: 'Unknown Author' }}
                     date={new Date(articles[0].published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',

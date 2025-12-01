@@ -265,8 +265,7 @@ export default function Literary() {
                     imageUrl={articles[0].featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
-                    category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Literary'}
-                    author={articles[0].author && articles[0].author.user ? { name: articles[0].author.user.name } : { name: 'Unknown Author' }}
+                    category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Literary'}                    author={articles[0].author && articles[0].author.user ? { name: articles[0].author.user.name } : { name: 'Unknown Author' }}
                     date={new Date(articles[0].published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',

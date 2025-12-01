@@ -318,7 +318,7 @@ export default function News() {
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
-                      author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                      author={article.author && article.author.user ? { name: article.author.user.name } : { name: 'Unknown Author' }}
                       date={new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
@@ -356,7 +356,7 @@ export default function News() {
                       title={article.title || 'No Title'}
                       snippet={article.excerpt || 'No excerpt available'}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
-                      author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                      author={article.author && article.author.user ? { name: article.author.user.name } : { name: 'Unknown Author' }}
                       date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
