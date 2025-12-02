@@ -105,11 +105,11 @@ export default function LatestSection({ onEdit, onDelete }) {
       <h2 className="text-3xl font-bold text-gray-800 text-left mb-5">Latest</h2>
       <hr className="mb-6" />
 
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:h-[500px]">
-        <div className="w-full lg:w-2/3 h-full">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
+        <div className="w-full lg:w-2/3">
           {featuredArticle && (
             <div
-              className="cursor-pointer h-full"
+              className="cursor-pointer"
               onClick={() => featuredArticle.slug && navigate(`/article/${featuredArticle.slug}`)}
               role="link"
               tabIndex={0}
@@ -121,7 +121,7 @@ export default function LatestSection({ onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6 h-full">
+        <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6">
           {sideArticles.map((article, index) => (
             <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} />
           ))}
