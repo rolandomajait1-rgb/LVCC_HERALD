@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -93,6 +94,7 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
 };
 
 export default function DraftArticles() {
+  const navigate = useNavigate();
   const [drafts, setDrafts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -172,8 +174,8 @@ export default function DraftArticles() {
         console.log('Publish response status:', response.status);
 
         if (response.status === 200) {
-          fetchDrafts();
           alert('Article published successfully!');
+          navigate('/admin/statistics');
         } else {
           const errorText = response.data;
           console.error('Publish error response:', errorText);
