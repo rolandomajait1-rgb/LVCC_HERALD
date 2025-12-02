@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from './axiosConfig';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { FaFacebook, FaEnvelope, FaLinkedin } from 'react-icons/fa';
 import { getAuthToken } from '../utils/auth';

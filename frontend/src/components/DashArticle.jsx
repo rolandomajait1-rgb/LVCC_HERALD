@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Pencil, Trash2 } from 'lucide-react';
 import { isAdmin, getUserRole } from '../utils/auth';
 import { FaCalendar } from 'react-icons/fa';
-import axios from 'axios';
+import axios from '../utils/axiosConfig';
 import getCategoryColor from '../utils/getCategoryColor';
 
 export default function ArticleCard({ imageUrl, title, excerpt, category, onClick, articleId, onEdit, onDelete, slug, showRelated = false, published_at }) {
