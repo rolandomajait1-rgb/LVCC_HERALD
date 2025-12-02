@@ -162,6 +162,7 @@ export default function DraftArticles() {
         console.log('Publishing article', id);
 
         const formData = new FormData();
+        formData.append('_method', 'PUT');
         formData.append('status', 'published');
 
         const response = await axios.post(`/api/articles/${id}`, formData, {
