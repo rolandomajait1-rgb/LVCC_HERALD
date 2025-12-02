@@ -179,10 +179,9 @@ export default function CreateArticle() {
         },
       });
 
-      const categoryName = categories.find(c => c.id == category)?.name?.toLowerCase() || '';
       alert("Article published successfully!");
       clearFormState();
-      window.location.href = categoryName ? `/category/${categoryName}` : '/admin';
+      navigate('/admin/statistics');
     } catch (error) {
       console.error('Publish error:', error);
       let errorMessage = 'Failed to publish article';
