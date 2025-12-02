@@ -8,25 +8,9 @@ import Navigation from "../components/HeaderLink";
 import Statistics from "../AdminDashboard/Statistics";
 
 export default function OpenAdminDashboard() {
-  const resetData = async () => {
-    if (window.confirm('Are you sure you want to reset all test data? This will delete all articles and interactions.')) {
-      try {
-        // CSRF protection is automatically handled by axiosConfig interceptor
-        await axios.post('/api/admin/reset-data');
-        alert('Data reset successfully!');
-      } catch (error) {
-        console.error('Error resetting data:', error);
-        alert('Failed to reset data');
-      }
-    }
-  };
-
   useEffect(() => {
     document.title = getUserRole() === 'moderator' ? 'Moderator | Dashboard' : 'Admin | Dashboard';
   }, []);
-
-
-
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -51,7 +35,7 @@ export default function OpenAdminDashboard() {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />;
         })()}
-        <Statistics onResetData={resetData} />
+        <Statistics />
       </div>
     </div>
   );
