@@ -115,7 +115,11 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   const handleEditClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate(`/edit-article/${articleId}`);
+    if (onEdit) {
+      onEdit(articleId);
+    } else {
+      navigate(`/admin/edit-article/${articleId}`);
+    }
   };
 
   const handleDeleteClick = (e) => {
