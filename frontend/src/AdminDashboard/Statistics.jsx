@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import React, { useState, useEffect } from 'react';
-import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { IconUser, IconEye, IconArticle, IconHeart } from "@tabler/icons-react";
 import { FiBarChart, FiPlus, FiFileText, FiUsers, FiActivity } from 'react-icons/fi';
