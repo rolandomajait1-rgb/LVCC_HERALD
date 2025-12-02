@@ -220,7 +220,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isMedium ? 'h-40' : isLarge ? 'h-90' : 'h-80'}`}>
+          <div className={`relative overflow-hidden ${isMedium ? 'h-40' : isLarge ? 'h-85' : 'h-80'}`}>
             <img
               src={finalImageUrl}
               alt={title}

@@ -9,8 +9,15 @@ axios.defaults.withCredentials = true; // Enable for CSRF cookies
 axios.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-    if (token) {
+    const expiresAt = localStorage.getItem('token_expires_at') || sessionStorage.getItem('token_expires_at');
+    
+    if (token && expiresAt && Date.now() < parseInt(expiresAt)) {
       config.headers.Authorization = `Bearer ${token}`;
+    } else if (token && expiresAt && Date.now() >= parseInt(expiresAt)) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('token_expires_at');
+      sessionStorage.removeItem('auth_token');
+      sessionStorage.removeItem('token_expires_at');
     }
     
     // Add CSRF token for state-changing requests

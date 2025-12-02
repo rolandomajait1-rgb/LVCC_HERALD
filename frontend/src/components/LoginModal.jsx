@@ -28,18 +28,21 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       const token = response.data.token;
       const userRole = response.data.role;
       const userData = response.data.user;
+      const expiresAt = Date.now() + (24 * 60 * 60 * 1000);
       
       if (formData.remember) {
         localStorage.setItem('auth_token', token);
         localStorage.setItem('user_email', formData.email);
         localStorage.setItem('user_name', userData.name);
         localStorage.setItem('user_role', userRole);
+        localStorage.setItem('token_expires_at', expiresAt);
         localStorage.setItem('remember_me', 'true');
       } else {
         sessionStorage.setItem('auth_token', token);
         sessionStorage.setItem('user_email', formData.email);
         sessionStorage.setItem('user_name', userData.name);
         sessionStorage.setItem('user_role', userRole);
+        sessionStorage.setItem('token_expires_at', expiresAt);
       }
       
       window.dispatchEvent(new Event('authChange'));
