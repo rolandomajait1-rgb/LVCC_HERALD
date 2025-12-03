@@ -245,7 +245,7 @@ export default function DraftArticles() {
                           category={draft.categories?.[0]?.name || 'Uncategorized'}
                           date={new Date(draft.created_at).toLocaleDateString()}
                           summary={draft.content?.substring(0, 200) + '...' || 'No content available'}
-                          author={draft.author?.user?.name || 'Unknown Author'}
+                          author={draft.author_name || draft.author?.user?.name || 'Unknown Author'}
                           featuredImage={draft.featured_image}
                           onEdit={handleEdit}
                           onDelete={handleDelete}

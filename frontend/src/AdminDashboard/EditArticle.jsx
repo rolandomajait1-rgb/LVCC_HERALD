@@ -35,7 +35,7 @@ export default function EditArticle() {
           const article = response.data;
           console.log('Article data:', article);
           setTitle(article.title || "");
-          setAuthor(typeof article.author === 'string' ? article.author : (article.author?.name || ""));
+          setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
           setCategory(article.categories?.[0]?.name || "");
           const tagsString = Array.isArray(article.tags) 
             ? article.tags.map(tag => tag.name || tag).join(', ')
