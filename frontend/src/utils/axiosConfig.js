@@ -24,8 +24,8 @@ axios.interceptors.request.use(
         }
 
         // Add CSRF token for state-changing requests (only if meta tag present)
-        if (['post', 'put', 'delete', 'patch'].includes(config.method ? .toLowerCase())) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]') ? .content;
+        if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
             if (csrfToken) {
                 config.headers['X-CSRF-TOKEN'] = csrfToken;
             }
@@ -41,7 +41,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response ? .status === 401 && !window.location.pathname.includes('/login')) {
+        if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_email');
             localStorage.removeItem('user_name');
