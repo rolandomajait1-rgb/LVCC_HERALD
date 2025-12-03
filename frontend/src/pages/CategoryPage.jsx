@@ -86,7 +86,7 @@ export default function CategoryPage() {
                     title: article.title,
                     snippet: article.excerpt,
                     category: article.categories?.[0]?.name || category,
-                    author: article.author?.user?.name || 'Unknown Author',
+                    author: article.author_name || article.author?.user?.name || 'Unknown Author',
                     date: new Date(article.published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'short',

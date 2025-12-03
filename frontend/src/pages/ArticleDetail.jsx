@@ -215,9 +215,9 @@ export default function ArticleDetail() {
                   <span>Written by </span>
                   <span 
                     className="font-semibold text-gray-800 cursor-pointer hover:text-blue-600 hover:underline transition-colors"
-                    onClick={() => navigate(`/author/${encodeURIComponent(article.author?.user?.name || 'Unknown Author')}`)}
+                    onClick={() => navigate(`/author/${encodeURIComponent(article.author_name || article.author?.user?.name || 'Unknown Author')}`)}
                   >
-                    {article.author?.user?.name || 'Unknown Author'}
+                    {article.author_name || article.author?.user?.name || 'Unknown Author'}
                   </span>
                 </div>
                 <div className="mt-1">
@@ -324,7 +324,7 @@ export default function ArticleDetail() {
                         minute: '2-digit',
                         hour12: true
                       }),
-                      author: relatedArticle.author && relatedArticle.author.user ? relatedArticle.author.user.name : 'Unknown Author',
+                      author: relatedArticle.author_name || relatedArticle.author?.user?.name || 'Unknown Author',
                       imageUrl: relatedArticle.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
                       excerpt: relatedArticle.excerpt
                     }}

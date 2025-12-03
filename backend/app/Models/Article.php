@@ -28,7 +28,7 @@ class Article extends Model
         'published_at' => 'datetime',
     ];
 
-    protected $appends = ['featured_image_url'];
+    protected $appends = ['featured_image_url', 'author_name'];
 
     public function getFeaturedImageUrlAttribute()
     {
@@ -43,6 +43,11 @@ class Article extends Model
         
         // If it's a local path, prepend the app URL
         return url($this->featured_image);
+    }
+
+    public function getAuthorNameAttribute()
+    {
+        return $this->author?->user?->name ?? $this->author?->name ?? 'Unknown Author';
     }
     
 

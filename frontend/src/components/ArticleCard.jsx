@@ -49,7 +49,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     hour12: true
   }) : '';
   const finalSnippet = snippet || excerpt || '';
-  const finalAuthor = author && author.name ? author.name : (typeof author === 'string' ? author : 'Unknown Author');
+  const finalAuthor = author?.author_name || author?.name || (typeof author === 'string' ? author : 'Unknown Author');
 
   useEffect(() => {
     if (expanded && showRelated && finalCategory) {
@@ -293,7 +293,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 </span>
                 <h4 className="text-sm font-serif font-bold text-gray-900 mt-2 line-clamp-2">{article.title}</h4>
                 <p className="text-xs text-gray-500 mt-1">
-                  {article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                  {article.author_name || article.author?.user?.name || 'Unknown Author'}
                 </p>
               </div>
             </div>
