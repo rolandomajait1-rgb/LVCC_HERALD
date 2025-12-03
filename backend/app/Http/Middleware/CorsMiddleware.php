@@ -20,27 +20,27 @@ class CorsMiddleware
         $allowedOrigins = config('cors.allowed_origins', []);
         $allowedPatterns = config('cors.allowed_origins_patterns', []);
         
-        // Check if origin is allowed (temporarily allow all for testing)
-        $isAllowed = true; // in_array($origin, $allowedOrigins) || $this->matchesPattern($origin, $allowedPatterns);
+        // Check if origin is allowed (allow all temporarily, or use config lists)
+        $isAllowed = in_array($origin, $allowedOrigins) || $this->matchesPattern($origin, $allowedPatterns) || !$origin;
 
         // Handle preflight
         if ($request->isMethod('OPTIONS')) {
             return response('', 200)
-                ->header('Access-Control-Allow-Origin', $isAllowed ? $origin : '')
+                ->header('Access-Control-Allow-Origin', $isAllowed ? ($origin ?: '*') : '')
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
                 ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
-                ->header('Access-Control-Allow-Credentials', 'false')
+                ->header('Access-Control-Allow-Credentials', 'true')
                 ->header('Access-Control-Max-Age', '86400');
         }
 
         $response = $next($request);
 
         // Add CORS headers
-        if ($isAllowed && $origin) {
-            $response->header('Access-Control-Allow-Origin', $origin);
+        if ($isAllowed) {
+            $response->header('Access-Control-Allow-Origin', $origin ?: '*');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
             $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-            $response->header('Access-Control-Allow-Credentials', 'false');
+            $response->header('Access-Control-Allow-Credentials', 'true');
         }
 
         // Security headers

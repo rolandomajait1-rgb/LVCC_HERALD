@@ -16,13 +16,13 @@ class DraftController extends Controller
         if ($user->isAdmin() || $user->isModerator()) {
             $drafts = Draft::with('author.user')->paginate(10);
         } else {
-            $drafts = Draft::with('author.user')->where('author_id', $user->author->id)->paginate(10);
+            if ($user->author) {
+                $drafts = Draft::with('author.user')->where('author_id', $user->author->id)->paginate(10);
+            } else {
+                return response()->json(['data' => []]);
+            }
         }
-        return response()->json($drafts)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json($drafts);
     }
 
     public function create()

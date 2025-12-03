@@ -24,10 +24,12 @@ class ArticleRequest extends FormRequest
         return [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'category_id' => 'required|integer|exists:categories,id',
+            'category' => 'sometimes|string|max:255',
+            'category_id' => 'required_without:category|integer|exists:categories,id',
             'tags' => 'nullable|string',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'author_name' => 'required|string|min:1',
+            'author' => 'sometimes|string|min:1|exists:authors,name',
+            'author_name' => 'required_without:author|string|min:1',
         ];
     }
 }

@@ -11,7 +11,7 @@ export default function ArticlePage() {
   const { id } = useParams();
   const { state } = useLocation();
   const navigate = useNavigate();
-  const userRole = localStorage.getItem('user_role');
+  const userRole = getUserRole();
 
   const handleEdit = () => {
     navigate(`/admin/edit-article/${id}`);

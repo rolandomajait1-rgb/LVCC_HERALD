@@ -14,7 +14,7 @@ class AuthorController extends Controller
     public function index()
     {
         $authors = Author::with('user')->paginate(10);
-        return view('authors.index', compact('authors'));
+        return response()->json($authors);
     }
 
     public function create()
@@ -54,12 +54,12 @@ class AuthorController extends Controller
             'new_values' => $request->all(),
         ]);
 
-        return redirect()->route('authors.index')->with('success', 'Author created successfully.');
+        return response()->json(['message' => 'Author created successfully.'], 201);
     }
 
     public function show(Author $author)
     {
-        return view('authors.show', compact('author'));
+        return response()->json($author);
     }
 
     // Public-facing: view author by user id
@@ -118,7 +118,7 @@ class AuthorController extends Controller
             'new_values' => $request->all(),
         ]);
 
-        return redirect()->route('authors.index')->with('success', 'Author updated successfully.');
+        return response()->json(['message' => 'Author updated successfully.']);
     }
 
     public function destroy(Author $author)
@@ -142,7 +142,7 @@ class AuthorController extends Controller
             'old_values' => $oldValues,
         ]);
 
-        return redirect()->route('authors.index')->with('success', 'Author deleted successfully.');
+        return response()->json(['message' => 'Author deleted successfully.']);
     }
 
     public function showByName($authorName)

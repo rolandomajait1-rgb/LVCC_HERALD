@@ -31,7 +31,7 @@ function RegisterComponent() {
       setPassword('');
       setConfirmPassword('');
       setTimeout(() => {
-        window.location.href = '/home';
+        window.location.href = '/landing';
       }, 2000);
     } catch (error) {
       if (error.response && error.response.data.errors) {

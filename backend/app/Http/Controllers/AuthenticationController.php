@@ -94,14 +94,14 @@ class AuthenticationController extends Controller
         }
 
         if ($user->hasVerifiedEmail()) {
-            return redirect(env('APP_FRONTEND_URL') . '/?already_verified=true');
+            return redirect(env('APP_FRONTEND_URL') . '/dashboard');
         }
 
         $user->markEmailAsVerified();
 
         event(new Verified($user));
 
-        return redirect(env('APP_FRONTEND_URL') . '/?verified=true');
+        return redirect(env('APP_FRONTEND_URL') . '/dashboard');
     }
 
     public function resendVerificationEmail(Request $request)

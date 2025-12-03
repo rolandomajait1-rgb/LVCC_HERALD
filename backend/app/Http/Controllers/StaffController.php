@@ -14,11 +14,7 @@ class StaffController extends Controller
     public function index()
     {
         $staff = Staff::with('user')->paginate(10);
-        return response()->json($staff)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Credentials', 'true')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        return response()->json($staff);
     }
 
     public function create()

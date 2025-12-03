@@ -135,8 +135,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('drafts', DraftController::class);
     });
 
-    // Author API Routes
-    Route::middleware(['role:author'])->group(function () {
+    // Author-related Draft routes (no dedicated author role; require auth)
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('drafts', DraftController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
     });
 });

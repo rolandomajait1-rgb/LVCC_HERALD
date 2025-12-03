@@ -20,32 +20,29 @@ class CategoryController extends Controller
         }
 
         if (Auth::check()) {
-            $categories = Category::whereIn('name', $allowedCategories)->paginate(10);
+            $categories = Category::paginate(10);
         } else {
-            $categories = Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
+            $categories = Category::orderBy('name')->get();
         }
 
-        if (request()->wantsJson()) {
-            if ($categories instanceof \Illuminate\Pagination\LengthAwarePaginator) {
-                return response()->json([
-                    'data' => $categories->items(),
-                    'meta' => [
-                        'current_page' => $categories->currentPage(),
-                        'per_page' => $categories->perPage(),
-                        'total' => $categories->total(),
-                        'last_page' => $categories->lastPage(),
-                    ],
-                    'links' => [
-                        'first' => $categories->url(1),
-                        'last' => $categories->url($categories->lastPage()),
-                        'prev' => $categories->previousPageUrl(),
-                        'next' => $categories->nextPageUrl(),
-                    ],
-                ]);
-            }
-            return response()->json($categories);
+        if ($categories instanceof \Illuminate\Pagination\LengthAwarePaginator) {
+            return response()->json([
+                'data' => $categories->items(),
+                'meta' => [
+                    'current_page' => $categories->currentPage(),
+                    'per_page' => $categories->perPage(),
+                    'total' => $categories->total(),
+                    'last_page' => $categories->lastPage(),
+                ],
+                'links' => [
+                    'first' => $categories->url(1),
+                    'last' => $categories->url($categories->lastPage()),
+                    'prev' => $categories->previousPageUrl(),
+                    'next' => $categories->nextPageUrl(),
+                ],
+            ]);
         }
-        return view('categories.index', compact('categories'));
+        return response()->json($categories);
     }
 
     public function create()
@@ -55,10 +52,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
-        
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories|in:' . implode(',', $allowedCategories),
+            'name' => 'required|string|max:255|unique:categories',
             'description' => 'nullable|string',
         ]);
 
@@ -111,10 +106,8 @@ class CategoryController extends Controller
 
     public function update(Request $request, Category $category)
     {
-        $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
-        
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id . '|in:' . implode(',', $allowedCategories),
+            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'nullable|string',
         ]);
 

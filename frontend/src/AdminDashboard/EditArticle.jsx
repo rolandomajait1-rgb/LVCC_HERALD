@@ -13,6 +13,7 @@ export default function EditArticle() {
 
   const [title, setTitle] = useStickyState("", `edit-article-${id}-title`);
   const [category, setCategory] = useStickyState("", `edit-article-${id}-category`);
+  const [categories, setCategories] = useState([]);
   const [tags, setTags] = useStickyState("", `edit-article-${id}-tags`);
   const [content, setContent] = useStickyState("", `edit-article-${id}-content`);
   const [image, setImage] = useState(null);
@@ -36,7 +37,7 @@ export default function EditArticle() {
           console.log('Article data:', article);
           setTitle(article.title || "");
           setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
-          setCategory(article.categories?.[0]?.name || "");
+          setCategory(article.categories?.[0]?.id || "");
           const tagsString = Array.isArray(article.tags) 
             ? article.tags.map(tag => tag.name || tag).join(', ')
             : (article.tags || '');
@@ -65,6 +66,18 @@ export default function EditArticle() {
     const valid = title.trim() && category && content.trim() && tags.trim() && String(author).trim();
     setIsFormValid(valid);
   }, [title, category, content, tags, author]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get('/api/categories?for_dropdown=true');
+        setCategories(res.data);
+      } catch (e) {
+        console.error('Failed to fetch categories:', e);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -105,8 +118,7 @@ export default function EditArticle() {
       const formData = new FormData();
       formData.append('_method', 'PUT');
       formData.append('title', title);
-      const categoryMap = {'News': 1, 'Sports': 2, 'Opinion': 3, 'Literary': 4, 'Features': 5, 'Specials': 6, 'Art': 7};
-      formData.append('category_id', categoryMap[category] || 1);
+      formData.append('category_id', category);
       formData.append('content', content);
       formData.append('tags', tags);
       formData.append('author_name', author);
@@ -117,11 +129,7 @@ export default function EditArticle() {
       console.log('Sending update request for article ID:', id);
       console.log('FormData contents:', Object.fromEntries(formData));
       
-      const response = await axios.post(`/api/articles/${id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(`/api/articles/${id}`, formData);
 
       console.log('Response status:', response.status);
       
@@ -237,13 +245,9 @@ export default function EditArticle() {
                     className="w-full p-2 border border-gray-400 rounded-md text-gray-800 appearance-none bg-white focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all cursor-pointer"
                  >
                    <option value="">Select Category</option>
-                   <option value="Literary">Literary</option>
-                   <option value="News">News</option>
-                   <option value="Sports">Sports</option>
-                   <option value="Features">Features</option>
-                   <option value="Opinion">Opinion</option>
-                   <option value="Art">Art</option>
-                   <option value="Specials">Specials</option>
+                   {categories.map((cat) => (
+                     <option key={cat.id} value={cat.id}>{cat.name}</option>
+                   ))}
                  </select>
                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                     <ChevronDown className="text-gray-500" size={24} strokeWidth={1.5} />

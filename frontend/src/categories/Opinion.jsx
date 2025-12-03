@@ -284,7 +284,7 @@ export default function Opinion() {
                     title={articles[0].title}
                     snippet={articles[0].excerpt}
                     category={articles[0].categories && articles[0].categories.length > 0 ? articles[0].categories[0].name : 'Opinion'}
-                    author={articles[0].author && articles[0].author.user ? { name: articles[0].author.user.name } : { name: 'Unknown Author' }}
+                    author={articles[0].author_name || articles[0].author?.user?.name || 'Unknown Author'}
                     date={new Date(articles[0].published_at).toLocaleDateString('en-US', {
                       year: 'numeric',
                       month: 'long',
@@ -310,7 +310,7 @@ export default function Opinion() {
                       title={article.title || 'No Title'}
                       snippet={article.excerpt || 'No excerpt available'}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
-                      author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                      author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                       date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
@@ -342,7 +342,7 @@ export default function Opinion() {
                       title={article.title}
                       snippet={article.excerpt}
                       category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
-                      author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+                      author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                       date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
@@ -368,7 +368,7 @@ export default function Opinion() {
                         title: article.title,
                         excerpt: article.excerpt,
                         category: article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion',
-                        author: article.author && article.author.user ? article.author.user.name : 'Unknown Author',
+                        author: article.author_name || article.author?.user?.name || 'Unknown Author',
                         date: new Date(article.published_at).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
@@ -399,7 +399,7 @@ export default function Opinion() {
                             month: 'long',
                             day: 'numeric'
                           }),
-                          author: relatedArticle.author && relatedArticle.author.user ? relatedArticle.author.user.name : 'Unknown Author',
+                          author: relatedArticle.author_name || relatedArticle.author?.user?.name || 'Unknown Author',
                           imageUrl: relatedArticle.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
                           excerpt: relatedArticle.excerpt
                         }}

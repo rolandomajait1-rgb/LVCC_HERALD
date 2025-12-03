@@ -1,0 +1,8 @@
+Issues found in frontend:
+
+1. All category pages (News.jsx, Sports.jsx, Literary.jsx, Art.jsx, Features.jsx, Opinion.jsx, Specials.jsx) use old author format
+2. EditArticleInline.jsx uses article.author?.name instead of author_name
+3. Search.jsx, ArticleList.jsx, DashArticle.jsx, ExpandedArticleCard.jsx use old format
+4. UserProfile/AccountPage.jsx uses old format
+
+Need to update all to use: article.author_name || article.author?.user?.name || 'Unknown Author'

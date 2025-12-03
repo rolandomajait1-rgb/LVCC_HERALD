@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
 
   useEffect(() => {
     if (!formData.token || !formData.email) {
-      navigate('/');
+      navigate('/landing');
     }
   }, [formData.token, formData.email, navigate]);
 
@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
     try {
       await axios.post('/api/reset-password', formData);
       setSuccess(true);
-      setTimeout(() => navigate('/'), 3000);
+      setTimeout(() => navigate('/landing'), 3000);
     } catch (err) {
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors);

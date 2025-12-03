@@ -13,7 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::paginate(10);
-        return view('users.index', compact('users'));
+        return response()->json($users);
     }
 
     public function create()
@@ -45,7 +45,10 @@ class UserController extends Controller
             'new_values' => $user->toArray(),
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'User created successfully.', 'user' => $user], 201);
+        }
+        return response()->json(['message' => 'User created successfully.', 'user' => $user], 201);
     }
 
     public function show(Request $request)
@@ -84,7 +87,10 @@ class UserController extends Controller
             return response()->json(['message' => 'User role updated successfully. User has been notified.', 'user' => $user]);
         }
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'User updated successfully.', 'user' => $user]);
+        }
+        return response()->json(['message' => 'User updated successfully.', 'user' => $user]);
     }
 
     public function destroy(User $user)
@@ -101,7 +107,10 @@ class UserController extends Controller
             'old_values' => $oldValues,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        if (request()->wantsJson()) {
+            return response()->json(['message' => 'User deleted successfully']);
+        }
+        return response()->json(['message' => 'User deleted successfully']);
     }
 
     public function getModerators()

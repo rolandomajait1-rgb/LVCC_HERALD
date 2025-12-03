@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\ArticleInteraction;
+use App\Models\Log as ActivityLog;
 use App\Models\Author;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -77,9 +78,10 @@ class ArticleController extends Controller
             // Admin/Moderator creates articles
             $user = Auth::user();
 
-            // Find or create author by name
+            // Resolve author by provided 'author_name' or 'author'
+            $authorName = $validated['author_name'] ?? ($validated['author'] ?? $user->name);
             $author = Author::firstOrCreate(
-                ['name' => $validated['author_name']],
+                ['name' => $authorName],
                 ['user_id' => $user->id]
             );
 
@@ -111,7 +113,15 @@ class ArticleController extends Controller
                 'featured_image' => $imagePath,
             ]);
 
-            $article->categories()->attach($validated['category_id']);
+            // Resolve category by id or name
+            if (!empty($validated['category_id'])) {
+                $article->categories()->attach($validated['category_id']);
+            } elseif (!empty($validated['category'])) {
+                $category = Category::where('name', $validated['category'])->first();
+                if ($category) {
+                    $article->categories()->attach($category->id);
+                }
+            }
 
             if (!empty($validated['tags'])) {
                 $tagIds = [];
@@ -161,9 +171,10 @@ class ArticleController extends Controller
         // Authorize using policy (admins and moderators may update per policy)
         $this->authorize('update', $article);
 
-        // Find or create author by name
+        // Resolve author by provided 'author_name' or 'author'
+        $authorName = $validated['author_name'] ?? ($validated['author'] ?? Auth::user()->name);
         $author = Author::firstOrCreate(
-            ['name' => $validated['author_name']], 
+            ['name' => $authorName], 
             ['user_id' => Auth::id()]
         );
 
@@ -205,8 +216,13 @@ class ArticleController extends Controller
         $article->update($data);
 
         // Handle category
-        if ($request->has('category_id')) {
+        if (!empty($validated['category_id'])) {
             $article->categories()->sync([$validated['category_id']]);
+        } elseif (!empty($validated['category'])) {
+            $category = Category::where('name', $validated['category'])->first();
+            if ($category) {
+                $article->categories()->sync([$category->id]);
+            }
         }
 
         // Handle tags
@@ -233,7 +249,7 @@ class ArticleController extends Controller
             $article->interactions()->delete();
             $article->delete();
 
-            Log::create([
+            ActivityLog::create([
                 'user_id' => Auth::id(),
                 'action' => 'deleted',
                 'model_type' => 'Article',

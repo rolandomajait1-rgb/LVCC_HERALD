@@ -123,11 +123,7 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const response = await axios.post('/api/articles', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post('/api/articles', formData);
 
       alert("Draft saved successfully!");
       clearFormState();
@@ -173,11 +169,7 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const response = await axios.post('/api/articles', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post('/api/articles', formData);
 
       alert("Article published successfully!");
       clearFormState();
