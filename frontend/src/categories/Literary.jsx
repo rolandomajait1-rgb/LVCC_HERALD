@@ -211,7 +211,7 @@ export default function Literary() {
                             <div className="bg-linear-to-r from-gray-100 to-gray-200 text-xs h-4 w-24 rounded animate-pulse"></div>
                           </div>
                           <div className="bg-linear-to-r from-gray-200 via-gray-300 to-gray-200 text-xl font-serif font-bold text-gray-900 mb-2 text-left h-8 rounded animate-pulse"></div>
-                          <div className="space-y-2">
+                          <div className="space-y-4">
                             <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 text-sm h-5 rounded animate-pulse"></div>
                             <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 text-sm h-5 w-3/4 rounded animate-pulse"></div>
                           </div>
@@ -308,7 +308,7 @@ export default function Literary() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-green-600 pb-2">Latests</h2>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}
