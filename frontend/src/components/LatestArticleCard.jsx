@@ -88,7 +88,13 @@ export default function LatestArticles({ onArticleClick }) {
                       <p className="text-sm text-gray-600 line-clamp-2 text-left mb-3">
                         {article.excerpt}
                       </p>
-                      <p className="text-sm text-gray-700 font-medium text-right">
+                      <p 
+                        className="text-sm text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.location.href = `/author/${encodeURIComponent(author)}`;
+                        }}
+                      >
                         {author}
                       </p>
                     </div>

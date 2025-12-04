@@ -24,8 +24,11 @@ const ArticleHeader = ({ article, navigate }) => (
 
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-6">
       <div className="text-sm text-gray-600">
-        <p>Written by <span className="font-bold text-blue-600">
-          {article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+        <p>Written by <span 
+          className="font-bold text-blue-600 cursor-pointer hover:underline"
+          onClick={() => navigate(`/author/${encodeURIComponent(article.author_name || article.author?.name || 'Unknown Author')}`)}
+        >
+          {article.author_name || article.author?.name || 'Unknown Author'}
         </span></p>
         <p className="text-gray-500 text-xs mt-1 flex items-center gap-1">
           <Calendar size={12} />
@@ -134,7 +137,13 @@ const RelatedCard = ({ article, onClick, navigate }) => (
       <h3 className="text-md font-serif font-bold text-gray-900 mb-2 leading-snug group-hover:text-blue-800 transition-colors line-clamp-2">
         {article.title}
       </h3>
-      <p className="text-xs text-gray-500 mt-auto">{article.author}</p>
+      <p 
+        className="text-xs text-gray-500 mt-auto cursor-pointer hover:text-blue-600 hover:underline"
+        onClick={(e) => {
+          e.stopPropagation();
+          navigate(`/author/${encodeURIComponent(article.author)}`);
+        }}
+      >{article.author}</p>
     </div>
   </div>
 );
@@ -210,7 +219,7 @@ export default function ArticleDetail() {
                   minute: '2-digit',
                   hour12: true
                 }),
-                author: article.author && article.author.user ? article.author.user.name : 'Unknown Author',
+                author: article.author_name || article.author?.name || 'Unknown Author',
                 imageUrl: article.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image'
               }}
               onClick={() => navigate('/article/' + article.slug)}

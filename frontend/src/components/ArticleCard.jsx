@@ -212,7 +212,13 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               </p>
             </div>
 
-            <p className={`text-gray-700 font-medium text-right ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
+            <p 
+              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/author/${encodeURIComponent(finalAuthor)}`);
+              }}
+            >
               {finalAuthor}
             </p>
           </div>
@@ -270,7 +276,13 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
-            <p className={`text-gray-700 font-medium text-right ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}>
+            <p 
+              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/author/${encodeURIComponent(finalAuthor)}`);
+              }}
+            >
               {finalAuthor}
             </p>
           </div>
@@ -292,8 +304,14 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                   {article.categories && article.categories.length > 0 ? article.categories[0].name : 'Uncategorized'}
                 </span>
                 <h4 className="text-sm font-serif font-bold text-gray-900 mt-2 line-clamp-2">{article.title}</h4>
-                <p className="text-xs text-gray-500 mt-1">
-                  {article.author_name || article.author?.user?.name || 'Unknown Author'}
+                <p 
+                  className="text-xs text-gray-500 mt-1 cursor-pointer hover:text-blue-600 hover:underline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/author/${encodeURIComponent(article.author_name || article.author?.name || 'Unknown Author')}`);
+                  }}
+                >
+                  {article.author_name || article.author?.name || 'Unknown Author'}
                 </p>
               </div>
             </div>

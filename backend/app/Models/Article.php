@@ -47,7 +47,7 @@ class Article extends Model
 
     public function getAuthorNameAttribute()
     {
-        return $this->author?->user?->name ?? $this->author?->name ?? 'Unknown Author';
+        return $this->author?->name ?? 'Unknown Author';
     }
     
 
