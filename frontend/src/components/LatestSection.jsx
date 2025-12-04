@@ -71,12 +71,11 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   const featuredArticle = latestArticles[0] ? {
     featured_image: latestArticles[0].featured_image || PLACEHOLDER_IMAGE,
-    category: latestArticles[0].categories?.[0]?.name || 'Latest',
-    date: formatArticleDate(latestArticles[0].published_at),
-    title: latestArticles[0].title,
-    snippet: latestArticles[0].excerpt,
-    author: latestArticles[0].author_name || latestArticles[0].author?.user?.name || latestArticles[0].author?.name || 'Unknown Author',
+    categories: latestArticles[0].categories,
     published_at: latestArticles[0].published_at,
+    title: latestArticles[0].title,
+    excerpt: latestArticles[0].excerpt,
+    author: latestArticles[0].author_name || latestArticles[0].author?.user?.name || latestArticles[0].author?.name || 'Unknown Author',
     isLarge: true,
     slug: latestArticles[0].slug,
     onEdit,
@@ -86,12 +85,11 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   const sideArticles = latestArticles.slice(1, 3).map(article => ({
     featured_image: article.featured_image || PLACEHOLDER_IMAGE,
-    category: article.categories?.[0]?.name || 'Latest',
-    date: formatArticleDate(article.published_at),
-    title: article.title,
-    snippet: article.excerpt,
-    author: article.author_name || article.author?.user?.name || article.author?.name || 'Unknown Author',
+    categories: article.categories,
     published_at: article.published_at,
+    title: article.title,
+    excerpt: article.excerpt,
+    author: article.author_name || article.author?.user?.name || article.author?.name || 'Unknown Author',
     isMedium: true,
     slug: article.slug,
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
