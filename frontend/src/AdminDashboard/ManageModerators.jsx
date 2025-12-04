@@ -79,23 +79,23 @@ export default function ManageModerators() {
         </h1>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col md:flex-row">
         {(() => {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />;
         })()}
 
         <main className="flex-1 bg-white relative h-[calc(100vh-180px)] overflow-y-auto">
-          <div className="p-8">
-            <h2 className="text-3xl font-serif font-bold text-black mb-6">
+          <div className="p-4 md:p-8">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-black mb-6">
               Moderators
             </h2>
 
             {/* Controls Section */}
-            <div className="flex items-center gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-6">
               <button 
                 onClick={addModerator}
-                className="flex items-center gap-2 bg-[#E1E1E1] hover:bg-[#d1d1d1] px-4 py-2 rounded-sm text-black font-medium transition-colors shadow-sm border border-gray-300"
+                className="flex items-center justify-center gap-2 bg-[#E1E1E1] hover:bg-[#d1d1d1] px-4 py-2 rounded-sm text-black font-medium transition-colors shadow-sm border border-gray-300"
               >
                 Add moderator
                 <Plus size={20} className="stroke-2" />
@@ -106,14 +106,14 @@ export default function ManageModerators() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addModerator()}
-                className="border border-gray-400 rounded-sm px-3 py-2 w-80 focus:outline-none focus:border-blue-600 text-sm bg-white"
+                className="border border-gray-400 rounded-sm px-3 py-2 w-full sm:w-80 focus:outline-none focus:border-blue-600 text-sm bg-white"
               />
             </div>
 
             {/* Moderators Table */}
-            <div className="w-full border border-gray-400 shadow-sm">
+            <div className="w-full border border-gray-400 shadow-sm overflow-x-auto">
               {/* Header */}
-              <div className="grid grid-cols-12 bg-[#A9C1D6] border-b border-gray-400">
+              <div className="hidden md:grid grid-cols-12 bg-[#A9C1D6] border-b border-gray-400">
                 <div className="col-span-6 px-4 py-3 font-bold text-black text-center border-r border-gray-400 flex items-center justify-center">
                   Email
                 </div>
@@ -125,31 +125,33 @@ export default function ManageModerators() {
 
               {/* Rows */}
               {loading ? (
-                <div className="grid grid-cols-12 border-b border-gray-400 bg-white h-12">
-                  <div className="col-span-12 px-4 flex items-center justify-center text-black text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-12 border-b border-gray-400 bg-white min-h-12">
+                  <div className="col-span-12 px-4 py-3 flex items-center justify-center text-black text-sm">
                     Loading moderators...
                   </div>
                 </div>
               ) : moderators.length > 0 ? (
                 moderators.map((mod) => (
-                  <div key={mod.id} className="grid grid-cols-12 border-b border-gray-400 last:border-b-0 bg-white h-12">
-                    <div className="col-span-6 px-4 flex items-center justify-center border-r border-gray-400 text-black text-sm">
-                      {mod.email}
+                  <div key={mod.id} className="grid grid-cols-1 md:grid-cols-12 border-b border-gray-400 last:border-b-0 bg-white">
+                    <div className="md:col-span-6 px-4 py-3 flex flex-col md:flex-row items-start md:items-center md:justify-center border-b md:border-b-0 md:border-r border-gray-400 text-black text-sm">
+                      <span className="md:hidden font-bold mr-2">Email:</span>
+                      <span className="break-all">{mod.email}</span>
                     </div>
-                    <div className="col-span-4 px-4 flex items-center justify-center border-r border-gray-400 text-black text-sm">
+                    <div className="md:col-span-4 px-4 py-3 flex flex-col md:flex-row items-start md:items-center md:justify-center border-b md:border-b-0 md:border-r border-gray-400 text-black text-sm">
+                      <span className="md:hidden font-bold mr-2">Date Added:</span>
                       {new Date(mod.created_at).toLocaleDateString()} {new Date(mod.created_at).toLocaleTimeString()}
                     </div>
                     <div 
                       onClick={() => removeModerator(mod.id)}
-                      className="col-span-2 bg-[#E0E0E0] hover:bg-[#d4d4d4] cursor-pointer transition-colors flex items-center justify-center text-black text-sm font-normal"
+                      className="md:col-span-2 bg-[#E0E0E0] hover:bg-[#d4d4d4] cursor-pointer transition-colors flex items-center justify-center text-black text-sm font-normal py-3"
                     >
                       Remove
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="grid grid-cols-12 border-b border-gray-400 bg-white h-12">
-                  <div className="col-span-12 px-4 flex items-center justify-center text-gray-500 text-sm">
+                <div className="grid grid-cols-1 md:grid-cols-12 border-b border-gray-400 bg-white min-h-12">
+                  <div className="col-span-12 px-4 py-3 flex items-center justify-center text-gray-500 text-sm">
                     No moderators found
                   </div>
                 </div>

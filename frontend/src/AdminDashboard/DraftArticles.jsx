@@ -38,15 +38,15 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
       {...listeners}
       className="flex flex-col lg:flex-row gap-4 mb-6"
     >
-      <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row">
-        <div className="sm:w-1/3 relative bg-gray-200">
+      <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row">
+        <div className="md:w-1/3 relative bg-gray-200 h-48 md:h-auto">
           <img
             src={featuredImage || "https://placehold.co/600x350/333/FFF?text=NO+IMAGE"}
             alt="Article Banner"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="sm:w-2/3 p-6 flex flex-col justify-between">
+        <div className="md:w-2/3 p-4 md:p-6 flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-start mb-2">
               <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 uppercase rounded-sm">
@@ -57,10 +57,10 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
                 {date}
               </div>
             </div>
-            <h3 className="text-2xl font-serif font-bold text-black mb-3">
+            <h3 className="text-xl md:text-2xl font-serif font-bold text-black mb-2 md:mb-3">
               {title}
             </h3>
-            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+            <p className="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
               {summary}
             </p>
           </div>
@@ -69,24 +69,24 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
           </div>
         </div>
       </div>
-      <div className="w-full lg:w-48 bg-gray-100 rounded-lg border border-gray-200 flex lg:flex-col items-center justify-center gap-6 p-4 shadow-sm">
-        <button onClick={() => onEdit(id)} className="flex items-center gap-3 text-gray-800 hover:text-black transition-colors font-medium group">
+      <div className="w-full lg:w-48 bg-gray-100 rounded-lg border border-gray-200 flex flex-row lg:flex-col items-center justify-center gap-4 lg:gap-6 p-4 shadow-sm">
+        <button onClick={() => onEdit(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-gray-800 hover:text-black transition-colors font-medium group">
           <div className="bg-transparent group-hover:bg-gray-200 p-1 rounded">
-            <Pencil size={24} strokeWidth={2} />
+            <Pencil size={20} md:size={24} strokeWidth={2} />
           </div>
-          <span className="text-lg">Edit</span>
+          <span className="text-sm lg:text-lg">Edit</span>
         </button>
-        <button onClick={() => onDelete(id)} className="flex items-center gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group">
+        <button onClick={() => onDelete(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group">
           <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
-            <Trash2 size={24} strokeWidth={2} />
+            <Trash2 size={20} md:size={24} strokeWidth={2} />
           </div>
-          <span className="text-lg">Delete</span>
+          <span className="text-sm lg:text-lg">Delete</span>
         </button>
-        <button onClick={() => onPublish(id)} className="flex items-center gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group">
+        <button onClick={() => onPublish(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group">
           <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
-            <Upload size={24} strokeWidth={2} />
+            <Upload size={20} md:size={24} strokeWidth={2} />
           </div>
-          <span className="text-lg">Publish</span>
+          <span className="text-sm lg:text-lg">Publish</span>
         </button>
       </div>
     </div>
@@ -210,18 +210,19 @@ export default function DraftArticles() {
         </h1>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col md:flex-row">
         {(() => {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />;
         })()}
 
-        <div className="flex flex-col h-[calc(100vh-180px)] overflow-y-auto bg-gray-50">
-          <div className="p-8 flex flex-col flex-1">
+        <div className="flex flex-col flex-1 h-[calc(100vh-180px)] overflow-y-auto bg-gray-50">
+          <div className="p-4 md:p-8 flex flex-col flex-1">
             <div className="flex items-center gap-4 mb-6">
-              <h1 className="text-4xl font-serif font-bold text-black">Drafts</h1>
-              <button className="hover:bg-gray-200 p-2 rounded-full transition-colors">
-                <Plus size={32} className="text-black stroke-[2.5]" />
+              <h1 className="text-2xl md:text-4xl font-serif font-bold text-black">Drafts</h1>
+              <button onClick={() => navigate('/admin/create-article')} className="hover:bg-gray-200 p-2 rounded-full transition-colors">
+                <Plus size={24} className="md:hidden text-black stroke-[2.5]" />
+                <Plus size={32} className="hidden md:block text-black stroke-[2.5]" />
               </button>
             </div>
             <div className={`flex-1 ${loading ? 'flex justify-center items-center' : ''}`}>

@@ -210,22 +210,22 @@ export default function CreateArticle() {
         </h1>
       </div>
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col md:flex-row">
         {(() => {
           const filtered = getUserRole() === 'moderator' ? sidebarLinks.filter(l => l.label !== 'Manage Moderators') : sidebarLinks;
           return <AdminSidebar links={filtered} />; 
         })()}
 
-        <div className="flex-1 h-[calc(100vh-180px)] overflow-y-auto p-8">
+        <div className="flex-1 h-[calc(100vh-180px)] overflow-y-auto p-4 md:p-8">
           <div className="max-w-6xl mx-auto text-left">
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold">
+              <h2 className="text-xl md:text-2xl font-semibold">
                 Create New Article
               </h2>
             </div>
             
 
-            <div className="p-8 bg-white rounded-lg border border-gray-300 shadow-sm flex flex-col gap-5">
+            <div className="p-4 md:p-8 bg-white rounded-lg border border-gray-300 shadow-sm flex flex-col gap-5">
               <div>
                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                 <input
@@ -349,12 +349,12 @@ export default function CreateArticle() {
                 />
               </div>
 
-              <div className="flex justify-end gap-3">
+              <div className="flex flex-col sm:flex-row justify-end gap-3">
                 <button
                   type="button"
                   onClick={handlePublish}
                   disabled={!isFormValid || isPublishing}
-                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${ 
+                  className={`px-6 md:px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${ 
                     isFormValid && !isPublishing
                       ? 'bg-blue-600 text-white hover:bg-blue-700'
                       : 'bg-gray-400 text-gray-200 cursor-not-allowed'
@@ -366,7 +366,7 @@ export default function CreateArticle() {
                   type="button"
                   onClick={handleSaveDraft}
                   disabled={!title.trim() || isSavingDraft}
-                  className={`px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${ 
+                  className={`px-6 md:px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 ${ 
                     title.trim() && !isSavingDraft
                       ? 'bg-gray-600 text-white hover:bg-gray-700'
                       : 'bg-gray-300 text-gray-500 cursor-not-allowed'
@@ -377,7 +377,7 @@ export default function CreateArticle() {
                 <button
                   type="button"
                   onClick={() => navigate(getUserRole() === 'moderator' ? '/moderator' : '/admin')}
-                  className="px-8 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="px-6 md:px-8 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   Cancel
                 </button>
