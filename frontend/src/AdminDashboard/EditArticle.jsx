@@ -31,27 +31,22 @@ export default function EditArticle() {
         const response = await axios.get(`/api/articles/${id}`);
         
         console.log('Response status:', response.status);
+        console.log('Article data:', response.data);
         
-        if (response.status === 200) {
-          const article = response.data;
-          console.log('Article data:', article);
-          setTitle(article.title || "");
-          setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
-          setCategory(article.categories?.[0]?.id || "");
-          const tagsString = Array.isArray(article.tags) 
-            ? article.tags.map(tag => tag.name || tag).join(', ')
-            : (article.tags || '');
-          setTags(tagsString);
-          setContent(article.content || "");
-          setCurrentImage(article.featured_image || null);
-        } else {
-          const errorText = response.data;
-          console.error('API Error:', response.status, errorText);
-          alert(`Failed to load article: ${response.status}`);
-        }
+        const article = response.data;
+        setTitle(article.title || "");
+        setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
+        setCategory(article.categories?.[0]?.id || "");
+        const tagsString = Array.isArray(article.tags) 
+          ? article.tags.map(tag => tag.name || tag).join(', ')
+          : (article.tags || '');
+        setTags(tagsString);
+        setContent(article.content || "");
+        setCurrentImage(article.featured_image || null);
       } catch (error) {
         console.error('Error fetching article:', error);
-        alert('Network error while loading article');
+        console.error('Error details:', error.response?.data);
+        alert(`Failed to load article: ${error.response?.data?.message || error.message || 'Network error'}`);
       } finally {
         setLoading(false);
       }
