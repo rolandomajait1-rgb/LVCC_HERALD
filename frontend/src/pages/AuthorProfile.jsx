@@ -108,7 +108,7 @@ export default function AuthorProfile() {
     };
   }, [authorName, dispatch]);
 
-  const articlesData = articles?.data;
+  const articlesData = Array.isArray(articles) ? articles : (articles?.data || []);
 
   if (loading) {
     return (

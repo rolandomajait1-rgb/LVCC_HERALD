@@ -147,16 +147,15 @@ class AuthorController extends Controller
 
     public function showByName($authorName)
     {
-        Log::info('Looking for author/user: ' . $authorName);
-
         $author = \App\Models\Author::where('name', $authorName)->first();
         if (!$author) {
             return response()->json(['error' => 'Author not found'], 404);
         }
 
-        $articles = \App\Models\Article::with('author.user', 'categories')
+        $articles = \App\Models\Article::published()
+            ->with('author', 'categories')
             ->where('author_id', $author->id)
-            ->latest('created_at')
+            ->latest('published_at')
             ->get();
 
         $formattedArticles = $articles->map(function ($article) {
