@@ -169,7 +169,7 @@ export default function EditArticle() {
       <Header />
       <Navigation />
       <div className="p-4 md:p-8 font-sans text-gray-900 flex justify-center">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-2xl px-4 md:px-0">
           <h1 className="text-2xl font-serif  text-left font-bold mb-6 text-black tracking-tight">
             Edit Article
           </h1>
