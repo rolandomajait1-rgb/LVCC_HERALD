@@ -125,7 +125,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -153,7 +153,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -181,7 +181,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Features'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}`n                  published_at={article.published_at}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Sports'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -310,4 +310,5 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
 
