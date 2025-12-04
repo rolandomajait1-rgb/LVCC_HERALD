@@ -325,8 +325,9 @@ export default function Features() {
                         hour12: true
                       })}
                       className="h-full"
-                      
-                      slug={article.slug}`r`n                      isSmall={true}`r`n                      onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
+                      slug={article.slug}
+                      isSmall={true}
+                      onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
                       onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
                       articleId={article.id}
                     />
