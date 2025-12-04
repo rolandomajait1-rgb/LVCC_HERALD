@@ -329,7 +329,7 @@ export default function Specials() {
                       })}
                       className="h-full"
                       
-                      slug={article.slug}`n                      isSmall={true}`n                      onEdit={handleEdit}
+                      slug={article.slug}`r`n                      isSmall={true}`r`n                      onEdit={handleEdit}
                       onDelete={handleDelete}
                       articleId={article.id}
                     />

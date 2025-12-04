@@ -306,30 +306,28 @@ export default function Art() {
               </div>
 
               {/* Right Column: Sidebar Articles */}
-              <div className="lg:col-span-1 flex flex-col gap-8">
+              <div className="lg:col-span-1 flex flex-col gap-4">
                 {articles.slice(1, 3).map(article => (
-                  <div key={article.id} className="flex-1">
-                    <ArticleCard
-                      imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
-                      title={article.title}
-                      snippet={article.excerpt}
-                      category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
-                      author={article.author_name || article.author?.user?.name || 'Unknown Author'}
-                      date={new Date(article.published_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
-                      
-                      slug={article.slug}
-                      className="h-full"
-                      articleId={article.id}
-                    />
-                  </div>
+                  <ArticleCard
+                    key={article.id}
+                    imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
+                    title={article.title}
+                    snippet={article.excerpt}
+                    category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
+                    author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                    date={new Date(article.published_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', {
+                      hour: 'numeric',
+                      minute: '2-digit',
+                      hour12: true
+                    })}
+                    slug={article.slug}
+                    isSmall={true}
+                    articleId={article.id}
+                  />
                 ))}
               </div>
 
