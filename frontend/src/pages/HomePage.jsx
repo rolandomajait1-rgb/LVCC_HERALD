@@ -120,6 +120,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -145,6 +146,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -170,6 +172,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -195,6 +198,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -220,6 +224,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -245,6 +250,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Features'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
@@ -270,6 +276,7 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
+                  author={article.author_name || article.author?.name || 'Unknown Author'}
                   category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Sports'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
