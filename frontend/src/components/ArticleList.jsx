@@ -26,7 +26,7 @@ const ArticleList = ({ title, articles, showOnlyPublished = true }) => {
             key={article.id}
             category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Uncategorized'}
             title={article.title}
-            author={article.author && article.author.user ? article.author.user.name : 'Unknown Author'}
+            author={article.author_name || article.author?.user?.name || 'Unknown Author'}
             date={new Date(article.published_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -49,3 +49,4 @@ const ArticleList = ({ title, articles, showOnlyPublished = true }) => {
 };
 
 export default ArticleList;
+

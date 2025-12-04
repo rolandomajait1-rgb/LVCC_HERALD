@@ -227,7 +227,7 @@ const AccountPage = () => {
                         featured_image={article.featured_image_url || article.featured_image}
                         categories={article.categories}
                         published_at={article.published_at || article.created_at}
-                        author={article.author}
+                        author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                       />
                     ))}
                   </div>
@@ -259,7 +259,7 @@ const AccountPage = () => {
                         featured_image={article.featured_image_url || article.featured_image}
                         categories={article.categories}
                         published_at={article.published_at || article.created_at}
-                        author={article.author}
+                        author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                       />
                     ))}
                   </div>
@@ -336,3 +336,4 @@ const AccountPage = () => {
 };
 
 export default AccountPage;
+

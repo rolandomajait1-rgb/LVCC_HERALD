@@ -151,7 +151,7 @@ export default function TagSearchResults() {
                   category={article.category}
                   date={article.date}
                   excerpt={article.excerpt}
-                  author={article.author}
+                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug || article.id}`)}
                 />
@@ -188,3 +188,4 @@ export default function TagSearchResults() {
     </div>
   );
 }
+
