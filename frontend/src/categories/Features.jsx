@@ -180,7 +180,7 @@ export default function Features() {
                       <div className="bg-linear-to-r from-gray-100 to-gray-200 text-xs text-right flex items-center h-8 w-48 rounded animate-pulse"></div>
                     </div>
                     <div className="bg-linear-to-r from-gray-200 via-gray-300 to-gray-200 font-bold text-gray-900 mb-3 line-clamp-2 text-left text-3xl h-20 rounded animate-pulse"></div>
-                    <div className="space-y-4 mb-5 grow">
+                    <div className="space-y-2 mb-5 grow">
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 rounded animate-pulse"></div>
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 w-4/5 rounded animate-pulse"></div>
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 w-3/4 rounded animate-pulse"></div>
@@ -306,7 +306,7 @@ export default function Features() {
               </div>
 
               {/* Right Column: Sidebar Articles */}
-              <div className="lg:col-span-1 flex flex-col gap-8 h-full">
+              <div className="lg:col-span-1 flex flex-col gap-4">
                 {articles.slice(1, 3).map(article => (
                   <div key={article.id} className="flex-1">
                     <ArticleCard
@@ -325,7 +325,7 @@ export default function Features() {
                         hour12: true
                       })}
                       className="h-full"
-                      isMedium={true}
+                      
                       slug={article.slug}
                       onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
                       onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
@@ -341,7 +341,7 @@ export default function Features() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-yellow-600 pb-2">Latests</h2>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}
@@ -367,7 +367,7 @@ export default function Features() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-yellow-600 pb-2">Most Viewed</h2>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {articles.slice(6, 10).map(article => (
                     <MostViewedCard
                       key={article.id}

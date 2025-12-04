@@ -177,7 +177,7 @@ export default function Opinion() {
                       <div className="bg-linear-to-r from-gray-100 to-gray-200 text-xs text-right flex items-center h-8 w-48 rounded animate-pulse"></div>
                     </div>
                     <div className="bg-linear-to-r from-gray-200 via-gray-300 to-gray-200 font-bold text-gray-900 mb-3 line-clamp-2 text-left text-3xl h-20 rounded animate-pulse"></div>
-                    <div className="space-y-4 mb-5 grow">
+                    <div className="space-y-2 mb-5 grow">
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 rounded animate-pulse"></div>
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 w-4/5 rounded animate-pulse"></div>
                       <div className="bg-linear-to-r from-gray-100 via-gray-200 to-gray-100 text-gray-600 line-clamp-3 text-left text-lg h-10 w-3/4 rounded animate-pulse"></div>
@@ -334,7 +334,7 @@ export default function Opinion() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-gray-600 pb-2">Latests</h2>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}
@@ -348,7 +348,7 @@ export default function Opinion() {
                         month: 'short',
                         day: 'numeric'
                       }) : ''}
-                      isMedium={true}
+                      
                       slug={article.slug}
                       showRelated={true}
                       onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
@@ -360,7 +360,7 @@ export default function Opinion() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-gray-600 pb-2">Most Viewed</h2>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {articles.slice(6, 10).map(article => (
                     <MostViewedCard
                       key={article.id}
