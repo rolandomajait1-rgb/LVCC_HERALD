@@ -11,7 +11,7 @@ const getUserRole = () => {
   return localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
 };
 
-const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
+const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, isSmall = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 50));
@@ -226,7 +226,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isMedium ? 'h-40' : isLarge ? 'h-[420px]' : 'h-80'}`}>
+          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-40' : isLarge ? 'h-[420px]' : 'h-80'}`}>
             {/* Force rebuild */}
             <img
               src={finalImageUrl}
@@ -295,7 +295,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
         <h3 className="text-xl font-serif font-bold text-gray-900 mb-4">More from {finalCategory}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {relatedArticles.map((article) => (
-            <div key={article.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer hover:shadow-md transition-all" onClick={() => navigate(`/article/${article.slug}`)}>
+            <div key={article.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all" onClick={() => navigate(`/article/${article.slug}`)}>
               <div className="h-32 overflow-hidden">
                 <img src={article.featured_image_url || 'https://placehold.co/400x200/e2e8f0/64748b?text=No+Image'} alt={article.title} className="w-full h-full object-cover" />
               </div>

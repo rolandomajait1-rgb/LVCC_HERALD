@@ -94,7 +94,8 @@ export default function LatestSection({ onEdit, onDelete }) {
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
     onEdit,
     onDelete,
-    articleId: article.id
+    articleId: article.id,
+    isSmall: true
   }));
 
   return (

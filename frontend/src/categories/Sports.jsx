@@ -323,6 +323,7 @@ export default function Sports() {
                         hour12: true
                       }) : 'No date'}
                       slug={article.slug}
+                      isSmall={true}
                       onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
                       onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
                       articleId={article.id}

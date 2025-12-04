@@ -119,7 +119,7 @@ const ActionButtons = ({ likes }) => {
 };
 
 const RelatedCard = ({ article, onClick, navigate }) => (
-  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all" onClick={onClick}>
+  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer transition-all" onClick={onClick}>
     <div className="relative h-48 overflow-hidden">
       <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       {(isAdmin() || isModerator()) && (

@@ -299,6 +299,7 @@ export default function Literary() {
                         hour12: true
                       })}
                       slug={article.slug}
+                      isSmall={true}
                     />
                   ))}
                   </div>

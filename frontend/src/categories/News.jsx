@@ -329,6 +329,7 @@ export default function News() {
                         hour12: true
                       })}
                       slug={article.slug}
+                      isSmall={true}
                       onEdit={(isAdmin() || isModerator()) ? handleEdit : undefined}
                       onDelete={isAdmin() ? handleDelete : undefined}
                       articleId={article.id}
