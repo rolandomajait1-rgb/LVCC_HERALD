@@ -90,7 +90,6 @@ export default function LatestSection({ onEdit, onDelete }) {
     title: article.title,
     excerpt: article.excerpt,
     author: article.author_name || article.author?.user?.name || article.author?.name || 'Unknown Author',
-    isMedium: true,
     slug: article.slug,
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
     onEdit,
@@ -119,7 +118,7 @@ export default function LatestSection({ onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="w-full lg:w-1/3 flex flex-col gap-4 md:gap-6">
+        <div className="w-full lg:w-1/3 flex flex-col gap-4">
           {sideArticles.map((article, index) => (
             <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} />
           ))}

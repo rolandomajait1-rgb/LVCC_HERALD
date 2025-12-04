@@ -310,10 +310,10 @@ export default function News() {
               </div>
 
               {/* Right Column: Sidebar Articles */}
-              <div className="lg:col-span-1 flex flex-col gap-8 h-full">
+              <div className="lg:col-span-1 flex flex-col gap-4">
                 {articles.slice(1, 3).map(article => (
-                  <div key={article.id} className="flex-1">
                     <ArticleCard
+                      key={article.id}
                       imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
                       title={article.title}
                       snippet={article.excerpt}
@@ -328,14 +328,11 @@ export default function News() {
                         minute: '2-digit',
                         hour12: true
                       })}
-                      className="h-full"
-                      isMedium={true}
                       slug={article.slug}
                       onEdit={(isAdmin() || isModerator()) ? handleEdit : undefined}
                       onDelete={isAdmin() ? handleDelete : undefined}
                       articleId={article.id}
                     />
-                  </div>
                 ))}
               </div>
 

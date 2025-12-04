@@ -280,29 +280,26 @@ export default function Literary() {
                   />
                 )}
               </div>
-                <div className="lg:col-span-1 flex flex-col gap-8 h-full">
+                <div className="lg:col-span-1 flex flex-col gap-4">
                   {articles.slice(1, 3).map(article => (
-                    <div key={article.id} className="flex-1">
-                      <ArticleCard
-                        imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
-                        title={article.title}
-                        snippet={article.excerpt}
-                        category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
-                        author={article.author_name || article.author?.user?.name || 'Unknown Author'}
-                        date={new Date(article.published_at).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric'
-                        }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', {
-                          hour: 'numeric',
-                          minute: '2-digit',
-                          hour12: true
-                        })}
-                        className="h-full"
-                        isMedium={true}
-                        slug={article.slug}
-                      />
-                    </div>
+                    <ArticleCard
+                      key={article.id}
+                      imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
+                      title={article.title}
+                      snippet={article.excerpt}
+                      category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
+                      author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                      date={new Date(article.published_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+                      slug={article.slug}
+                    />
                   ))}
                   </div>
                 </div>
@@ -311,7 +308,7 @@ export default function Literary() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b-2 border-green-600 pb-2">Latests</h2>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {articles.slice(3, 6).map(article => (
                     <ArticleCard
                       key={article.id}

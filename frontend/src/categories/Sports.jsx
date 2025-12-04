@@ -304,8 +304,8 @@ export default function Sports() {
               </div>
 
               {/* Right Column: Sidebar Articles */}
-              <div className="lg:col-span-1 flex flex-col gap-8">
-                  {articles.slice(3, 6).map(article => (
+              <div className="lg:col-span-1 flex flex-col gap-4">
+                  {articles.slice(1, 3).map(article => (
                     <ArticleCard
                       key={article.id}
                       imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
@@ -315,16 +315,14 @@ export default function Sports() {
                       author={article.author_name || article.author?.user?.name || 'Unknown Author'}
                       date={article.published_at ? new Date(article.published_at).toLocaleDateString('en-US', {
                         year: 'numeric',
-                        month: 'short',
+                        month: 'long',
                         day: 'numeric'
                       }) + ' at ' + new Date(article.published_at).toLocaleTimeString('en-US', {
                         hour: 'numeric',
                         minute: '2-digit',
                         hour12: true
                       }) : 'No date'}
-                      horizontal={true}
                       slug={article.slug}
-                      showRelated={true}
                       onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
                       onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
                       articleId={article.id}
