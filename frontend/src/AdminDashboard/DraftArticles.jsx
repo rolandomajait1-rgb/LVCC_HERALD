@@ -133,6 +133,13 @@ export default function DraftArticles() {
       console.log('Draft data:', data);
       console.log('Draft data length:', Array.isArray(data) ? data.length : 0);
       
+      // Log status of each article
+      if (Array.isArray(data)) {
+        data.forEach((article, index) => {
+          console.log(`Article ${index + 1} status:`, article.status, '| title:', article.title);
+        });
+      }
+      
       // Filter to only show drafts, exclude published articles
       const onlyDrafts = Array.isArray(data) ? data.filter(article => article.status === 'draft') : [];
       console.log('Filtered drafts only:', onlyDrafts);
