@@ -189,18 +189,21 @@ export default function DraftArticles() {
   const handlePublish = async (id) => {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
+        console.log('📤 Publishing article ID:', id);
         const formData = new FormData();
         formData.append('_method', 'PUT');
         formData.append('status', 'published');
 
-        await axios.post(`/api/articles/${id}`, formData, {
+        const response = await axios.post(`/api/articles/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-
+        
+        console.log('✅ Published successfully:', response.data);
         alert('Article published successfully!');
         fetchDrafts();
       } catch (error) {
-        console.error('Error publishing article:', error);
+        console.error('❌ Error publishing article:', error);
+        console.error('Error details:', error.response?.data);
         alert('Failed to publish article: ' + (error.response?.data?.message || error.message));
       }
     }
