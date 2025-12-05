@@ -162,21 +162,12 @@ export default function DraftArticles() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this draft?')) {
       try {
-        const response = await axios.delete(`/api/articles/${id}`);
-
-        console.log('Delete response status:', response.status);
-
-        if (response.status === 200) {
-          fetchDrafts();
-          alert('Draft deleted successfully!');
-        } else {
-          const errorText = response.data;
-          console.error('Delete error:', errorText);
-          alert(`Delete failed: ${response.status}`);
-        }
+        await axios.delete(`/api/articles/${id}`);
+        alert('Draft deleted successfully!');
+        fetchDrafts();
       } catch (error) {
         console.error('Error deleting draft:', error);
-        alert('Failed to delete draft');
+        alert('Failed to delete draft: ' + (error.response?.data?.message || error.message));
       }
     }
   };

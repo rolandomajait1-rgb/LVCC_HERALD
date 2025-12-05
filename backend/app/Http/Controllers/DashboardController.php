@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $users = \App\Models\User::count();
         $articles = \App\Models\Article::where('status', 'published')->count();
         $drafts = \App\Models\Article::where('status', 'draft')->count();
-        $views = \App\Models\ArticleInteraction::where('type', 'shared')->count();
+        $views = \App\Models\ArticleInteraction::where('type', 'viewed')->count();
         $likes = \App\Models\ArticleInteraction::where('type', 'liked')->count();
 
         return response()->json([
@@ -56,7 +56,7 @@ class DashboardController extends Controller
     {
         $totalArticles = \App\Models\Article::count();
         $totalUsers = \App\Models\User::count();
-        $totalViews = \App\Models\ArticleInteraction::where('type', 'shared')->count();
+        $totalViews = \App\Models\ArticleInteraction::where('type', 'viewed')->count();
         $recentArticles = \App\Models\Article::with('author.user', 'categories')
             ->latest('published_at')
             ->take(5)

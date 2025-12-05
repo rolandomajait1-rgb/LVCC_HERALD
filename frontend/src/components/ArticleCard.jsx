@@ -118,17 +118,27 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     if (onEdit) {
       onEdit(articleId);
     } else {
-      navigate(`/admin/edit-article/${articleId}`);
+      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+      navigate(`${rolePrefix}/edit-article/${articleId}`);
     }
   };
 
-  const handleDeleteClick = (e) => {
+  const handleDeleteClick = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (onDelete) {
       onDelete(articleId);
     } else {
-      deleteArticle(articleId);
+      if (window.confirm('Are you sure you want to delete this article?')) {
+        try {
+          await axios.delete(`/api/articles/${articleId}`);
+          alert('Article deleted successfully!');
+          window.location.reload();
+        } catch (error) {
+          console.error('Error deleting article:', error);
+          alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+        }
+      }
     }
   };
 

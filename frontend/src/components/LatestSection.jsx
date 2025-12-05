@@ -18,6 +18,19 @@ export default function LatestSection({ onEdit, onDelete }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this article?')) {
+      try {
+        await axios.delete(`/api/articles/${id}`);
+        alert('Article deleted successfully!');
+        setLatestArticles(prev => prev.filter(article => article.id !== id));
+      } catch (error) {
+        console.error('Error deleting article:', error);
+        alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchLatestArticles = async () => {
       try {
@@ -79,7 +92,7 @@ export default function LatestSection({ onEdit, onDelete }) {
     isLarge: true,
     slug: latestArticles[0].slug,
     onEdit,
-    onDelete,
+    onDelete: onDelete || handleDelete,
     articleId: latestArticles[0].id,
   } : null;
 
@@ -93,7 +106,7 @@ export default function LatestSection({ onEdit, onDelete }) {
     slug: article.slug,
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
     onEdit,
-    onDelete,
+    onDelete: onDelete || handleDelete,
     articleId: article.id,
     isSmall: true
   }));
