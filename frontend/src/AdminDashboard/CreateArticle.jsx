@@ -110,7 +110,6 @@ export default function CreateArticle() {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('category_id', category);
-      // Convert textarea newlines into HTML paragraphs to preserve spacing
       const formattedContent = content
         ? content.split(/\n{2,}/).map(par => `<p>${par.replace(/\n/g, '<br/>')}</p>`).join('')
         : '';
@@ -156,7 +155,6 @@ export default function CreateArticle() {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('category_id', category);
-      // Convert textarea newlines into HTML paragraphs to preserve spacing
       const formattedContent = content
         ? content.split(/\n{2,}/).map(par => `<p>${par.replace(/\n/g, '<br/>')}</p>`).join('')
         : '';
