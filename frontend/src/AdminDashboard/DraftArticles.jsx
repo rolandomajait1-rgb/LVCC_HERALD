@@ -117,16 +117,20 @@ export default function DraftArticles() {
 
   const fetchDrafts = async () => {
     try {
+      console.log('Fetching drafts...');
       const response = await axios.get('/api/articles?status=draft');
+      console.log('Draft response:', response);
 
       if (response.status !== 200) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const data = response.data;
+      const data = response.data.data || response.data;
+      console.log('Draft data:', data);
       setDrafts(data || []);
     } catch (error) {
       console.error('Error fetching drafts:', error);
+      console.error('Error response:', error.response);
       setDrafts([]);
     } finally {
       setLoading(false);
