@@ -127,7 +127,9 @@ export default function DraftArticles() {
 
       const data = response.data.data || response.data;
       console.log('Draft data:', data);
-      setDrafts(data || []);
+      const filteredDrafts = Array.isArray(data) ? data.filter(article => article.status === 'draft') : [];
+      console.log('Filtered drafts:', filteredDrafts);
+      setDrafts(filteredDrafts);
     } catch (error) {
       console.error('Error fetching drafts:', error);
       console.error('Error response:', error.response);

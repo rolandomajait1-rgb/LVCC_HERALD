@@ -58,12 +58,13 @@ export default function Statistics({ onResetData }) {
     }
   };
 
+  const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
-    { label: "Statistics", icon: <FiBarChart size={16} />, to: "/admin/statistics", active: true },
-    { label: "Create Article", icon: <FiPlus size={16} />, to: "/admin/create-article" },
-    { label: "Draft Articles", icon: <FiFileText size={16} />, to: "/admin/draft-articles" },
+    { label: "Statistics", icon: <FiBarChart size={16} />, to: `${rolePrefix}/statistics`, active: true },
+    { label: "Create Article", icon: <FiPlus size={16} />, to: `${rolePrefix}/create-article` },
+    { label: "Draft Articles", icon: <FiFileText size={16} />, to: `${rolePrefix}/draft-articles` },
     { label: "Manage Moderators", icon: <FiUsers size={16} />, to: "/admin/manage-moderators" },
-    { label: "Audit Trail", icon: <FiActivity size={16} />, to: "/admin/audit-trail" },
+    { label: "Audit Trail", icon: <FiActivity size={16} />, to: `${rolePrefix}/audit-trail` },
   ];
 
   return (
