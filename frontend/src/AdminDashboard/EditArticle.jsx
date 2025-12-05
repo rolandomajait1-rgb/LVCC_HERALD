@@ -124,7 +124,11 @@ export default function EditArticle() {
       console.log('Sending update request for article ID:', id);
       console.log('FormData contents:', Object.fromEntries(formData));
       
-      const response = await axios.post(`/api/articles/${id}`, formData);
+      const response = await axios.post(`/api/articles/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       console.log('Response status:', response.status);
       
