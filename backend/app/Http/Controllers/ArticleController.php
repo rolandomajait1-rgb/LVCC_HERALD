@@ -26,7 +26,9 @@ class ArticleController extends Controller
             // Admins and moderators can see all articles
             if ($user->isAdmin() || $user->isModerator()) {
                 if ($request->has('status') && $request->status) {
-                    $query->where('status', $request->status);
+                    $query->where('status', '=', $request->status);
+                } else {
+                    // If no status specified, show all articles for admin/moderator
                 }
             } else {
                 // Regular users only see published articles
@@ -127,10 +129,15 @@ class ArticleController extends Controller
                 $tagIds = [];
                 $tags = explode(',', $validated['tags']);
                 foreach ($tags as $tagName) {
-                    $tag = Tag::firstOrCreate(['name' => trim($tagName)]);
-                    $tagIds[] = $tag->id;
+                    $tagName = trim($tagName);
+                    if (!empty($tagName)) {
+                        $tag = Tag::firstOrCreate(['name' => $tagName]);
+                        $tagIds[] = $tag->id;
+                    }
                 }
-                $article->tags()->sync($tagIds);
+                if (!empty($tagIds)) {
+                    $article->tags()->sync($tagIds);
+                }
             }
 
             return response()->json($article->load('author.user', 'categories', 'tags'), 201);
@@ -226,14 +233,19 @@ class ArticleController extends Controller
         }
 
         // Handle tags
-        if ($request->tags) {
+        if ($request->has('tags') && $request->tags) {
             $tags = explode(',', $request->tags);
             $tagIds = [];
             foreach ($tags as $tagName) {
-                $tag = Tag::firstOrCreate(['name' => trim($tagName)]);
-                $tagIds[] = $tag->id;
+                $tagName = trim($tagName);
+                if (!empty($tagName)) {
+                    $tag = Tag::firstOrCreate(['name' => $tagName]);
+                    $tagIds[] = $tag->id;
+                }
             }
-            $article->tags()->sync($tagIds);
+            if (!empty($tagIds)) {
+                $article->tags()->sync($tagIds);
+            }
         }
 
         return response()->json($article->load('author.user', 'categories', 'tags'));
@@ -401,6 +413,15 @@ class ArticleController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        // Track view
+        if (Auth::check()) {
+            ArticleInteraction::firstOrCreate([
+                'user_id' => Auth::id(),
+                'article_id' => $article->id,
+                'type' => 'viewed'
+            ]);
+        }
+
         return response()->json($article);
     }
 
@@ -409,6 +430,15 @@ class ArticleController extends Controller
         $article = Article::published()->with('author.user', 'categories', 'tags')->find($id);
         if (!$article) {
             return response()->json(['error' => 'Article not found'], 404);
+        }
+
+        // Track view
+        if (Auth::check()) {
+            ArticleInteraction::firstOrCreate([
+                'user_id' => Auth::id(),
+                'article_id' => $article->id,
+                'type' => 'viewed'
+            ]);
         }
 
         return response()->json($article);
