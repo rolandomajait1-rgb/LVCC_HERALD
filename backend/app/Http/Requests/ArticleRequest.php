@@ -21,9 +21,11 @@ class ArticleRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isDraft = $this->input('status') === 'draft';
+        
         return [
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content' => $isDraft ? 'nullable|string' : 'required|string',
             'category' => 'sometimes|string|max:255',
             'category_id' => 'required_without:category|integer|exists:categories,id',
             'tags' => 'nullable|string',
