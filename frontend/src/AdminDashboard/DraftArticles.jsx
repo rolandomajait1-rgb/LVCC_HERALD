@@ -120,16 +120,18 @@ export default function DraftArticles() {
       console.log('Fetching drafts...');
       const response = await axios.get('/api/articles?status=draft');
       console.log('Draft response:', response);
+      console.log('Draft response data:', response.data);
 
       if (response.status !== 200) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const data = response.data.data || response.data;
+      let data = response.data.data || response.data;
+      if (!Array.isArray(data) && data.data) {
+        data = data.data;
+      }
       console.log('Draft data:', data);
-      const filteredDrafts = Array.isArray(data) ? data.filter(article => article.status === 'draft') : [];
-      console.log('Filtered drafts:', filteredDrafts);
-      setDrafts(filteredDrafts);
+      setDrafts(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error fetching drafts:', error);
       console.error('Error response:', error.response);
