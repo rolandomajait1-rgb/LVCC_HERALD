@@ -16,6 +16,8 @@ import EditArticle from './AdminDashboard/EditArticle';
 
 import ForgotPasswordPage from './authentication/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import ChangePassword from './pages/ChangePassword';
+import ChangePassword from './pages/ChangePassword';
 import About from './pages/About';
 import News from './categories/News';
 import Literary from './categories/Literary';
@@ -377,6 +379,38 @@ function AnimatedRoutes() {
             >
               <ResetPasswordPage />
             </motion.div>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ChangePassword />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/change-password"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <ChangePassword />
+              </motion.div>
+            </ProtectedRoute>
           }
         />
         <Route
