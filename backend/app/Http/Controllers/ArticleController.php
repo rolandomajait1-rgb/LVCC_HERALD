@@ -21,21 +21,11 @@ class ArticleController extends Controller
     {
         $query = Article::with('author.user', 'categories', 'tags')->withCount('interactions');
 
-        if (Auth::check()) {
-            $user = Auth::user();
-            // Admins and moderators can see all articles
-            if ($user->isAdmin() || $user->isModerator()) {
-                if ($request->has('status') && $request->status) {
-                    $query->where('status', '=', $request->status);
-                } else {
-                    // If no status specified, show all articles for admin/moderator
-                }
-            } else {
-                // Regular users only see published articles
-                $query->published();
-            }
-        } else {
-            // Unauthenticated users can only see published articles
+        // Filter by status first (for all users)
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        } elseif (!Auth::check() || (!Auth::user()->isAdmin() && !Auth::user()->isModerator())) {
+            // Only show published for non-admin/non-moderator
             $query->published();
         }
 

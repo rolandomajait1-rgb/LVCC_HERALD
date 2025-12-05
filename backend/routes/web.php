@@ -8,14 +8,13 @@ Route::get('/', function () {
 
 // Debug route - CHECK DRAFTS
 Route::get('/debug/drafts', function () {
-    $drafts = \App\Models\Article::where('status', 'draft')
-        ->with('author', 'categories', 'tags')
-        ->get();
+    $all = \App\Models\Article::select('id', 'title', 'status')->get();
+    $drafts = \App\Models\Article::where('status', 'draft')->get();
     
     return response()->json([
-        'total_drafts' => $drafts->count(),
-        'drafts' => $drafts,
-        'all_articles_count' => \App\Models\Article::count(),
-        'published_count' => \App\Models\Article::where('status', 'published')->count()
+        'draft_count' => $drafts->count(),
+        'published_count' => \App\Models\Article::where('status', 'published')->count(),
+        'total_count' => $all->count(),
+        'all_articles' => $all
     ]);
 });
