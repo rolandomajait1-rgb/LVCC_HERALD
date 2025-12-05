@@ -117,37 +117,18 @@ export default function DraftArticles() {
 
   const fetchDrafts = async () => {
     try {
-      console.log('Fetching drafts...');
       const response = await axios.get('/api/articles?status=draft');
-      console.log('Draft response:', response);
-      console.log('Draft response data:', response.data);
-
-      if (response.status !== 200) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      let data = response.data.data || response.data;
-      if (!Array.isArray(data) && data.data) {
-        data = data.data;
-      }
-      console.log('Draft data:', data);
-      console.log('Draft data length:', Array.isArray(data) ? data.length : 0);
       
-      // Log status of each article
-      if (Array.isArray(data)) {
-        data.forEach((article, index) => {
-          console.log(`Article ${index + 1} status:`, article.status, '| title:', article.title);
-        });
-      }
+      // Backend returns paginated response: { data: [...], current_page, last_page, etc }
+      const articles = response.data.data || [];
       
-      // Filter to only show drafts, exclude published articles
-      const onlyDrafts = Array.isArray(data) ? data.filter(article => article.status === 'draft') : [];
-      console.log('Filtered drafts only:', onlyDrafts);
-      console.log('Filtered drafts count:', onlyDrafts.length);
+      // Filter to ensure only drafts (double check)
+      const onlyDrafts = articles.filter(article => article.status === 'draft');
+      
+      console.log(`Found ${onlyDrafts.length} draft(s)`);
       setDrafts(onlyDrafts);
     } catch (error) {
       console.error('Error fetching drafts:', error);
-      console.error('Error response:', error.response);
       setDrafts([]);
     } finally {
       setLoading(false);
@@ -261,8 +242,9 @@ export default function DraftArticles() {
                   </SortableContext>
                 </DndContext>
               ) : (
-                <div className="text-center">
-                  <p className="text-gray-500">No drafts found. Check browser console for API response details.</p>
+                <div className="text-center py-12">
+                  <p className="text-gray-600 text-lg mb-4">No drafts found</p>
+                  <p className="text-gray-500 text-sm">Create a new article and save it as draft to see it here.</p>
                 </div>
               )}
             </div>
