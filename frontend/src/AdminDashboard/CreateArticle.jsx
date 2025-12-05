@@ -41,12 +41,13 @@ export default function CreateArticle() {
     setIsFormValid(valid);
   }, [title, category, content, tags, authorName]);
 
+  const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
-    { label: "Statistics", icon: <FiBarChart size={16} />, to: "/admin/statistics" },
-    { label: "Create Article", icon: <FiPlus size={16} />, to: "/admin/create-article", active: true },
-    { label: "Draft Articles", icon: <FiFile size={16} />, to: "/admin/draft-articles" },
+    { label: "Statistics", icon: <FiBarChart size={16} />, to: `${rolePrefix}/statistics` },
+    { label: "Create Article", icon: <FiPlus size={16} />, to: `${rolePrefix}/create-article`, active: true },
+    { label: "Draft Articles", icon: <FiFile size={16} />, to: `${rolePrefix}/draft-articles` },
     { label: "Manage Moderators", icon: <FiUsers size={16} />, to: "/admin/manage-moderators" },
-    { label: "Audit Trail", icon: <FiActivity size={16} />, to: "/admin/audit-trail" },
+    { label: "Audit Trail", icon: <FiActivity size={16} />, to: `${rolePrefix}/audit-trail` },
   ];
 
   const handleImageChange = (e) => {
@@ -126,7 +127,8 @@ export default function CreateArticle() {
 
       alert("Draft saved successfully!");
       clearFormState();
-      navigate('/admin/draft-articles');
+      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+      navigate(`${rolePrefix}/draft-articles`);
     } catch (error) {
       console.error('Save draft error:', error);
       console.error('Error response:', error.response);
@@ -172,7 +174,8 @@ export default function CreateArticle() {
 
       alert("Article published successfully!");
       clearFormState();
-      navigate('/admin/statistics');
+      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+      navigate(`${rolePrefix}/statistics`);
     } catch (error) {
       console.error('Publish error:', error);
       let errorMessage = 'Failed to publish article';

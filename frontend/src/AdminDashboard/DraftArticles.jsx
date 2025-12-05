@@ -98,12 +98,13 @@ export default function DraftArticles() {
   const [drafts, setDrafts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
-    { label: "Statistics", icon: <FiBarChart size={16} />, to: "/admin/statistics" },
-    { label: "Create Article", icon: <FiPlus size={16} />, to: "/admin/create-article" },
-    { label: "Draft Articles", icon: <FiFile size={16} />, to: "/admin/draft-articles", active: true },
+    { label: "Statistics", icon: <FiBarChart size={16} />, to: `${rolePrefix}/statistics` },
+    { label: "Create Article", icon: <FiPlus size={16} />, to: `${rolePrefix}/create-article` },
+    { label: "Draft Articles", icon: <FiFile size={16} />, to: `${rolePrefix}/draft-articles`, active: true },
     { label: "Manage Moderators", icon: <FiUsers size={16} />, to: "/admin/manage-moderators" },
-    { label: "Audit Trail", icon: <FiActivity size={16} />, to: "/admin/audit-trail" },
+    { label: "Audit Trail", icon: <FiActivity size={16} />, to: `${rolePrefix}/audit-trail` },
   ];
 
   useEffect(() => {
@@ -133,7 +134,8 @@ export default function DraftArticles() {
   };
 
   const handleEdit = (id) => {
-    navigate(`/admin/edit-article/${id}`);
+    const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+    navigate(`${rolePrefix}/edit-article/${id}`);
   };
 
   const handleDelete = async (id) => {
@@ -175,7 +177,8 @@ export default function DraftArticles() {
 
         if (response.status === 200) {
           alert('Article published successfully!');
-          navigate('/admin/statistics');
+          const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+          navigate(`${rolePrefix}/statistics`);
         } else {
           const errorText = response.data;
           console.error('Publish error response:', errorText);
@@ -220,7 +223,7 @@ export default function DraftArticles() {
           <div className="p-4 md:p-8 flex flex-col flex-1">
             <div className="flex items-center gap-4 mb-6">
               <h1 className="text-2xl md:text-4xl font-serif font-bold text-black">Drafts</h1>
-              <button onClick={() => navigate('/admin/create-article')} className="hover:bg-gray-200 p-2 rounded-full transition-colors">
+              <button onClick={() => navigate(`${rolePrefix}/create-article`)} className="hover:bg-gray-200 p-2 rounded-full transition-colors">
                 <Plus size={24} className="md:hidden text-black stroke-[2.5]" />
                 <Plus size={32} className="hidden md:block text-black stroke-[2.5]" />
               </button>

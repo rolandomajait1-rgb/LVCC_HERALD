@@ -255,6 +255,86 @@ function AnimatedRoutes() {
           }
         />
         <Route
+          path="/moderator/statistics"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <Statistics />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/moderator/create-article"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <CreateArticle />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/moderator/draft-articles"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <DraftArticles />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/moderator/audit-trail"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AuditTrail />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/moderator/edit-article/:id"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <EditArticle />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/about"
           element={
             <ProtectedRoute>
