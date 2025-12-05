@@ -271,7 +271,7 @@ export default function DraftArticles() {
                 </DndContext>
               ) : (
                 <div className="text-center">
-                  <p className="text-gray-500">No drafts found.</p>
+                  <p className="text-gray-500">No drafts found. Check browser console for API response details.</p>
                 </div>
               )}
             </div>
