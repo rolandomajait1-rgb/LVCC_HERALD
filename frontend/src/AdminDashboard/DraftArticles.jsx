@@ -117,18 +117,37 @@ export default function DraftArticles() {
 
   const fetchDrafts = async () => {
     try {
+      console.log('🔍 Fetching drafts from API...');
       const response = await axios.get('/api/articles?status=draft');
+      
+      console.log('📦 API Response:', {
+        status: response.status,
+        hasData: !!response.data,
+        dataKeys: Object.keys(response.data || {}),
+        totalItems: response.data.total || 0
+      });
       
       // Backend returns paginated response: { data: [...], current_page, last_page, etc }
       const articles = response.data.data || [];
+      console.log(`📄 Articles array length: ${articles.length}`);
       
       // Filter to ensure only drafts (double check)
       const onlyDrafts = articles.filter(article => article.status === 'draft');
+      console.log(`✅ Found ${onlyDrafts.length} draft(s)`);
       
-      console.log(`Found ${onlyDrafts.length} draft(s)`);
+      if (onlyDrafts.length > 0) {
+        console.log('📝 First draft:', {
+          id: onlyDrafts[0].id,
+          title: onlyDrafts[0].title,
+          status: onlyDrafts[0].status,
+          author: onlyDrafts[0].author_name
+        });
+      }
+      
       setDrafts(onlyDrafts);
     } catch (error) {
-      console.error('Error fetching drafts:', error);
+      console.error('❌ Error fetching drafts:', error);
+      console.error('Error details:', error.response?.data || error.message);
       setDrafts([]);
     } finally {
       setLoading(false);
