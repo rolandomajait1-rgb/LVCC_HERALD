@@ -70,21 +70,30 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
         </div>
       </div>
       <div className="w-full lg:w-48 bg-gray-100 rounded-lg border border-gray-200 flex flex-row lg:flex-col items-center justify-center gap-4 lg:gap-6 p-4 shadow-sm">
-        <button onClick={() => onEdit(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-gray-800 hover:text-black transition-colors font-medium group">
+        <button 
+          onClick={(e) => { e.stopPropagation(); onEdit(id); }} 
+          className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-gray-800 hover:text-black transition-colors font-medium group cursor-pointer"
+        >
           <div className="bg-transparent group-hover:bg-gray-200 p-1 rounded">
-            <Pencil size={20} md:size={24} strokeWidth={2} />
+            <Pencil size={20} strokeWidth={2} />
           </div>
           <span className="text-sm lg:text-lg">Edit</span>
         </button>
-        <button onClick={() => onDelete(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group">
+        <button 
+          onClick={(e) => { e.stopPropagation(); onDelete(id); }} 
+          className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group cursor-pointer"
+        >
           <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
-            <Trash2 size={20} md:size={24} strokeWidth={2} />
+            <Trash2 size={20} strokeWidth={2} />
           </div>
           <span className="text-sm lg:text-lg">Delete</span>
         </button>
-        <button onClick={() => onPublish(id)} className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group">
+        <button 
+          onClick={(e) => { e.stopPropagation(); onPublish(id); }} 
+          className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group cursor-pointer"
+        >
           <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
-            <Upload size={20} md:size={24} strokeWidth={2} />
+            <Upload size={20} strokeWidth={2} />
           </div>
           <span className="text-sm lg:text-lg">Publish</span>
         </button>
