@@ -30,6 +30,18 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    
+    // Validate password match
+    if (formData.password !== formData.password_confirmation) {
+      setErrors({ password_confirmation: ['Passwords do not match'] });
+      return;
+    }
+    
+    // Validate laverdad email
+    if (!formData.email.endsWith('@laverdad.edu')) {
+      setErrors({ email: ['Email must be a @laverdad.edu address'] });
+      return;
+    }
     try {
       const response = await axios.post('/api/register', {
         name: formData.name,
