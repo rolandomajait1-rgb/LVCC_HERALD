@@ -131,6 +131,11 @@ export default function DraftArticles() {
       const articles = response.data.data || [];
       console.log(`📄 Articles array length: ${articles.length}`);
       
+      // Log actual statuses
+      if (articles.length > 0) {
+        console.log('📋 Article statuses:', articles.map(a => ({ id: a.id, title: a.title?.substring(0, 30), status: a.status })));
+      }
+      
       // Filter to ensure only drafts (double check)
       const onlyDrafts = articles.filter(article => article.status === 'draft');
       console.log(`✅ Found ${onlyDrafts.length} draft(s)`);
