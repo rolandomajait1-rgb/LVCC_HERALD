@@ -132,7 +132,12 @@ export default function DraftArticles() {
       }
       console.log('Draft data:', data);
       console.log('Draft data length:', Array.isArray(data) ? data.length : 0);
-      setDrafts(Array.isArray(data) ? data : []);
+      
+      // Filter to only show drafts, exclude published articles
+      const onlyDrafts = Array.isArray(data) ? data.filter(article => article.status === 'draft') : [];
+      console.log('Filtered drafts only:', onlyDrafts);
+      console.log('Filtered drafts count:', onlyDrafts.length);
+      setDrafts(onlyDrafts);
     } catch (error) {
       console.error('Error fetching drafts:', error);
       console.error('Error response:', error.response);
