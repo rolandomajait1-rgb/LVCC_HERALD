@@ -77,6 +77,28 @@ export default function EditArticle() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please upload only JPEG or PNG images');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('Image size must be less than 5MB');
+        e.target.value = '';
+        return;
+      }
+      
+      console.log('Image selected:', {
+        name: file.name,
+        type: file.type,
+        size: (file.size / 1024 / 1024).toFixed(2) + 'MB'
+      });
+      
       setImage(file);
     }
   };
@@ -98,12 +120,7 @@ export default function EditArticle() {
   }
 
   const handleUpdate = async () => {
-    console.log('Save button clicked');
-    console.log('Form data:', { title, author, category, tags, content });
-    console.log('Form valid:', isFormValid);
-    
     if (!validateForm()) {
-      console.log('Form validation failed');
       return;
     }
 
@@ -112,38 +129,55 @@ export default function EditArticle() {
     try {
       const formData = new FormData();
       formData.append('_method', 'PUT');
-      formData.append('title', title);
+      formData.append('title', title.trim());
       formData.append('category_id', category);
-      formData.append('content', content);
-      formData.append('tags', tags);
-      formData.append('author_name', author);
+      formData.append('content', content.trim());
+      formData.append('tags', tags.trim());
+      formData.append('author_name', author.trim());
+      
       if (image) {
-        formData.append('featured_image', image);
+        console.log('📸 Uploading new image:', image.name);
+        formData.append('featured_image', image, image.name);
       }
 
-      console.log('Sending update request for article ID:', id);
-      console.log('FormData contents:', Object.fromEntries(formData));
+      console.log('💾 Updating article ID:', id);
       
       const response = await axios.post(`/api/articles/${id}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json'
+        },
+        timeout: 60000 // 60 seconds for mobile uploads
       });
-
-      console.log('Response status:', response.status);
       
       if (response.status === 200) {
-        alert("Article updated successfully!");
+        alert("✅ Article updated successfully!");
         clearFormState();
         navigate(-1);
-      } else {
-        const errorText = response.data;
-        console.log('Error response:', errorText);
-        throw new Error(`Failed to update article: ${response.status} - ${errorText}`);
       }
     } catch (error) {
-      console.error('Update error:', error);
-      alert(`Error: ${error.message}`);
+      console.error('❌ Update error:', error);
+      
+      let errorMessage = 'Failed to update article';
+      
+      if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Upload timeout. Please check your internet connection and try again.';
+      } else if (error.response) {
+        errorMessage = error.response.data?.message || error.response.data?.error || errorMessage;
+        
+        if (error.response.status === 413) {
+          errorMessage = 'Image file is too large. Please use an image smaller than 5MB.';
+        } else if (error.response.status === 422) {
+          const errors = error.response.data?.errors;
+          if (errors) {
+            errorMessage = Object.values(errors).flat().join('\n');
+          }
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please check your internet connection.';
+      }
+      
+      alert(`❌ Error: ${errorMessage}`);
     } finally {
       setIsUpdating(false);
     }
@@ -226,7 +260,8 @@ export default function EditArticle() {
                 <input
                   id="cover-image"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png"
+                  capture="environment"
                   onChange={handleImageChange}
                   className="hidden"
                 />

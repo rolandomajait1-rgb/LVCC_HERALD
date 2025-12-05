@@ -101,6 +101,28 @@ export default function CreateArticle() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please upload only JPEG or PNG images');
+        e.target.value = '';
+        return;
+      }
+      
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('Image size must be less than 5MB');
+        e.target.value = '';
+        return;
+      }
+      
+      console.log('📸 Image selected:', {
+        name: file.name,
+        type: file.type,
+        size: (file.size / 1024 / 1024).toFixed(2) + 'MB'
+      });
+      
       setImage(file);
     }
   };
@@ -350,7 +372,8 @@ export default function CreateArticle() {
                 <input
                   id="cover-image"
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/jpg,image/png"
+                  capture="environment"
                   onChange={handleImageChange}
                   className="hidden"
                 />
