@@ -12,14 +12,6 @@ const RelatedCard = ({ article, onClick, navigate }) => (
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all" onClick={onClick}>
     <div className="relative h-44 overflow-hidden">
       <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      {(isAdmin() || getUserRole() === 'moderator') && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 bg-blue-500 text-white rounded shadow hover:bg-blue-600" onClick={(e) => e.stopPropagation()}><Pencil size={12}/></button>
-          {getUserRole() === 'admin' && (
-            <button className="p-1.5 bg-red-500 text-white rounded shadow hover:bg-red-600" onClick={(e) => e.stopPropagation()}><Trash2 size={12}/></button>
-          )}
-        </div>
-      )}
     </div>
     <div className="p-4 flex flex-col grow">
       <div className="flex justify-between items-start mb-2">
@@ -61,6 +53,18 @@ export default function ArticleDetail() {
   
   const [copied, setCopied] = useState(false);
 
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this article?')) {
+      try {
+        await axios.delete(`/api/articles/${article.id}`);
+        alert('Article deleted successfully!');
+        navigate('/');
+      } catch (error) {
+        console.error('Error deleting article:', error);
+        alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -186,14 +190,20 @@ export default function ArticleDetail() {
               {(isAdmin() || isModerator()) && (
                 <div className="flex space-x-2">
                   <button 
-                    onClick={() => navigate(`/admin/edit-article/${article.id}`)}
+                    onClick={() => {
+                      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+                      navigate(`${rolePrefix}/edit-article/${article.id}`);
+                    }}
                     className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
                   >
                     <Pencil size={16} className="mr-1.5" />
                     Edit
                   </button>
                   {isAdmin() && (
-                    <button className="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors">
+                    <button 
+                      onClick={handleDelete}
+                      className="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
+                    >
                       <Trash2 size={16} className="mr-1.5" />
                       Delete
                     </button>

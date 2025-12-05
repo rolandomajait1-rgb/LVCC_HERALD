@@ -175,30 +175,19 @@ export default function DraftArticles() {
   const handlePublish = async (id) => {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
-        console.log('Publishing article', id);
-
         const formData = new FormData();
         formData.append('_method', 'PUT');
         formData.append('status', 'published');
 
-        const response = await axios.post(`/api/articles/${id}`, formData, {
+        await axios.post(`/api/articles/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 
-        console.log('Publish response status:', response.status);
-
-        if (response.status === 200) {
-          alert('Article published successfully!');
-          const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
-          navigate(`${rolePrefix}/statistics`);
-        } else {
-          const errorText = response.data;
-          console.error('Publish error response:', errorText);
-          alert(`Publish failed: ${response.status} - ${errorText}`);
-        }
+        alert('Article published successfully!');
+        fetchDrafts();
       } catch (error) {
         console.error('Error publishing article:', error);
-        alert('Failed to publish article: ' + error.message);
+        alert('Failed to publish article: ' + (error.response?.data?.message || error.message));
       }
     }
   };
