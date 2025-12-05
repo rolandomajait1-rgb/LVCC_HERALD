@@ -133,7 +133,7 @@ export default function DraftArticles() {
   };
 
   const handleEdit = (id) => {
-    window.location.href = `/admin/edit-article/${id}`;
+    navigate(`/admin/edit-article/${id}`);
   };
 
   const handleDelete = async (id) => {

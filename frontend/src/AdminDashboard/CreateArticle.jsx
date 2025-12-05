@@ -129,6 +129,7 @@ export default function CreateArticle() {
       navigate('/admin/draft-articles');
     } catch (error) {
       console.error('Save draft error:', error);
+      console.error('Error response:', error.response);
       let errorMessage = 'Failed to save draft';
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
