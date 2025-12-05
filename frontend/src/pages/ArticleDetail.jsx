@@ -241,7 +241,13 @@ export default function ArticleDetail() {
                       key={tag.id} 
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/tag/${tag.name}`);
+                        const tagLower = tag.name.toLowerCase();
+                        const categories = ['news', 'literary', 'opinion', 'art', 'features', 'sports', 'specials'];
+                        if (categories.includes(tagLower)) {
+                          navigate(`/category/${tagLower}`);
+                        } else {
+                          navigate(`/tag/${tag.name}`);
+                        }
                       }}
                       className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-colors"
                     >
