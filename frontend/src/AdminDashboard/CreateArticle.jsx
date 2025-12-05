@@ -111,11 +111,11 @@ export default function CreateArticle() {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('category_id', category);
-      const formattedContent = content
+      const formattedContent = content.trim()
         ? content.split(/\n{2,}/).map(par => `<p>${par.replace(/\n/g, '<br/>')}</p>`).join('')
-        : '';
+        : '<p>Draft content</p>';
       formData.append('content', formattedContent);
-      formData.append('tags', tags.map(tag => tag.replace('#', '')).join(','));
+      formData.append('tags', tags.length > 0 ? tags.map(tag => tag.replace('#', '')).join(',') : 'draft');
       formData.append('status', 'draft');
       formData.append('author_name', authorName);
 
@@ -123,7 +123,11 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const response = await axios.post('/api/articles', formData);
+      const response = await axios.post('/api/articles', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       alert("Draft saved successfully!");
       clearFormState();
@@ -170,7 +174,11 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const response = await axios.post('/api/articles', formData);
+      const response = await axios.post('/api/articles', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
 
       alert("Article published successfully!");
       clearFormState();
