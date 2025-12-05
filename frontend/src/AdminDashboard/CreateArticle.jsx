@@ -25,6 +25,7 @@ export default function CreateArticle() {
   const [categories, setCategories] = useState([]);
   const [lastSaved, setLastSaved] = useState(null);
   const [autoSaving, setAutoSaving] = useState(false);
+  const [draftId, setDraftId] = useState(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -62,9 +63,20 @@ export default function CreateArticle() {
         formData.append('author_name', authorName);
         if (image) formData.append('featured_image', image);
 
-        await axios.post('/api/articles', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        let response;
+        if (draftId) {
+          // Update existing draft
+          formData.append('_method', 'PUT');
+          response = await axios.post(`/api/articles/${draftId}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+        } else {
+          // Create new draft
+          response = await axios.post('/api/articles', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          setDraftId(response.data.id);
+        }
         setLastSaved(new Date());
       } catch (error) {
         console.error('Auto-save failed:', error);
@@ -75,7 +87,7 @@ export default function CreateArticle() {
 
     const timer = setTimeout(autoSave, 30000); // 30 seconds
     return () => clearTimeout(timer);
-  }, [title, category, content, tags, authorName, image]);
+  }, [title, category, content, tags, authorName, image, draftId]);
 
   const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
@@ -159,14 +171,24 @@ export default function CreateArticle() {
         formData.append('featured_image', image);
       }
 
-      const response = await axios.post('/api/articles', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      let response;
+      if (draftId) {
+        // Update existing draft
+        formData.append('_method', 'PUT');
+        response = await axios.post(`/api/articles/${draftId}`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        // Create new draft
+        response = await axios.post('/api/articles', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        setDraftId(response.data.id);
+      }
 
       alert("Draft saved successfully!");
       clearFormState();
+      setDraftId(null);
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
       navigate(`${rolePrefix}/draft-articles`);
     } catch (error) {
