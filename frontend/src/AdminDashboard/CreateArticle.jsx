@@ -23,6 +23,8 @@ export default function CreateArticle() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [autoSaving, setAutoSaving] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -40,6 +42,40 @@ export default function CreateArticle() {
     const valid = title.trim() && category && content.trim() && tags.length > 0 && authorName.trim();
     setIsFormValid(valid);
   }, [title, category, content, tags, authorName]);
+
+  // Auto-save every 30 seconds
+  useEffect(() => {
+    if (!title.trim() || !category || !authorName.trim()) return;
+
+    const autoSave = async () => {
+      setAutoSaving(true);
+      try {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('category_id', category);
+        const formattedContent = content.trim()
+          ? content.split(/\n{2,}/).map(par => `<p>${par.replace(/\n/g, '<br/>')}</p>`).join('')
+          : '<p>Draft content</p>';
+        formData.append('content', formattedContent);
+        formData.append('tags', tags.length > 0 ? tags.map(tag => tag.replace('#', '')).join(',') : 'draft');
+        formData.append('status', 'draft');
+        formData.append('author_name', authorName);
+        if (image) formData.append('featured_image', image);
+
+        await axios.post('/api/articles', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        setLastSaved(new Date());
+      } catch (error) {
+        console.error('Auto-save failed:', error);
+      } finally {
+        setAutoSaving(false);
+      }
+    };
+
+    const timer = setTimeout(autoSave, 30000); // 30 seconds
+    return () => clearTimeout(timer);
+  }, [title, category, content, tags, authorName, image]);
 
   const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
@@ -228,10 +264,15 @@ export default function CreateArticle() {
 
         <div className="flex-1 h-[calc(100vh-180px)] overflow-y-auto p-4 md:p-8">
           <div className="max-w-6xl mx-auto text-left">
-            <div className="mb-6">
+            <div className="mb-6 flex justify-between items-center">
               <h2 className="text-xl md:text-2xl font-semibold">
                 Create New Article
               </h2>
+              {lastSaved && (
+                <span className="text-sm text-gray-500">
+                  {autoSaving ? 'Auto-saving...' : `Last saved: ${lastSaved.toLocaleTimeString()}`}
+                </span>
+              )}
             </div>
             
 
