@@ -34,11 +34,13 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
     <div
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
       className="flex flex-col lg:flex-row gap-4 mb-6"
     >
-      <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row h-full md:h-64">
+      <div 
+        {...attributes}
+        {...listeners}
+        className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row h-full md:h-64 cursor-move"
+      >
         <div className="md:w-1/3 relative bg-gray-200 h-48 md:h-full">
           <img
             src={featuredImage || "https://placehold.co/600x350/333/FFF?text=NO+IMAGE"}
