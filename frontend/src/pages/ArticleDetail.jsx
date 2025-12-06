@@ -26,17 +26,9 @@ const RelatedCard = ({ article, onClick, navigate }) => (
           {article.excerpt}
         </p>
       )}
-      <div className="mt-auto text-right">
-        <p
-          className="text-xs text-gray-500 font-medium cursor-pointer hover:text-blue-600 hover:underline transition-colors"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/author/${encodeURIComponent(article.author)}`);
-          }}
-        >
-          {article.author}
-        </p>
-      </div>
+      <p className="text-xs text-gray-500 font-medium mt-auto text-right">
+        {article.author}
+      </p>
     </div>
   </div>
 );
