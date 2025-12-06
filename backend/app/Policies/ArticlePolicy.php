@@ -57,7 +57,16 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
-        // Only admins can delete articles, moderators cannot
-        return $user->isAdmin();
+        // Admins can delete any article
+        if ($user->isAdmin()) {
+            return true;
+        }
+        
+        // Moderators can delete drafts only
+        if ($user->isModerator() && $article->status === 'draft') {
+            return true;
+        }
+        
+        return false;
     }
 }
