@@ -141,7 +141,10 @@ class ArticleController extends Controller
     {
         try {
             if (request()->wantsJson()) {
-                $article->load('author.user', 'categories', 'tags')->loadCount('interactions');
+                $article->load('author.user', 'categories', 'tags');
+                $article->loadCount(['interactions as likes_count' => function ($query) {
+                    $query->where('type', 'liked');
+                }]);
                 if (Auth::check()) {
                     $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
                 }
@@ -403,8 +406,14 @@ class ArticleController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        // Track view
+        $article->loadCount(['interactions as likes_count' => function ($query) {
+            $query->where('type', 'liked');
+        }]);
+        
         if (Auth::check()) {
+            $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
+            
+            // Track view
             ArticleInteraction::firstOrCreate([
                 'user_id' => Auth::id(),
                 'article_id' => $article->id,
@@ -422,8 +431,14 @@ class ArticleController extends Controller
             return response()->json(['error' => 'Article not found'], 404);
         }
 
-        // Track view
+        $article->loadCount(['interactions as likes_count' => function ($query) {
+            $query->where('type', 'liked');
+        }]);
+        
         if (Auth::check()) {
+            $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
+            
+            // Track view
             ArticleInteraction::firstOrCreate([
                 'user_id' => Auth::id(),
                 'article_id' => $article->id,

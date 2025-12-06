@@ -14,7 +14,7 @@ const getUserRole = () => {
 const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, isSmall = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 50));
+  const [likeCount, setLikeCount] = useState(0);
   const [relatedArticles, setRelatedArticles] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [showAdminButtons, setShowAdminButtons] = useState(false);
@@ -26,10 +26,42 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       setShowAdminButtons(hasAccess);
     };
     checkRole();
-    // Re-check every second in case role changes
     const interval = setInterval(checkRole, 1000);
     return () => clearInterval(interval);
   }, []);
+
+  // Fetch likes data from backend or localStorage
+  useEffect(() => {
+    const fetchLikes = async () => {
+      if (!articleId) return;
+      
+      // Check localStorage first for guest users
+      const localLikes = localStorage.getItem(`article_${articleId}_likes`);
+      const localLiked = localStorage.getItem(`article_${articleId}_liked`) === 'true';
+      
+      if (localLikes) {
+        setLikeCount(parseInt(localLikes));
+        setLiked(localLiked);
+      }
+      
+      // Fetch from backend if authenticated
+      if (getAuthToken()) {
+        try {
+          const response = await axios.get(`/api/articles/${articleId}`);
+          const count = response.data.interactions_count || 0;
+          const isLiked = response.data.is_liked || false;
+          setLikeCount(count);
+          setLiked(isLiked);
+          // Update localStorage
+          localStorage.setItem(`article_${articleId}_likes`, count);
+          localStorage.setItem(`article_${articleId}_liked`, isLiked);
+        } catch (error) {
+          console.error('Error fetching likes:', error);
+        }
+      }
+    };
+    fetchLikes();
+  }, [articleId]);
 
   // Handle both prop formats for backward compatibility
   const finalImageUrl = (() => {
@@ -142,11 +174,35 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     }
   };
 
-  const handleLike = (e) => {
+  const handleLike = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setLiked(!liked);
-    setLikeCount(prev => liked ? prev - 1 : prev + 1);
+    
+    if (!getAuthToken()) {
+      // Guest user - use localStorage
+      const newLiked = !liked;
+      const newCount = newLiked ? likeCount + 1 : likeCount - 1;
+      setLiked(newLiked);
+      setLikeCount(newCount);
+      localStorage.setItem(`article_${articleId}_likes`, newCount);
+      localStorage.setItem(`article_${articleId}_liked`, newLiked);
+      return;
+    }
+    
+    // Authenticated user - call backend
+    try {
+      const response = await axios.post(`/api/articles/${articleId}/like`);
+      setLiked(response.data.liked);
+      setLikeCount(response.data.likes_count);
+      // Update localStorage
+      localStorage.setItem(`article_${articleId}_likes`, response.data.likes_count);
+      localStorage.setItem(`article_${articleId}_liked`, response.data.liked);
+    } catch (error) {
+      console.error('Error liking article:', error);
+      if (error.response?.status === 401) {
+        alert('Please login to like articles');
+      }
+    }
   };
 
   const handleShare = (e) => {

@@ -50,6 +50,7 @@ export default function ArticleDetail() {
   const [error, setError] = useState(null);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
+  const [viewCount, setViewCount] = useState(0);
   
   const [copied, setCopied] = useState(false);
 
@@ -82,8 +83,24 @@ export default function ArticleDetail() {
         }
 
         setArticle(articleData);
-        setLikeCount(articleData.likes_count || 0);
-        setLiked(articleData.is_liked || false);
+        
+        // Load likes from localStorage or backend
+        const localLikes = localStorage.getItem(`article_${articleData.id}_likes`);
+        const localLiked = localStorage.getItem(`article_${articleData.id}_liked`) === 'true';
+        
+        if (localLikes) {
+          setLikeCount(parseInt(localLikes));
+          setLiked(localLiked);
+        } else {
+          setLikeCount(articleData.interactions_count || 0);
+          setLiked(articleData.is_liked || false);
+        }
+        
+        // Track views
+        const viewKey = `article_${articleData.id}_viewed`;
+        if (!sessionStorage.getItem(viewKey)) {
+          sessionStorage.setItem(viewKey, 'true');
+        }
 
         // Author article count is intentionally not fetched for public display
 
@@ -134,12 +151,31 @@ export default function ArticleDetail() {
   }
 
   const handleLike = async () => {
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    
+    if (!token) {
+      // Guest user - use localStorage
+      const newLiked = !liked;
+      const newCount = newLiked ? likeCount + 1 : likeCount - 1;
+      setLiked(newLiked);
+      setLikeCount(newCount);
+      localStorage.setItem(`article_${article.id}_likes`, newCount);
+      localStorage.setItem(`article_${article.id}_liked`, newLiked);
+      return;
+    }
+    
+    // Authenticated user - call backend
     try {
       const response = await axios.post(`/api/articles/${article.id}/like`);
       setLiked(response.data.liked);
       setLikeCount(response.data.likes_count);
+      localStorage.setItem(`article_${article.id}_likes`, response.data.likes_count);
+      localStorage.setItem(`article_${article.id}_liked`, response.data.liked);
     } catch (error) {
       console.error('Error liking article:', error);
+      if (error.response?.status === 401) {
+        alert('Please login to like articles');
+      }
     }
   };
 
