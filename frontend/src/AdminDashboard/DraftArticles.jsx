@@ -192,8 +192,18 @@ export default function DraftArticles() {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
         console.log('📤 Publishing article ID:', id);
+        
+        // Fetch article data first
+        const articleResponse = await axios.get(`/api/articles/${id}`);
+        const article = articleResponse.data;
+        
         const formData = new FormData();
         formData.append('_method', 'PUT');
+        formData.append('title', article.title);
+        formData.append('content', article.content);
+        formData.append('category_id', article.categories?.[0]?.id || '');
+        formData.append('tags', article.tags?.map(t => t.name).join(', ') || '');
+        formData.append('author_name', article.author_name || article.author?.user?.name || '');
         formData.append('status', 'published');
 
         const response = await axios.post(`/api/articles/${id}`, formData, {
