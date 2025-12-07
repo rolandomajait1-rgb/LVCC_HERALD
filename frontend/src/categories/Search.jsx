@@ -11,7 +11,7 @@ export default function Search() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -22,6 +22,8 @@ export default function Search() {
         setLatestArticles(response.data.data || []);
       } catch (err) {
         console.error('Error fetching latest articles:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchLatestArticles();
@@ -91,8 +93,8 @@ export default function Search() {
       <HeaderLink />
 
       <main className="grow">
-        <div className="bg-gray-800 py-12 px-4">
-          <div className="container mx-auto max-w-2xl">
+        <div className="py-16 px-4">
+          <div className="container mx-auto max-w-3xl">
             <div className="relative">
               <input
                 type="text"
@@ -111,23 +113,22 @@ export default function Search() {
         </div>
 
         <div className="container mx-auto px-4 py-8">
-
-          {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {Array.from({ length: 6 }).map((_, index) => (
-                <div key={index} className="animate-pulse bg-white border border-gray-200 rounded-lg shadow-sm p-4">
-                  <div className="bg-gray-200 h-48 rounded-lg"></div>
-                  <div className="mt-4 space-y-2">
-                    <div className="bg-gray-200 h-4 rounded w-3/4"></div>
-                    <div className="bg-gray-200 h-4 rounded w-full"></div>
-                    <div className="bg-gray-200 h-3 rounded w-1/2"></div>
-                  </div>
+              <div key={index} className="animate-pulse bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                <div className="bg-gray-200 h-48 rounded-lg"></div>
+                <div className="mt-4 space-y-2">
+                  <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+                  <div className="bg-gray-200 h-4 rounded w-full"></div>
+                  <div className="bg-gray-200 h-3 rounded w-1/2"></div>
                 </div>
-              ))}
-            </div>
-          ) : error ? (
-            <div className="text-center text-red-600 py-8">{error}</div>
-          ) : results.length > 0 ? (
+              </div>
+            ))}
+          </div>
+        ) : results.length > 0 ? (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-6">Search Results</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {results.map((article) => (
                 <ArticleCard
@@ -153,21 +154,22 @@ export default function Search() {
                 />
               ))}
             </div>
-          ) : query.trim().length > 2 ? (
-            <section className="text-center text-gray-500 justify-center py-5 mt-20">
-              <div className="flex justify-center mb-4">
-                <img src="/logo.svg" alt="La Verdad Herald Logo" />
-              </div>
-              <h1 className="text-3xl font-bold text-gray-800 mb-4">
-                No articles found for "{query}"</h1>
-              Try adjusting your search terms.
-            </section>
-          ) : (
-            <div>
-              <h2 className="text-xl font-semibold text-gray-700 mb-6">Latest Articles</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {latestArticles.map((article) => (
-                  <ArticleCard
+          </div>
+        ) : query.trim().length > 2 ? (
+          <section className="text-center text-gray-500 justify-center py-5 mt-20">
+            <div className="flex justify-center mb-4">
+              <img src="/logo.svg" alt="La Verdad Herald Logo" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-4">
+              No articles found for "{query}"</h1>
+            Try adjusting your search terms.
+          </section>
+        ) : (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-6">Latest Articles</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {latestArticles.map((article) => (
+                <ArticleCard
                   key={article.id}
                   articleId={article.id}
                   imageUrl={article.featured_image || 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'}
@@ -185,13 +187,13 @@ export default function Search() {
                     minute: '2-digit',
                     hour12: true
                   })}
-                    slug={article.slug}
-                    onClick={() => navigate(`/article/${article.slug}`)}
-                  />
-                ))}
-              </div>
+                  slug={article.slug}
+                  onClick={() => navigate(`/article/${article.slug}`)}
+                />
+              ))}
             </div>
-          )}
+          </div>
+        )}
         </div>
       </main>
 
