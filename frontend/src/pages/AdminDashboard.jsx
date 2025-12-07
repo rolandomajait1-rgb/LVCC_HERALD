@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         </header>
 
         <LatestSection onEdit={handleEditArticle} onDelete={handleDeleteArticle} />
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading news articles...</div>
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="LITERARY" bgColor="bg-green-600" viewAllUrl="/category/literary">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading literary articles...</div>
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="SPECIALS" bgColor="bg-purple-600" viewAllUrl="/category/specials">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading specials articles...</div>
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="OPINION" bgColor="bg-gray-700" viewAllUrl="/category/opinion">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading opinion articles...</div>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="ART" bgColor="bg-indigo-500" viewAllUrl="/category/art">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading art articles...</div>
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="FEATURES" bgColor="bg-yellow-500" viewAllUrl="/category/features">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading features articles...</div>
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
         <ContentSection title="SPORTS" bgColor="bg-red-600" viewAllUrl="/category/sports">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading sports articles...</div>

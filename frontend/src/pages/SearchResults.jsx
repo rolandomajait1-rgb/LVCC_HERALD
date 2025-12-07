@@ -4,6 +4,7 @@ import axios from '../utils/axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
+import { Search } from 'lucide-react';
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
@@ -52,11 +53,48 @@ const SearchResults = () => {
     return colors[categoryName?.toLowerCase()] || 'bg-gray-100 text-gray-700';
   };
 
+  const [searchQuery, setSearchQuery] = useState(query);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    // Auto-search after typing
+    if (value.trim().length >= 3) {
+      navigate(`/search?q=${encodeURIComponent(value)}`);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
       <HeaderLink />
       <main className="container mx-auto px-4 py-8 grow">
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-8">
+          <div className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleInputChange}
+              placeholder="Search"
+              className="w-full px-6 py-3 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 pr-12"
+            />
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
+            >
+              <Search size={24} />
+            </button>
+          </div>
+        </form>
+
         <h1 className="text-3xl font-serif font-bold mb-8 text-left">Latest Articles</h1>
         
         {query.length < 3 && query.length > 0 && (
