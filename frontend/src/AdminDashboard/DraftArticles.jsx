@@ -14,6 +14,7 @@ import Header from "../components/Header";
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
 import Navigation from "../components/HeaderLink";
+import Notification from '../components/Notification';
 import axios from '../utils/axiosConfig';
 
 const SortableDraftItem = ({ id, title, category, date, summary, author, featuredImage, onEdit, onDelete, onPublish }) => {
@@ -108,6 +109,12 @@ export default function DraftArticles() {
   const navigate = useNavigate();
   const [drafts, setDrafts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
+
+  const showNotification = (type, title, message = '') => {
+    setNotification({ show: true, type, title, message });
+    setTimeout(() => setNotification({ show: false, type: 'success', title: '', message: '' }), 5000);
+  };
 
   const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
   const sidebarLinks = [
@@ -179,11 +186,11 @@ export default function DraftArticles() {
     if (window.confirm('Are you sure you want to delete this draft?')) {
       try {
         await axios.delete(`/api/articles/${id}`);
-        alert('Draft deleted successfully!');
+        showNotification('success', 'Draft deleted successfully!');
         fetchDrafts();
       } catch (error) {
         console.error('Error deleting draft:', error);
-        alert('Failed to delete draft: ' + (error.response?.data?.message || error.message));
+        showNotification('error', 'Failed to delete draft', error.response?.data?.message || error.message);
       }
     }
   };
@@ -211,12 +218,12 @@ export default function DraftArticles() {
         });
         
         console.log('✅ Published successfully:', response.data);
-        alert('Article published successfully!');
+        showNotification('success', 'Article published successfully!');
         fetchDrafts();
       } catch (error) {
         console.error('❌ Error publishing article:', error);
         console.error('Error details:', error.response?.data);
-        alert('Failed to publish article: ' + (error.response?.data?.message || error.message));
+        showNotification('error', 'Failed to publish article', error.response?.data?.message || error.message);
       }
     }
   };
@@ -235,6 +242,7 @@ export default function DraftArticles() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      <Notification {...notification} />
       <Header />
       <Navigation />
       <div className={`relative h-20 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>

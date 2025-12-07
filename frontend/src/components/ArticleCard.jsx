@@ -164,11 +164,10 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       if (window.confirm('Are you sure you want to delete this article?')) {
         try {
           await axios.delete(`/api/articles/${articleId}`);
-          alert('Article deleted successfully!');
           window.location.reload();
         } catch (error) {
           console.error('Error deleting article:', error);
-          alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+          console.error('Failed to delete article:', error.response?.data?.message || error.message);
         }
       }
     }
@@ -200,7 +199,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     } catch (error) {
       console.error('Error liking article:', error);
       if (error.response?.status === 401) {
-        alert('Please login to like articles');
+        console.log('Please login to like articles');
       }
     }
   };
@@ -210,7 +209,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     e.stopPropagation();
     const url = `${window.location.origin}/article/${slug}`;
     navigator.clipboard.writeText(url);
-    alert('Article link copied to clipboard!');
+    console.log('Article link copied to clipboard!');
   };
 
   return (
