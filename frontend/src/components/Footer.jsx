@@ -53,7 +53,7 @@ function Footer({ onOpenLogin }) {
       }}
     >
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-12 mb-8 items-start lg:items-start items-center">
+        <div className="flex flex-col lg:flex-row justify-between gap-8 md:gap-12 mb-8 items-center lg:items-start">
           {/* Branding Section */}
           <div className="lg:w-1/3 flex flex-col items-center lg:items-start">
             <div className="flex items-center gap-2 mb-2">
@@ -116,10 +116,7 @@ function Footer({ onOpenLogin }) {
           <div className="flex gap-4">
             <a href="https://www.facebook.com/profile.php?id=100064162896406" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
               <FaFacebook size={18} />
-            </a>
-            <a href="https://www.linkedin.com/company/la-verdad-herald/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
-              <FaLinkedin size={18} />
-            </a>
+            </a>     
             <a href="mailto:laverdadherald@laverdad.edu.ph" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
               <FaEnvelope size={18} />
             </a>
