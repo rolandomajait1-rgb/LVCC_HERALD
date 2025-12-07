@@ -359,9 +359,9 @@ export default function Sports() {
                         minute: '2-digit',
                         hour12: true
                       }) : 'No date'}
-                      isMedium={true}
+                      horizontal={true}
                       slug={article.slug}
-                      showRelated={true}
+                      onClick={() => navigate(`/article/${article.slug}`)}
                       onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
                       onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
                       articleId={article.id}
