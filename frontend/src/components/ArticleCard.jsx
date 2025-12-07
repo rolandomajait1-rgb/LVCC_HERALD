@@ -291,7 +291,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-40' : isLarge ? 'h-80' : 'h-80'}`}>
+          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-48' : isLarge ? 'h-80' : 'h-48'}`}>
             {/* Force rebuild */}
             <img
               src={finalImageUrl}
