@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaTimes } from 'react-icons/fa';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
@@ -11,9 +11,20 @@ export default function Search() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [latestArticles, setLatestArticles] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [searchHistory, setSearchHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    setSearchHistory(history);
+  }, []);
 
   useEffect(() => {
     const fetchLatestArticles = async () => {
@@ -38,22 +49,30 @@ export default function Search() {
           return;
         }
         
+        setSuggestionsLoading(true);
         setLoading(true);
         setError(null);
         try {
           const response = await axios.get('/api/articles/search', {
             params: { q: searchQuery }
           });
-          setResults(response.data.data || []);
+          const articles = response.data.data || [];
+          setResults(articles);
+          setSuggestions(articles.slice(0, 5));
+          setShowSuggestions(true);
         } catch (err) {
           console.error('Error searching articles:', err);
           setError('Failed to search articles. Please try again.');
           setResults([]);
+          setSuggestions([]);
         } finally {
           setLoading(false);
+          setSuggestionsLoading(false);
         }
       } else {
         setResults([]);
+        setSuggestions([]);
+        setShowSuggestions(false);
         setLoading(false);
         setError(null);
       }
@@ -63,6 +82,13 @@ export default function Search() {
     return () => clearTimeout(debounceTimer);
   }, [query, navigate]);
 
+  const saveToHistory = (searchTerm) => {
+    const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    const updated = [searchTerm, ...history.filter(h => h !== searchTerm)].slice(0, 10);
+    localStorage.setItem('searchHistory', JSON.stringify(updated));
+    setSearchHistory(updated);
+  };
+
   const handleSearchClick = () => {
     if (query.trim().length > 2) {
       if (query.startsWith('#')) {
@@ -70,21 +96,37 @@ export default function Search() {
         navigate(`/tag/${tag}`);
         return;
       }
-      
-      setLoading(true);
-      setError(null);
-      axios.get('/api/articles/search', {
-        params: { q: query }
-      }).then(response => {
-        setResults(response.data.data || []);
-      }).catch(err => {
-        console.error('Error searching articles:', err);
-        setError('Failed to search articles. Please try again.');
-        setResults([]);
-      }).finally(() => {
-        setLoading(false);
-      });
+      saveToHistory(query);
+      setShowSuggestions(false);
     }
+  };
+
+  const handleKeyDown = (e) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : -1));
+    } else if (e.key === 'Enter' && selectedIndex >= 0) {
+      e.preventDefault();
+      const selected = suggestions[selectedIndex];
+      navigate(`/article/${selected.slug}`);
+      setShowSuggestions(false);
+      saveToHistory(query);
+    } else if (e.key === 'Escape') {
+      setShowSuggestions(false);
+    }
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    setResults([]);
+    setSuggestions([]);
+    setShowSuggestions(false);
+    inputRef.current?.focus();
   };
 
   return (
@@ -97,17 +139,71 @@ export default function Search() {
           <div className="container mx-auto max-w-3xl">
             <div className="relative">
               <input
+                ref={inputRef}
                 type="text"
-                placeholder="Search"
+                placeholder="Search articles, authors, tags..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
+                onKeyDown={handleKeyDown}
+                onFocus={() => {
+                  if (suggestions.length > 0) setShowSuggestions(true);
+                  else if (query.length === 0 && searchHistory.length > 0) setShowSuggestions(true);
+                }}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                className="w-full px-4 py-3 pr-20 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-base"
                 autoFocus
               />
+              {query && (
+                <FaTimes
+                  className="absolute right-12 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
+                  onClick={clearSearch}
+                />
+              )}
               <FaSearch
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer hover:text-gray-600"
                 onClick={handleSearchClick}
               />
+              {showSuggestions && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded shadow-lg max-h-80 overflow-y-auto">
+                  {suggestionsLoading ? (
+                    <div className="px-4 py-3 text-center text-gray-500 text-sm">Loading...</div>
+                  ) : suggestions.length > 0 ? (
+                    suggestions.map((article, index) => (
+                      <div
+                        key={article.id}
+                        onClick={() => {
+                          navigate(`/article/${article.slug}`);
+                          setShowSuggestions(false);
+                          saveToHistory(query);
+                        }}
+                        className={`px-4 py-3 cursor-pointer border-b border-gray-200 last:border-b-0 ${
+                          index === selectedIndex ? 'bg-blue-50' : 'hover:bg-gray-100'
+                        }`}
+                      >
+                        <div className="font-medium text-gray-900 text-sm">{article.title}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {article.author_name || article.author?.user?.name} • {article.categories?.[0]?.name}
+                        </div>
+                      </div>
+                    ))
+                  ) : query.length === 0 && searchHistory.length > 0 ? (
+                    <div>
+                      <div className="px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-50">Recent Searches</div>
+                      {searchHistory.map((term, index) => (
+                        <div
+                          key={index}
+                          onClick={() => setQuery(term)}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm text-gray-700"
+                        >
+                          {term}
+                        </div>
+                      ))}
+                    </div>
+                  ) : query.length > 2 ? (
+                    <div className="px-4 py-3 text-center text-gray-500 text-sm">No results found</div>
+                  ) : null}
+                </div>
+              )}
             </div>
           </div>
         </div>

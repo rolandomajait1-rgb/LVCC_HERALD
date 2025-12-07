@@ -9,6 +9,7 @@ use App\Models\ArticleInteraction;
 use App\Models\Log as ActivityLog;
 use App\Models\Author;
 use App\Models\User;
+use App\Models\SearchLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ArticleRequest;
@@ -386,15 +387,31 @@ class ArticleController extends Controller
 
             $searchTerm = '%' . addslashes($query) . '%';
             $articles = Article::published()
-                ->with('author.user', 'categories')
+                ->with('author.user', 'categories', 'tags')
                 ->where(function($q) use ($searchTerm) {
                     $q->where('title', 'LIKE', $searchTerm)
                     ->orWhere('content', 'LIKE', $searchTerm)
-                    ->orWhere('excerpt', 'LIKE', $searchTerm);
+                    ->orWhere('excerpt', 'LIKE', $searchTerm)
+                    ->orWhereHas('tags', function($query) use ($searchTerm) {
+                        $query->where('name', 'LIKE', $searchTerm);
+                    })
+                    ->orWhereHas('author.user', function($query) use ($searchTerm) {
+                        $query->where('name', 'LIKE', $searchTerm);
+                    })
+                    ->orWhereHas('categories', function($query) use ($searchTerm) {
+                        $query->where('name', 'LIKE', $searchTerm);
+                    });
                 })
                 ->latest('published_at')
                 ->take(20)
                 ->get();
+
+            SearchLog::create([
+                'user_id' => Auth::id(),
+                'query' => $query,
+                'results_count' => $articles->count(),
+                'ip_address' => $request->ip(),
+            ]);
 
             return response()->json(['data' => $articles]);
         } catch (\Exception $e) {
