@@ -108,7 +108,7 @@ export default function AdminDashboard() {
         </header>
 
         <LatestSection onEdit={handleEditArticle} onDelete={handleDeleteArticle} />
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+      <hr />
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading news articles...</div>
@@ -117,7 +117,7 @@ export default function AdminDashboard() {
           ) : newsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No news articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {newsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="LITERARY" bgColor="bg-green-600" viewAllUrl="/category/literary">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading literary articles...</div>
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
           ) : literaryArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No literary articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {literaryArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -166,7 +166,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="SPECIALS" bgColor="bg-purple-600" viewAllUrl="/category/specials">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading specials articles...</div>
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
           ) : specialsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No specials articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {specialsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="OPINION" bgColor="bg-gray-700" viewAllUrl="/category/opinion">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading opinion articles...</div>
@@ -204,7 +204,7 @@ export default function AdminDashboard() {
           ) : opinionArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No opinion articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {opinionArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="ART" bgColor="bg-indigo-500" viewAllUrl="/category/art">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading art articles...</div>
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
           ) : artArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No art articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {artArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -253,7 +253,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="FEATURES" bgColor="bg-yellow-500" viewAllUrl="/category/features">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading features articles...</div>
@@ -262,7 +262,7 @@ export default function AdminDashboard() {
           ) : featuresArticles.length === 0 ? (
             <EmptyState categoryName="Features" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {featuresArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
-        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4"/>
+        
         <ContentSection title="SPORTS" bgColor="bg-red-600" viewAllUrl="/category/sports">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading sports articles...</div>
@@ -291,7 +291,7 @@ export default function AdminDashboard() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
               {sportsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
