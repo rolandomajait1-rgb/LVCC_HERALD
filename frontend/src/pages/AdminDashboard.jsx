@@ -93,7 +93,8 @@ export default function AdminDashboard() {
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-4 md:px-8 lg:px-16 py-8 grow max-w-7xl">
+      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-4 grow">
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4">
 
         <header className="bg-cyan-700 text-white px-5 py-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
           <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
@@ -313,6 +314,7 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
+        </div>
       </main>
       <Footer />
     </div>

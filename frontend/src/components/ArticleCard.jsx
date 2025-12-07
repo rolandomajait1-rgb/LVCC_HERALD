@@ -215,7 +215,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   return (
     <>
     <div 
-      className={`relative bg-white border border-gray-300 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${isLarge ? 'min-h-144' : 'max-w-full'} ${className}`} 
+      className={`relative bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow ${isLarge ? 'min-h-144' : 'max-w-full'} ${className}`} 
       onClick={handleCardClick}
       style={{ cursor: 'pointer' }}
     >
@@ -269,16 +269,16 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 </span>
               </div>
 
-              <h3 className={`font-bold text-gray-900 mb-2 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-base'}`}>
+              <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
                 {title}
               </h3>
-              <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-sm'}`}>
+              <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
                 {finalSnippet}
               </p>
             </div>
 
             <p 
-              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-sm'}`}
+              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/author/${encodeURIComponent(finalAuthor)}`);
@@ -291,7 +291,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-48' : isLarge ? 'h-[360px]' : 'h-48'}`}>
+          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-40' : isLarge ? 'h-80' : 'h-80'}`}>
             {/* Force rebuild */}
             <img
               src={finalImageUrl}
@@ -321,7 +321,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             )}
           </div>
 
-          <div className={`flex flex-col grow ${isLarge ? 'p-4 md:p-6' : 'p-4'}`}>
+          <div className={`flex flex-col grow ${isLarge ? 'p-4 md:p-6' : 'p-3'}`}>
             <div className="flex justify-between items-start mb-2">
               <span 
                 className={`text-xs font-semibold uppercase px-2 py-1 rounded cursor-pointer hover:opacity-80 ${getCategoryColor(finalCategory)}`}
@@ -335,14 +335,14 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               </span>
             </div>
 
-            <h3 className={`font-bold text-gray-900 mb-2 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-base'}`}>
+            <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
               {title}
             </h3>
-            <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-sm'}`}>
+            <p className={`text-gray-600 mb-3 line-clamp-3 text-left ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
             <p 
-              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-sm'}`}
+              className={`text-gray-700 font-medium text-right cursor-pointer hover:text-blue-600 hover:underline z-20 relative ${isLarge ? 'text-base md:text-lg' : 'text-xs'}`}
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/author/${encodeURIComponent(finalAuthor)}`);
