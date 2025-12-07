@@ -63,6 +63,38 @@ class TagController extends Controller
         return view('tags.public', compact('tag', 'articles'));
     }
 
+    // API: Get articles by tag slug
+    public function getArticlesByTag(string $slug)
+    {
+        $tag = Tag::where('slug', $slug)->first();
+        
+        if (!$tag) {
+            return response()->json(['articles' => []]);
+        }
+
+        $articles = \App\Models\Article::published()
+            ->whereHas('tags', function ($query) use ($tag) {
+                $query->where('tags.id', $tag->id);
+            })
+            ->with(['author.user', 'categories'])
+            ->latest('published_at')
+            ->get()
+            ->map(function ($article) {
+                return [
+                    'id' => $article->id,
+                    'title' => $article->title,
+                    'slug' => $article->slug,
+                    'excerpt' => $article->excerpt,
+                    'image_url' => $article->image_url,
+                    'published_at' => $article->published_at?->format('F j, Y \a\t g:i A'),
+                    'author_name' => $article->author?->user?->name ?? 'Unknown Author',
+                    'category' => $article->categories->first()?->name ?? 'Uncategorized',
+                ];
+            });
+
+        return response()->json(['articles' => $articles]);
+    }
+
     public function edit(Tag $tag)
     {
         return view('tags.edit', compact('tag'));

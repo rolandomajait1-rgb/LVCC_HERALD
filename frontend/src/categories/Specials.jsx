@@ -301,8 +301,8 @@ export default function Specials() {
                     })}
                     isLarge={true}
                     slug={articles[0].slug}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
+                    onEdit={isAdmin() ? () => handleEdit(articles[0].id) : undefined}
+                    onDelete={isAdmin() ? () => handleDelete(articles[0].id) : undefined}
                     articleId={articles[0].id}
                   />
                 )}
@@ -330,8 +330,8 @@ export default function Specials() {
                       className="h-full"
                       slug={article.slug}
                       isSmall={true}
-                      onEdit={handleEdit}
-                      onDelete={handleDelete}
+                      onEdit={isAdmin() ? () => handleEdit(article.id) : undefined}
+                      onDelete={isAdmin() ? () => handleDelete(article.id) : undefined}
                       articleId={article.id}
                     />
                   </div>

@@ -192,6 +192,10 @@ class ArticleController extends Controller
         
         // Handle status update
         if ($request->has('status')) {
+            // Check if trying to publish
+            if ($request->status === 'published' && $article->status !== 'published') {
+                $this->authorize('publish', $article);
+            }
             $data['status'] = $request->status;
             if ($request->status === 'published' && !$article->published_at) {
                 $data['published_at'] = now();

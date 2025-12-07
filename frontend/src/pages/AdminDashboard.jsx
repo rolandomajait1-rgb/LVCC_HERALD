@@ -41,7 +41,7 @@ export default function AdminDashboard() {
     navigate(`/admin/edit-article/${articleId}`);
   };
 
-  const handleDeleteArticle = (articleId) => {
+  const handleDeleteArticle = getUserRole() === 'admin' ? (articleId) => {
     if (window.confirm('Are you sure you want to delete this article?')) {
       axios.delete(`/api/articles/${articleId}`)
         .then(() => {
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
           alert('Failed to delete article');
         });
     }
-  };
+  } : null;
 
   useEffect(() => {
     const fetchHomePageArticles = async () => {
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
               onClick={handleOpenAdminDashboard}
               className="flex items-center space-x-2 px-2 md:px-5 py-1 text-s md:text-base font-medium text-white hover:text-blue-300"
             >
-              <span className="hidden sm:inline">OPEN ADMIN DASHBOARD</span>
+              <span className="hidden sm:inline">{getUserRole() === 'admin' ? 'OPEN ADMIN DASHBOARD' : 'OPEN MODERATOR DASHBOARD'}</span>
               <span className="sm:hidden">DASHBOARD</span>
               <FiExternalLink />
             </button>

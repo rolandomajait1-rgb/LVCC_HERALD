@@ -71,46 +71,29 @@ export default function TagSearchResults() {
   ];
 
   useEffect(() => {
-    // Mock fetch articles by tag
     const fetchArticlesByTag = async () => {
       setLoading(true);
-      // Simulate API call
-      setTimeout(() => {
-        let mockArticles = [];
-        
-        // Return different articles based on tag
-        if (tag?.toLowerCase() === 'cyber' || tag?.toLowerCase() === 'security') {
-          mockArticles = [
-            {
-              id: 1,
-              title: "CYBER SECURITY",
-              category: "SPORTS",
-              date: "November 18, 2025 at 7:56 PM",
-              excerpt: "Cybersecurity is the practice of protecting systems, networks, and programs from digital attacks. These cyberattacks are usually aimed at accessing, changing, or destroying sensitive information; extorting money from users through ransomware; or interrupting normal business processes.",
-              author: "Admin User",
-              imageUrl: getFullUrl("articles/9E0LczTL6qwhm3FIBuK7l8CZKygzKTK2b8WlWF9v.jpg")
-            }
-          ];
-        } else {
-          mockArticles = [
-            {
-              id: 2,
-              title: "MDRRMO APALIT HOLDS EARTHQUAKE DRILL SEMINAR AT LVCC",
-              category: "NEWS",
-              date: "September 10, 2025 at 5:52 PM",
-              excerpt: "In preparation for the upcoming Q3 Nationwide Simultaneous Earthquake Drill, the Municipal Disaster Risk Reduction and Management Office...",
-              author: "Hannah J. Gallego",
-              imageUrl: getFullUrl("articles/zYcKEebHjFm2CNABF2OhYFPDTffTUtGdfOCeKR7O.png")
-            }
-          ];
-        }
-        
-        setArticles(mockArticles);
+      try {
+        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+        const response = await fetch(`http://localhost:8000/api/tags/${tag}/articles`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        setArticles(data.articles || []);
+      } catch (error) {
+        console.error('Error fetching articles by tag:', error);
+        setArticles([]);
+      } finally {
         setLoading(false);
-      }, 800);
+      }
     };
 
-    fetchArticlesByTag();
+    if (tag) {
+      fetchArticlesByTag();
+    }
   }, [tag]);
 
   return (
@@ -146,12 +129,12 @@ export default function TagSearchResults() {
                 <SearchResultCard 
                   key={article.id}
                   articleId={article.id}
-                  imageUrl={article.imageUrl}
+                  imageUrl={article.image_url}
                   title={article.title}
                   category={article.category}
-                  date={article.date}
+                  date={article.published_at}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  author={article.author_name}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug || article.id}`)}
                 />

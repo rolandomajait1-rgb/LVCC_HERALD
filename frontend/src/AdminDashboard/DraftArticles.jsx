@@ -82,24 +82,28 @@ const SortableDraftItem = ({ id, title, category, date, summary, author, feature
           </div>
           <span className="text-sm lg:text-lg">Edit</span>
         </button>
-        <button 
-          onClick={(e) => { e.stopPropagation(); onDelete(id); }} 
-          className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group cursor-pointer"
-        >
-          <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
-            <Trash2 size={20} strokeWidth={2} />
-          </div>
-          <span className="text-sm lg:text-lg">Delete</span>
-        </button>
-        <button 
-          onClick={(e) => { e.stopPropagation(); onPublish(id); }} 
-          className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group cursor-pointer"
-        >
-          <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
-            <Upload size={20} strokeWidth={2} />
-          </div>
-          <span className="text-sm lg:text-lg">Publish</span>
-        </button>
+        {getUserRole() === 'admin' && (
+          <>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onDelete(id); }} 
+              className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-red-500 hover:text-red-700 transition-colors font-medium group cursor-pointer"
+            >
+              <div className="bg-transparent group-hover:bg-red-100 p-1 rounded">
+                <Trash2 size={20} strokeWidth={2} />
+              </div>
+              <span className="text-sm lg:text-lg">Delete</span>
+            </button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onPublish(id); }} 
+              className="flex flex-col lg:flex-row items-center gap-1 lg:gap-3 text-sky-500 hover:text-sky-700 transition-colors font-medium group cursor-pointer"
+            >
+              <div className="bg-transparent group-hover:bg-sky-100 p-1 rounded">
+                <Upload size={20} strokeWidth={2} />
+              </div>
+              <span className="text-sm lg:text-lg">Publish</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -57,16 +57,20 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article)
     {
-        // Admins can delete any article
-        if ($user->isAdmin()) {
-            return true;
-        }
-        
-        // Moderators can delete drafts only
-        if ($user->isModerator() && $article->status === 'draft') {
-            return true;
-        }
-        
-        return false;
+        // Only admins can delete articles
+        return $user->isAdmin();
+    }
+
+    /**
+     * Determine whether the user can publish the article.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Article  $article
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function publish(User $user, Article $article)
+    {
+        // Only admins can publish articles
+        return $user->isAdmin();
     }
 }
