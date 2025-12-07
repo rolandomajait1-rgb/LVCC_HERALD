@@ -26,6 +26,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
 
   const handleOpenAdminDashboard = () => {
@@ -41,19 +43,25 @@ export default function AdminDashboard() {
     navigate(`/admin/edit-article/${articleId}`);
   };
 
-  const handleDeleteArticle = getUserRole() === 'admin' ? (articleId) => {
-    if (window.confirm('Are you sure you want to delete this article?')) {
-      axios.delete(`/api/articles/${articleId}`)
-        .then(() => {
-          alert('Article deleted successfully!');
-          window.location.reload();
-        })
-        .catch(err => {
-          console.error('Error deleting article:', err);
-          alert('Failed to delete article');
-        });
+  const handleDeleteArticle = getUserRole() === 'admin' ? async () => {
+    try {
+      await axios.delete(`/api/articles/${deleteId}`);
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      alert('Article deleted successfully!');
+      window.location.reload();
+    } catch (err) {
+      console.error('Error deleting article:', err);
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      alert('Failed to delete article');
     }
   } : null;
+
+  const openDeleteModal = (articleId) => {
+    setDeleteId(articleId);
+    setShowDeleteModal(true);
+  };
 
   useEffect(() => {
     const fetchHomePageArticles = async () => {
@@ -89,6 +97,30 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Are you sure?</h3>
+            <p className="text-gray-600 text-sm text-center mb-6">
+              Are you sure you want to delete this article? This action will permanently delete this article.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleDeleteArticle}
+                className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => { setShowDeleteModal(false); setDeleteId(null); }}
+                className="w-full bg-white text-gray-700 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Notification {...notification} />
       <Header />
       <Navigation />
@@ -110,7 +142,7 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        <LatestSection onEdit={handleEditArticle} onDelete={handleDeleteArticle} />
+        <LatestSection onEdit={handleEditArticle} onDelete={getUserRole() === 'admin' ? openDeleteModal : null} />
       <hr />
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (

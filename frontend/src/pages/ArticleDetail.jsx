@@ -43,19 +43,25 @@ export default function ArticleDetail() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [viewCount, setViewCount] = useState(0);
-  
+  const [notification, setNotification] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  const showNotification = (message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
+
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this article?')) {
-      try {
-        await axios.delete(`/api/articles/${article.id}`);
-        alert('Article deleted successfully!');
-        navigate('/');
-      } catch (error) {
-        console.error('Error deleting article:', error);
-        alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
-      }
+    try {
+      await axios.delete(`/api/articles/${article.id}`);
+      setShowDeleteModal(false);
+      showNotification('Article Deleted Successfully!');
+      setTimeout(() => navigate('/'), 1500);
+    } catch (error) {
+      console.error('Error deleting article:', error);
+      setShowDeleteModal(false);
+      showNotification('Failed to delete article: ' + (error.response?.data?.message || error.message), 'error');
     }
   };
 
@@ -197,6 +203,39 @@ export default function ArticleDetail() {
     <div className="flex flex-col min-h-screen">
       <Header />
       <HeaderLink />
+      
+      {notification && (
+        <div className={`fixed top-0 left-0 right-0 z-50 py-3 px-4 text-center font-medium ${
+          notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        }`}>
+          {notification.message}
+        </div>
+      )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Are you sure?</h3>
+            <p className="text-gray-600 text-sm text-center mb-6">
+              Are you sure you want to delete this article? This action will permanently delete this article.
+            </p>
+            <div className="flex flex-col gap-3">
+              <button
+                onClick={handleDelete}
+                className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="w-full bg-white text-gray-700 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="min-h-screen bg-gray-200 p-4 md:p-12 font-sans">
         <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
@@ -229,7 +268,7 @@ export default function ArticleDetail() {
                   </button>
                   {isAdmin() && (
                     <button 
-                      onClick={handleDelete}
+                      onClick={() => setShowDeleteModal(true)}
                       className="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors"
                     >
                       <Trash2 size={16} className="mr-1.5" />

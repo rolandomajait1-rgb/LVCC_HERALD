@@ -215,10 +215,11 @@ export default function CreateArticle() {
         setDraftId(response.data.id);
       }
 
-      showNotification('success', 'Draft saved successfully!');
       clearFormState();
       setDraftId(null);
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+      sessionStorage.setItem('notification_message', 'Draft Created Successfully!');
+      sessionStorage.setItem('notification_type', 'success');
       navigate(`${rolePrefix}/draft-articles`);
     } catch (error) {
       console.error('Save draft error:', error);

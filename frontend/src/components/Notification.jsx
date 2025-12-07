@@ -11,9 +11,9 @@ export default function Notification({ show, type = 'success', title, message, o
   };
 
   return (
-    <div className={`fixed top-6 right-6 z-50 ${colors[type]} border px-6 py-3 rounded-lg shadow-lg animate-fade-in`}>
-      <p className="font-semibold">{title}</p>
-      {message && <p className="text-sm">{message}</p>}
+    <div className={`fixed top-0 left-0 right-0 z-50 ${colors[type]} px-6 py-3 text-center shadow-md`}>
+      <p className="font-medium">{title}</p>
+      {message && <p className="text-sm mt-1">{message}</p>}
     </div>
   );
 }
