@@ -6,7 +6,6 @@ import ArticleCard from '../components/ArticleCard';
 import LatestSection from '../components/LatestSection';
 import EmptyState from '../components/EmptyState';
 import Navigation from '../components/HeaderLink';
-import Feedback from '../components/Feedback';
 import Notification from '../components/Notification';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import axios from '../utils/axiosConfig';
@@ -25,33 +24,25 @@ export default function AdminDashboard() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
 
 
   const handleOpenAdminDashboard = () => {
-    const role = getUserRole();
-    if (role === 'moderator') {
-      navigate('/admin/statistics');
-    } else {
-      navigate('/admin/statistics');
-    }
+    navigate('/admin/statistics');
   };
 
   const handleEditArticle = (articleId) => {
     navigate(`/admin/edit-article/${articleId}`);
   };
 
-  const handleDeleteArticle = (articleId) => {
-    if (window.confirm('Are you sure you want to delete this article?')) {
-      axios.delete(`/api/articles/${articleId}`)
-        .then(() => {
-          alert('Article deleted successfully!');
-          window.location.reload();
-        })
-        .catch(err => {
-          console.error('Error deleting article:', err);
-          alert('Failed to delete article');
-        });
+  const handleDeleteArticle = async (articleId) => {
+    if (!window.confirm('Are you sure you want to delete this article?')) return;
+    
+    try {
+      await axios.delete(`/api/articles/${articleId}`);
+      window.location.reload();
+    } catch (err) {
+      console.error('Error deleting article:', err);
+      alert('Failed to delete article');
     }
   };
 
@@ -89,12 +80,10 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      <Notification {...notification} />
       <Header />
       <Navigation />
 
       <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
-
         <header className="bg-cyan-700 text-white px-5 py-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
           <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
           <div className="flex items-center space-x-2">
@@ -110,7 +99,8 @@ export default function AdminDashboard() {
         </header>
 
         <LatestSection onEdit={handleEditArticle} onDelete={handleDeleteArticle} />
-      <hr />
+        <hr />
+        
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading news articles...</div>
@@ -318,5 +308,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-
