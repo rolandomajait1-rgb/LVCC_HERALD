@@ -6,6 +6,7 @@ import ArticleCard from '../components/ArticleCard';
 import LatestSection from '../components/LatestSection';
 import EmptyState from '../components/EmptyState';
 import Navigation from '../components/HeaderLink';
+import Feedback from '../components/Feedback';
 import Notification from '../components/Notification';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import axios from '../utils/axiosConfig';
@@ -24,25 +25,33 @@ export default function AdminDashboard() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
 
 
   const handleOpenAdminDashboard = () => {
-    navigate('/admin/statistics');
+    const role = getUserRole();
+    if (role === 'moderator') {
+      navigate('/admin/statistics');
+    } else {
+      navigate('/admin/statistics');
+    }
   };
 
   const handleEditArticle = (articleId) => {
     navigate(`/admin/edit-article/${articleId}`);
   };
 
-  const handleDeleteArticle = async (articleId) => {
-    if (!window.confirm('Are you sure you want to delete this article?')) return;
-    
-    try {
-      await axios.delete(`/api/articles/${articleId}`);
-      window.location.reload();
-    } catch (err) {
-      console.error('Error deleting article:', err);
-      alert('Failed to delete article');
+  const handleDeleteArticle = (articleId) => {
+    if (window.confirm('Are you sure you want to delete this article?')) {
+      axios.delete(`/api/articles/${articleId}`)
+        .then(() => {
+          alert('Article deleted successfully!');
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error('Error deleting article:', err);
+          alert('Failed to delete article');
+        });
     }
   };
 
@@ -80,10 +89,13 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      <Notification {...notification} />
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
+      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-4 grow">
+        <div className="border-l-2 border-r-2 border-gray-300 px-4 pt-4 pb-4">
+
         <header className="bg-cyan-700 text-white px-5 py-4 flex flex-col md:flex-row justify-between items-center shadow-md mb-4 gap-2">
           <h1 className="text-xl md:text-2xl font-serif">Welcome, {getUserRole() === 'admin' ? 'Admin' : 'Moderator'}</h1>
           <div className="flex items-center space-x-2">
@@ -99,8 +111,7 @@ export default function AdminDashboard() {
         </header>
 
         <LatestSection onEdit={handleEditArticle} onDelete={handleDeleteArticle} />
-        <hr />
-        
+      <hr />
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
             <div className="text-center text-gray-500 mt-4">Loading news articles...</div>
@@ -109,7 +120,7 @@ export default function AdminDashboard() {
           ) : newsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No news articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {newsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -138,7 +149,7 @@ export default function AdminDashboard() {
           ) : literaryArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No literary articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {literaryArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -167,7 +178,7 @@ export default function AdminDashboard() {
           ) : specialsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No specials articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {specialsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -196,7 +207,7 @@ export default function AdminDashboard() {
           ) : opinionArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No opinion articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {opinionArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -225,11 +236,10 @@ export default function AdminDashboard() {
           ) : artArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No art articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {artArticles.slice(0, 3).map(article => (
                 <ArticleCard
-                  key={article.id}
-                  articleId={article.id}
+                  key={article.id}                  articleId={article.id}
                   imageUrl={article.featured_image || PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
@@ -254,7 +264,7 @@ export default function AdminDashboard() {
           ) : featuresArticles.length === 0 ? (
             <EmptyState categoryName="Features" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {featuresArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -283,7 +293,7 @@ export default function AdminDashboard() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
               {sportsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
@@ -303,8 +313,11 @@ export default function AdminDashboard() {
             </div>
           )}
         </ContentSection>
+        </div>
       </main>
       <Footer />
     </div>
   );
 }
+
+
