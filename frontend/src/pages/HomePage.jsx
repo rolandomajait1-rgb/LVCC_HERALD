@@ -19,15 +19,18 @@ export default function HomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const userRole = getUserRole();
-  const [showLoginSuccess, setShowLoginSuccess] = useState(false);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
   
   useEffect(() => {
-    if (location.state?.fromLogin) {
-      setShowLoginSuccess(true);
-      setTimeout(() => setShowLoginSuccess(false), 5000);
-      window.history.replaceState({}, document.title);
+    const title = sessionStorage.getItem('login_notification');
+    const message = sessionStorage.getItem('login_notification_message');
+    if (title) {
+      setNotification({ show: true, type: 'success', title, message: message || '' });
+      sessionStorage.removeItem('login_notification');
+      sessionStorage.removeItem('login_notification_message');
+      setTimeout(() => setNotification({ show: false, type: 'success', title: '', message: '' }), 5000);
     }
-  }, [location]);
+  }, []);
 
   const [newsArticles, setNewsArticles] = useState([]);
   const [literaryArticles, setLiteraryArticles] = useState([]);
@@ -76,12 +79,7 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 gap-4 ">
-      <Notification 
-        show={showLoginSuccess}
-        type="success"
-        title="Login successful!"
-        message="Welcome back to La Verdad Herald"
-      />
+      <Notification {...notification} />
       <Header />
       <Navigation />
 

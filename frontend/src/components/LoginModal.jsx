@@ -48,6 +48,8 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       window.dispatchEvent(new Event('authChange'));
       
       setSuccessMessage('Welcome back to La Verdad Herald!');
+      sessionStorage.setItem('login_notification', 'Login Successfully!');
+      sessionStorage.setItem('login_notification_message', 'Welcome back to La Verdad Herald');
       setTimeout(() => {
         onClose();
         if (userRole === 'admin') navigate('/admin', { state: { fromLogin: true } });
