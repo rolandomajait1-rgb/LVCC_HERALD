@@ -44,10 +44,12 @@ function Header() {
 
   return (
     <header
-      className="flex w-full items-center px-4 md:px-8 py-4 md:py-6 bg-cover"
+      className="flex w-full items-center px-4 md:px-8 py-4 md:py-6"
       style={{
-        backgroundImage: `linear-gradient(to left, rgba(42,90,130,0.2), #2a5a82 80%), url('/header.png')`,
-        backgroundPosition: 'right center'
+        backgroundImage: `linear-gradient(to right, #2a5a82 0%, #2a5a82 40%, rgba(42,90,130,0.7) 70%, rgba(42,90,130,0.3) 90%), url('/header.png')`,
+        backgroundPosition: 'right center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat'
       }}
     >
 
@@ -78,7 +80,7 @@ function Header() {
             onClick={() => {
               if (isLoggedIn && (userRole === 'admin' || userRole === 'moderator')) {
                 navigate('/admin');
-              } else {
+            } else {
                 navigate('/home');
               }
             }}
@@ -100,7 +102,7 @@ function Header() {
         {isLoggedIn && (userRole === 'admin' || userRole === 'moderator') && (
           <button
             onClick={handleAdminAccess}
-            className="flex h-[40px] w-[40px] md:h-[50px] md:w-[50px] items-center justify-center rounded-full shadow-md hover:bg-yellow-500 transition-colors cursor-pointer"
+            className="flex h-[40px] w-[40px] md:h-[50px] md:w-[50px] items-center justify-center rounded-full bg-yellow-400 shadow-md hover:bg-yellow-500 transition-colors cursor-pointer"
             title="Admin Dashboard"
           >
             <img

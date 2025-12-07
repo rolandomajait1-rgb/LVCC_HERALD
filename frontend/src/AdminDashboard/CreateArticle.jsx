@@ -455,18 +455,20 @@ export default function CreateArticle() {
               </div>
 
               <div className="flex flex-col sm:flex-row justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={handlePublish}
-                  disabled={!isFormValid || isPublishing}
-                  className={`px-6 md:px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${ 
-                    isFormValid && !isPublishing
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                  }`}
-                >
-                  {isPublishing ? 'Publishing...' : 'Publish'}
-                </button>
+                {getUserRole() === 'admin' && (
+                  <button
+                    type="button"
+                    onClick={handlePublish}
+                    disabled={!isFormValid || isPublishing}
+                    className={`px-6 md:px-8 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${ 
+                      isFormValid && !isPublishing
+                        ? 'bg-blue-600 text-white hover:bg-blue-700'
+                        : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                    }`}
+                  >
+                    {isPublishing ? 'Publishing...' : 'Publish'}
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handleSaveDraft}

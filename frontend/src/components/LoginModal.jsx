@@ -47,15 +47,12 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       
       window.dispatchEvent(new Event('authChange'));
       
-      setSuccessMessage('Welcome back to La Verdad Herald!');
       sessionStorage.setItem('login_notification', 'Login Successfully!');
       sessionStorage.setItem('login_notification_message', 'Welcome back to La Verdad Herald');
-      setTimeout(() => {
-        onClose();
-        if (userRole === 'admin') navigate('/admin', { state: { fromLogin: true } });
-        else if (userRole === 'moderator') navigate('/moderator', { state: { fromLogin: true } });
-        else navigate('/home', { state: { fromLogin: true } });
-      }, 1500);
+      onClose();
+      if (userRole === 'admin') navigate('/admin', { state: { fromLogin: true } });
+      else if (userRole === 'moderator') navigate('/moderator', { state: { fromLogin: true } });
+      else navigate('/home', { state: { fromLogin: true } });
     } catch (error) {
       if (error.response?.status === 401) setErrors({ general: 'Invalid email or password.' });
       else if (error.response?.data?.errors) setErrors(error.response.data.errors);
@@ -111,7 +108,6 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           </div>
 
           {errors.general && <p className="mt-1 text-xs text-red-500">{errors.general}</p>}
-          {successMessage && <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md"><p className="text-sm text-green-800 text-center">{successMessage}</p></div>}
 
           <button type="submit" disabled={isLoading} className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
             {isLoading ? 'Signing In...' : 'Log in'}

@@ -208,9 +208,9 @@ export default function Search() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-8 md:px-12 lg:px-16 py-8">
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {Array.from({ length: 6 }).map((_, index) => (
               <div key={index} className="animate-pulse bg-white border border-gray-200 rounded-lg shadow-sm p-4">
                 <div className="bg-gray-200 h-48 rounded-lg"></div>
@@ -225,7 +225,7 @@ export default function Search() {
         ) : results.length > 0 ? (
           <div>
             <h2 className="text-xl font-semibold text-gray-700 mb-6">Search Results</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {results.map((article) => (
                 <ArticleCard
                 key={article.id}
@@ -263,7 +263,7 @@ export default function Search() {
         ) : (
           <div>
             <h2 className="text-xl font-semibold text-gray-700 mb-6">Latest Articles</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {latestArticles.map((article) => (
                 <ArticleCard
                   key={article.id}
