@@ -4,6 +4,7 @@ import { FiBarChart, FiPlus, FiFileText as FiFile, FiUsers, FiActivity } from 'r
 import { X, Plus } from 'lucide-react';
 import Header from "../components/Header";
 import Navigation from "../components/HeaderLink";
+import Notification from '../components/Notification';
 import { AdminSidebar } from "../components/AdminSidebar";
 import { getUserRole } from '../utils/auth';
 import axios from '../utils/axiosConfig';
@@ -26,6 +27,12 @@ export default function CreateArticle() {
   const [lastSaved, setLastSaved] = useState(null);
   const [autoSaving, setAutoSaving] = useState(false);
   const [draftId, setDraftId] = useState(null);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
+
+  const showNotification = (type, title, message = '') => {
+    setNotification({ show: true, type, title, message });
+    setTimeout(() => setNotification({ show: false, type: 'success', title: '', message: '' }), 5000);
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -208,7 +215,7 @@ export default function CreateArticle() {
         setDraftId(response.data.id);
       }
 
-      alert("Draft saved successfully!");
+      showNotification('success', 'Draft saved successfully!');
       clearFormState();
       setDraftId(null);
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
@@ -226,7 +233,7 @@ export default function CreateArticle() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      alert(`Error: ${errorMessage}`);
+      showNotification('error', 'Error', errorMessage);
     } finally {
       setIsSavingDraft(false);
     }
@@ -260,7 +267,7 @@ export default function CreateArticle() {
         }
       });
 
-      alert("Article published successfully!");
+      showNotification('success', 'Article published successfully!');
       clearFormState();
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
       navigate(`${rolePrefix}/statistics`);
@@ -276,7 +283,7 @@ export default function CreateArticle() {
       } else if (error.message) {
         errorMessage = error.message;
       }
-      alert(`Error: ${errorMessage}`);
+      showNotification('error', 'Error', errorMessage);
     } finally {
       setIsPublishing(false);
     }
@@ -292,6 +299,7 @@ export default function CreateArticle() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      <Notification {...notification} />
       <Header />
       <Navigation/>
       <div className={`relative h-20 flex items-center justify-center ${isMod ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>

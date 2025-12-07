@@ -7,6 +7,7 @@ import LatestSection from '../components/LatestSection';
 import EmptyState from '../components/EmptyState';
 import Navigation from '../components/HeaderLink';
 import Feedback from '../components/Feedback';
+import Notification from '../components/Notification';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import axios from '../utils/axiosConfig';
 import { FiExternalLink } from 'react-icons/fi';
@@ -24,6 +25,7 @@ export default function AdminDashboard() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
 
 
   const handleOpenAdminDashboard = () => {
@@ -87,6 +89,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
+      <Notification {...notification} />
       <Header />
       <Navigation />
 

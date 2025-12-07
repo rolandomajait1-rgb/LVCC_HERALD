@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Upload, ChevronDown } from 'lucide-react';
 import Header from "../components/Header";
 import Navigation from '../components/HeaderLink';
+import Notification from '../components/Notification';
 import axios from '../utils/axiosConfig';
 import { getFullUrl } from '../utils/url';
 import useStickyState from "../hooks/useStickyState";
@@ -22,6 +23,12 @@ export default function EditArticle() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
+
+  const showNotification = (type, title, message = '') => {
+    setNotification({ show: true, type, title, message });
+    setTimeout(() => setNotification({ show: false, type: 'success', title: '', message: '' }), 5000);
+  };
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -46,7 +53,7 @@ export default function EditArticle() {
       } catch (error) {
         console.error('Error fetching article:', error);
         console.error('Error details:', error.response?.data);
-        alert(`Failed to load article: ${error.response?.data?.message || error.message || 'Network error'}`);
+        showNotification('error', 'Failed to load article', error.response?.data?.message || error.message || 'Network error');
       } finally {
         setLoading(false);
       }
@@ -151,7 +158,7 @@ export default function EditArticle() {
       });
       
       if (response.status === 200) {
-        alert("✅ Article updated successfully!");
+        showNotification('success', 'Article updated successfully!');
         clearFormState();
         navigate(-1);
       }
@@ -177,7 +184,7 @@ export default function EditArticle() {
         errorMessage = 'No response from server. Please check your internet connection.';
       }
       
-      alert(`❌ Error: ${errorMessage}`);
+      showNotification('error', 'Error', errorMessage);
     } finally {
       setIsUpdating(false);
     }
@@ -199,6 +206,7 @@ export default function EditArticle() {
 
   return (
     <div className="min-h-screen bg-white">
+      <Notification {...notification} />
       <Header />
       <Navigation />
       <div className="p-4 md:p-8 font-sans text-gray-900 flex justify-center">

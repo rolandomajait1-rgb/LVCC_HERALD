@@ -8,6 +8,7 @@ import LatestSection from '../components/LatestSection';
 import EmptyState from '../components/EmptyState';
 import Navigation from '../components/HeaderLink';
 import Feedback from '../components/Feedback';
+import Notification from '../components/Notification';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import { getUserRole } from '../utils/auth';
 import { FiExternalLink } from 'react-icons/fi';
@@ -75,12 +76,12 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {showLoginSuccess && (
-        <div className="fixed top-6 right-24 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg animate-fade-in">
-          <p className="font-semibold">Login successful!</p>
-          <p className="text-sm">Welcome back to La Verdad Herald</p>
-        </div>
-      )}
+      <Notification 
+        show={showLoginSuccess}
+        type="success"
+        title="Login successful!"
+        message="Welcome back to La Verdad Herald"
+      />
       <Header />
       <Navigation />
 
