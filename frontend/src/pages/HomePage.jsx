@@ -20,17 +20,7 @@ export default function HomePage() {
   const location = useLocation();
   const userRole = getUserRole();
   const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
-  
-  useEffect(() => {
-    const title = sessionStorage.getItem('login_notification');
-    const message = sessionStorage.getItem('login_notification_message');
-    if (title) {
-      setNotification({ show: true, type: 'success', title, message: message || '' });
-      sessionStorage.removeItem('login_notification');
-      sessionStorage.removeItem('login_notification_message');
-      setTimeout(() => setNotification({ show: false, type: 'success', title: '', message: '' }), 5000);
-    }
-  }, []);
+
 
   const [newsArticles, setNewsArticles] = useState([]);
   const [literaryArticles, setLiteraryArticles] = useState([]);

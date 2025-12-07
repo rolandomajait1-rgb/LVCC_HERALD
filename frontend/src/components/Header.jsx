@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
+  const [showWelcome, setShowWelcome] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +24,16 @@ function Header() {
       window.removeEventListener('storage', updateAuthState);
       window.removeEventListener('authChange', updateAuthState);
     };
+  }, []);
+
+  useEffect(() => {
+    const message = sessionStorage.getItem('login_notification_message');
+    if (message) {
+      setShowWelcome(true);
+      sessionStorage.removeItem('login_notification');
+      sessionStorage.removeItem('login_notification_message');
+      setTimeout(() => setShowWelcome(false), 5000);
+    }
   }, []);
 
 
@@ -80,6 +91,11 @@ function Header() {
 
       {/* === RIGHT SIDE === */}
       <div className="flex items-center gap-2 md:gap-4 relative">
+        {showWelcome && (
+          <div className="hidden md:block bg-green-100 text-green-800 px-4 py-2 rounded-lg shadow-md text-sm font-medium animate-fade-in">
+            Welcome back to La Verdad Herald
+          </div>
+        )}
         {/* Admin icon - only show if admin or moderator is logged in */}
         {isLoggedIn && (userRole === 'admin' || userRole === 'moderator') && (
           <button
