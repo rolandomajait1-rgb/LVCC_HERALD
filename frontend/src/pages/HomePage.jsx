@@ -84,7 +84,7 @@ export default function HomePage() {
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
+      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-6 grow">
         
         {(userRole === 'admin' || userRole === 'moderator') && (
           <header className="bg-cyan-700 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
@@ -112,8 +112,8 @@ export default function HomePage() {
           ) : newsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No news articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {newsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {newsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -138,8 +138,8 @@ export default function HomePage() {
           ) : literaryArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No literary articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {literaryArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {literaryArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -164,8 +164,8 @@ export default function HomePage() {
           ) : specialsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No specials articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {specialsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {specialsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -190,8 +190,8 @@ export default function HomePage() {
           ) : opinionArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No opinion articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {opinionArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {opinionArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -216,8 +216,8 @@ export default function HomePage() {
           ) : artArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No art articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {artArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {artArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -242,8 +242,8 @@ export default function HomePage() {
           ) : featuresArticles.length === 0 ? (
             <EmptyState categoryName="Features" />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {featuresArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {featuresArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
@@ -268,8 +268,8 @@ export default function HomePage() {
           ) : sportsArticles.length === 0 ? (
             <div className="text-center text-gray-500 mt-4">No sports articles available.</div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-              {sportsArticles.map(article => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+              {sportsArticles.slice(0, 3).map(article => (
                 <ArticleCard
                   key={article.id}
                   articleId={article.id}
