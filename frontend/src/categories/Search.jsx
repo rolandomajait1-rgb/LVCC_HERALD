@@ -30,7 +30,7 @@ export default function Search() {
     const fetchLatestArticles = async () => {
       try {
         const response = await axios.get('/api/latest-articles');
-        setLatestArticles(response.data.data || []);
+        setLatestArticles(response.data || []);
       } catch (err) {
         console.error('Error fetching latest articles:', err);
       } finally {
