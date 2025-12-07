@@ -74,7 +74,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 gap-4 ">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {showLoginSuccess && (
         <div className="fixed top-6 right-24 z-50 bg-green-100 border border-green-400 text-green-700 px-6 py-3 rounded-lg shadow-lg animate-fade-in">
           <p className="font-semibold">Login successful!</p>
@@ -84,7 +84,7 @@ export default function HomePage() {
       <Header />
       <Navigation />
 
-      <main className="container mx-auto px-4 md:px-8 lg:px-12 py-6 grow">
+      <main className="container mx-auto px-4 md:px-8 lg:px-16 py-8 grow max-w-7xl">
         
         {(userRole === 'admin' || userRole === 'moderator') && (
           <header className="bg-cyan-700 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
