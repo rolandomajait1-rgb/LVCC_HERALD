@@ -216,7 +216,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   return (
     <>
     <div 
-      className={`relative bg-white border border-gray-300 shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow ${isLarge ? 'min-h-144' : 'max-w-full'} ${className}`} 
+      className={`relative bg-white border border-gray-200 overflow-hidden cursor-pointer hover:shadow-sm transition-shadow ${isLarge ? 'min-h-144' : 'max-w-full'} ${className}`} 
       onClick={handleCardClick}
       style={{ cursor: 'pointer' }}
     >
