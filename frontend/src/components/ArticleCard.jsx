@@ -215,7 +215,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   return (
     <>
     <div 
-      className={`relative bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow ${isLarge ? 'min-h-144' : 'max-w-full'} ${className}`} 
+      className={`relative bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition-shadow flex flex-col ${isLarge ? 'h-full' : 'max-w-full'} ${className}`} 
       onClick={handleCardClick}
       style={{ cursor: 'pointer' }}
     >
@@ -291,7 +291,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-48' : isLarge ? 'h-80' : 'h-48'}`}>
+          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-48' : isLarge ? 'h-96' : 'h-48'}`}>
             {/* Force rebuild */}
             <img
               src={finalImageUrl}

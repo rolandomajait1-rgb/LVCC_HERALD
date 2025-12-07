@@ -97,6 +97,7 @@ export default function ResetPasswordPage() {
                 value={formData.password}
                 onChange={handleChange}
                 required
+                autoComplete="new-password"
                 placeholder="Enter new password"
                 className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
               />
@@ -131,6 +132,7 @@ export default function ResetPasswordPage() {
                 value={formData.password_confirmation}
                 onChange={handleChange}
                 required
+                autoComplete="new-password"
                 placeholder="Confirm new password"
                 className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'}`}
               />

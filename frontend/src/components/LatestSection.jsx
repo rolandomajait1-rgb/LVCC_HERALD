@@ -117,24 +117,24 @@ export default function LatestSection({ onEdit, onDelete }) {
       <hr className="mb-6" />
 
       <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-        <div className="w-full lg:w-2/3">
+        <div className="w-full lg:w-2/3 h-auto lg:h-full">
           {featuredArticle && (
             <div
-              className="cursor-pointer"
+              className="cursor-pointer h-full"
               onClick={() => featuredArticle.slug && navigate(`/article/${featuredArticle.slug}`)}
               role="link"
               tabIndex={0}
               onKeyDown={(e) => e.key === 'Enter' && featuredArticle.slug && navigate(`/article/${featuredArticle.slug}`)}
               aria-label={`Read article: ${featuredArticle.title}`}
             >
-              <ArticleCard {...featuredArticle} />
+              <ArticleCard {...featuredArticle} className="h-full" />
             </div>
           )}
         </div>
 
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           {sideArticles.map((article, index) => (
-            <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} />
+            <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} className="flex-1" />
           ))}
         </div>
       </div>
