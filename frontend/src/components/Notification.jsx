@@ -11,7 +11,7 @@ export default function Notification({ show, type = 'success', title, message, o
   };
 
   return (
-    <div className={`fixed top-[140px] left-0 right-0 z-[9999] ${colors[type]} px-6 py-3 text-left shadow-md`}>
+    <div className={`w-full ${colors[type]} px-6 py-3 text-left shadow-md`}>
       <p className="font-medium">{title}</p>
       {message && <p className="text-sm mt-1">{message}</p>}
     </div>
