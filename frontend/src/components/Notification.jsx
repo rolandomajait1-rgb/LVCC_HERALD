@@ -12,10 +12,10 @@ export default function Notification({ show, type = 'success', title, message, o
 
   return (
     <div className={`w-full px-6 py-3 text-left rounded-md border-2 ${
-      type === 'success' ? 'bg-green-50 text-green-800 border-green-400' : 
-      type === 'error' ? 'bg-red-50 text-red-800 border-red-400' :
-      type === 'warning' ? 'bg-yellow-50 text-yellow-800 border-yellow-400' :
-      'bg-blue-50 text-blue-800 border-blue-400'
+      type === 'success' ? 'bg-green-50 text-green-700 border-green-400' : 
+      type === 'error' ? 'bg-red-50 text-red-700 border-red-400' :
+      type === 'warning' ? 'bg-yellow-50 text-yellow-700 border-yellow-400' :
+      'bg-blue-50 text-blue-700 border-blue-400'
     }`}>
       <p className="font-medium">{title}</p>
       {message && <p className="text-sm mt-1">{message}</p>}

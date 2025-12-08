@@ -237,7 +237,7 @@ export default function ArticleDetail() {
       
       {notification && (
         <div className={`w-full py-3 px-4 text-left font-medium transition-opacity duration-500 rounded-md border-2 ${
-          notification.type === 'success' ? 'bg-green-50 text-green-800 border-green-400' : 'bg-red-50 text-red-800 border-red-400'
+          notification.type === 'success' ? 'bg-green-50 text-green-700 border-green-400' : 'bg-red-50 text-red-700 border-red-400'
         }`}>
           {notification.message}
         </div>
@@ -245,21 +245,21 @@ export default function ArticleDetail() {
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Are you sure?</h3>
-            <p className="text-gray-600 text-sm text-center mb-6">
+          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-xl">
+            <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Are you sure?</h3>
+            <p className="text-gray-600 text-sm text-center mb-8">
               Are you sure you want to delete this article? This action will permanently delete this article.
             </p>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-4">
               <button
                 onClick={handleDelete}
-                className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
+                className="w-full bg-red-600 text-black py-4 rounded-full font-semibold hover:bg-red-700 transition-colors text-base"
               >
                 Delete
               </button>
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="w-full bg-white text-gray-700 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
+                className="w-full bg-white text-black py-4 rounded-full font-semibold border-2 border-gray-300 hover:bg-gray-50 transition-colors text-base"
               >
                 Cancel
               </button>
