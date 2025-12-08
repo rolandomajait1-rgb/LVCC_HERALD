@@ -87,6 +87,30 @@ export default function ArticleDetail() {
 
         setArticle(articleData);
         
+        // Update meta tags for social sharing
+        document.title = `${articleData.title} - La Verdad Herald`;
+        
+        // Update or create meta tags
+        const updateMetaTag = (property, content) => {
+          let meta = document.querySelector(`meta[property="${property}"]`);
+          if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('property', property);
+            document.head.appendChild(meta);
+          }
+          meta.setAttribute('content', content);
+        };
+        
+        updateMetaTag('og:title', articleData.title);
+        updateMetaTag('og:description', articleData.excerpt || 'Read this article on La Verdad Herald');
+        updateMetaTag('og:image', articleData.featured_image || '/logo.svg');
+        updateMetaTag('og:url', window.location.href);
+        updateMetaTag('og:type', 'article');
+        
+        updateMetaTag('twitter:title', articleData.title);
+        updateMetaTag('twitter:description', articleData.excerpt || 'Read this article on La Verdad Herald');
+        updateMetaTag('twitter:image', articleData.featured_image || '/logo.svg');
+        
         // Load likes from localStorage or backend
         const localLikes = localStorage.getItem(`article_${articleData.id}_likes`);
         const localLiked = localStorage.getItem(`article_${articleData.id}_liked`) === 'true';
@@ -251,7 +275,13 @@ export default function ArticleDetail() {
             {/* Top row: Category and Buttons */}
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center">
-                <span className={`text-sm font-bold uppercase px-3 py-1 rounded-full ${
+                <span 
+                  onClick={() => {
+                    if (article.categories?.length > 0) {
+                      navigate(`/category/${article.categories[0].name.toLowerCase()}`);
+                    }
+                  }}
+                  className={`text-sm font-bold uppercase px-3 py-1 rounded-full cursor-pointer hover:opacity-80 transition-opacity ${
                   article.categories?.length > 0 
                     ? getCategoryColor(article.categories[0].name)
                     : 'text-gray-700 bg-gray-100'
@@ -317,21 +347,15 @@ export default function ArticleDetail() {
               
               {/* Tags - Right side */}
               {article.tags?.length > 0 && (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-col gap-2">
                   {article.tags.map(tag => (
                     <span 
                       key={tag.id} 
                       onClick={(e) => {
                         e.stopPropagation();
-                        const tagLower = tag.name.toLowerCase();
-                        const categories = ['news', 'literary', 'opinion', 'art', 'features', 'sports', 'specials'];
-                        if (categories.includes(tagLower)) {
-                          navigate(`/category/${tagLower}`);
-                        } else {
-                          navigate(`/tag/${tag.name}`);
-                        }
+                        navigate(`/tag/${tag.name}`);
                       }}
-                      className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-colors"
+                      className="text-xs text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-200 cursor-pointer hover:bg-blue-100 hover:border-blue-300 transition-colors text-center"
                     >
                       #{tag.name}
                     </span>
