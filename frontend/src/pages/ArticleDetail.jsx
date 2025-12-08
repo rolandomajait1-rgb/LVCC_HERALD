@@ -268,8 +268,8 @@ export default function ArticleDetail() {
         </div>
       )}
 
-      <div className="min-h-screen bg-gray-200 p-2 md:p-4 font-sans">
-        <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="min-h-screen bg-white font-sans">
+        <article className="max-w-4xl mx-auto">
           
           {/* Header Section: Title, Meta, Buttons */}
           <header className="p-6 md:p-10">
