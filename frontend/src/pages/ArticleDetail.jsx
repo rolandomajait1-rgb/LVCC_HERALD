@@ -57,7 +57,8 @@ export default function ArticleDetail() {
       await axios.delete(`/api/articles/${article.id}`);
       setShowDeleteModal(false);
       showNotification('Article Deleted Successfully!');
-      setTimeout(() => navigate('/'), 1500);
+      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+      setTimeout(() => navigate(rolePrefix), 1500);
     } catch (error) {
       console.error('Error deleting article:', error);
       setShowDeleteModal(false);
