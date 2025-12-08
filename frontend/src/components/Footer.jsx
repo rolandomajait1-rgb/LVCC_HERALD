@@ -114,7 +114,7 @@ function Footer({ onOpenLogin }) {
         {/* Bottom Socials & Copy */}
         <div className="flex flex-col items-center gap-6">
           <div className="flex gap-4">
-            <a href="https://www.facebook.com/profile.php?id=100064162896406" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
+            <a href="https://www.facebook.com/LaVerdadHerald" target="_blank" rel="noopener noreferrer" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">
               <FaFacebook size={18} />
             </a>     
             <a href="mailto:laverdadherald@laverdad.edu.ph" className="w-10 h-10 border border-white rounded-full flex items-center justify-center hover:bg-white hover:text-cyan-800 transition-all group">

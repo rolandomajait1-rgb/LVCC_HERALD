@@ -272,15 +272,16 @@ const ContactSection = ({ showFeedbackForm, setShowFeedbackForm }) => {
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="block text-sm font-bold text-black">Organizer / Office Coordinator</label>
+                  <label className="block text-sm font-bold text-black">Contact Email</label>
                   <input
-                    type="text"
+                    type="email"
                     id="contactEmail"
                     name="contactEmail"
-                    placeholder="Enter your name here..."
+                    placeholder="Enter your email here..."
                     className="w-full p-2 border border-gray-500 rounded text-gray-700 placeholder-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black"
                     value={requestData.contactEmail}
                     onChange={(e) => setRequestData({ ...requestData, contactEmail: e.target.value })}
+                    required
                   />
                 </div>
                 <div className="pt-4 text-center">

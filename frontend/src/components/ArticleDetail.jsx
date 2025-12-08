@@ -71,13 +71,26 @@ const ArticleBody = ({ article }) => (
   </article>
 );
 
-const ActionButtons = ({ likes }) => {
-  const [liked, setLiked] = useState(false);
+const ActionButtons = ({ likes, articleId, isLiked }) => {
+  const [liked, setLiked] = useState(isLiked || false);
   const [likeCount, setLikeCount] = useState(likes);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(prev => liked ? prev - 1 : prev + 1);
+  const handleLike = async () => {
+    try {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      if (!token) {
+        alert('Please login to like articles');
+        return;
+      }
+      const response = await axios.post(`/api/articles/${articleId}/like`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setLiked(response.data.liked);
+      setLikeCount(response.data.likes_count);
+    } catch (error) {
+      console.error('Error liking article:', error);
+      alert('Failed to like article');
+    }
   };
 
   const handleFacebookShare = () => {
@@ -197,7 +210,7 @@ export default function ArticleDetail() {
       <div className="bg-white p-6 md:p-12 rounded-xl shadow-sm mb-16">
         <ArticleHeader article={currentArticle} navigate={navigate} />
         <ArticleBody article={currentArticle} />
-        <ActionButtons likes={6} />
+        <ActionButtons likes={currentArticle.likes_count || 0} articleId={currentArticle.id} isLiked={currentArticle.is_liked} />
       </div>
 
       <div className="border-t-2 border-gray-200 pt-8">

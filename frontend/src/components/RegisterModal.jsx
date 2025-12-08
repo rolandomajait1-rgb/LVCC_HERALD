@@ -7,6 +7,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: '' });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -20,6 +21,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
+    setIsLoading(true);
     try {
       const response = await axios.post('/api/register', { name: formData.name, email: formData.email, password: formData.password, password_confirmation: formData.password_confirmation });
       console.log('Registration successful:', response.data);
@@ -30,6 +32,8 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
       if (error.response?.data?.errors) setErrors(error.response.data.errors);
       else if (error.response?.data?.message) setErrors({ general: error.response.data.message });
       else setErrors({ general: 'Registration failed. Please try again.' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -91,7 +95,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
             {errors.password_confirmation && <p className="mt-1 text-xs text-red-500">{errors.password_confirmation[0]}</p>}
           </div>
 
-          <button type="submit" className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Sign Up</button>
+          <button type="submit" disabled={isLoading} className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">{isLoading ? 'Signing Up...' : 'Sign Up'}</button>
         </form>
 
         <div className="mt-6 text-center">

@@ -45,16 +45,18 @@ export default function AdminDashboard() {
 
   const handleDeleteArticle = getUserRole() === 'admin' ? async () => {
     try {
-      await axios.delete(`/api/articles/${deleteId}`);
-      setShowDeleteModal(false);
-      setDeleteId(null);
-      alert('Article deleted successfully!');
-      window.location.reload();
+      const response = await axios.delete(`/api/articles/${deleteId}`);
+      if (response.status === 200) {
+        setShowDeleteModal(false);
+        setDeleteId(null);
+        setNotification({ show: true, type: 'success', title: 'Article deleted successfully!' });
+        setTimeout(() => window.location.reload(), 1500);
+      }
     } catch (err) {
       console.error('Error deleting article:', err);
       setShowDeleteModal(false);
       setDeleteId(null);
-      alert('Failed to delete article');
+      setNotification({ show: true, type: 'error', title: 'Failed to delete article', message: err.response?.data?.error || err.message });
     }
   } : null;
 

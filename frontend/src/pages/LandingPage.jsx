@@ -24,7 +24,16 @@ function LandingPage() {
   const [isAlreadyVerified, setIsAlreadyVerified] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
+    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const userRole = localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
+    
+    // Redirect if already logged in
+    if (token && !searchParams.get('verified') && !searchParams.get('already_verified')) {
+      if (userRole === 'admin') navigate('/admin');
+      else if (userRole === 'moderator') navigate('/moderator');
+      else navigate('/home');
+      return;
+    }
     
     if (searchParams.get('openLogin') === 'true') {
       setIsLoginOpen(true);

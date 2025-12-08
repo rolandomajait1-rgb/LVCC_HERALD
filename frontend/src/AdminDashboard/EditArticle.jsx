@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Upload, ChevronDown } from 'lucide-react';
+import { Upload, ChevronDown, X, Plus } from 'lucide-react';
 import Header from "../components/Header";
 import Navigation from '../components/HeaderLink';
 import Notification from '../components/Notification';
@@ -15,7 +15,8 @@ export default function EditArticle() {
   const [title, setTitle] = useStickyState("", `edit-article-${id}-title`);
   const [category, setCategory] = useStickyState("", `edit-article-${id}-category`);
   const [categories, setCategories] = useState([]);
-  const [tags, setTags] = useStickyState("", `edit-article-${id}-tags`);
+  const [tags, setTags] = useStickyState([], `edit-article-${id}-tags`);
+  const [newTag, setNewTag] = useState("");
   const [content, setContent] = useStickyState("", `edit-article-${id}-content`);
   const [image, setImage] = useState(null);
   const [currentImage, setCurrentImage] = useState(null);
@@ -44,10 +45,10 @@ export default function EditArticle() {
         setTitle(article.title || "");
         setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
         setCategory(article.categories?.[0]?.id || "");
-        const tagsString = Array.isArray(article.tags) 
-          ? article.tags.map(tag => tag.name || tag).join(', ')
-          : (article.tags || '');
-        setTags(tagsString);
+        const tagsArray = Array.isArray(article.tags) 
+          ? article.tags.map(tag => (tag.name || tag).startsWith('#') ? tag.name || tag : `#${tag.name || tag}`)
+          : [];
+        setTags(tagsArray);
         setContent(article.content || "");
         setCurrentImage(article.featured_image || null);
       } catch (error) {
@@ -65,7 +66,7 @@ export default function EditArticle() {
   }, [id, setTitle, setAuthor, setCategory, setTags, setContent]);
 
   useEffect(() => {
-    const valid = title.trim() && category && content.trim() && tags.trim() && String(author).trim();
+    const valid = title.trim() && category && content.trim() && tags.length > 0 && String(author).trim();
     setIsFormValid(valid);
   }, [title, category, content, tags, author]);
 
@@ -110,8 +111,26 @@ export default function EditArticle() {
     }
   };
 
+  const addTag = () => {
+    if (newTag.trim() && !tags.includes(newTag.trim())) {
+      setTags([...tags, newTag.trim().startsWith('#') ? newTag.trim() : `#${newTag.trim()}`]);
+      setNewTag('');
+    }
+  };
+
+  const removeTag = (index) => {
+    setTags(tags.filter((_, i) => i !== index));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
   const validateForm = () => {
-    if (!title.trim() || !category || !content.trim() || !tags.trim() || !String(author).trim()) {
+    if (!title.trim() || !category || !content.trim() || tags.length === 0 || !String(author).trim()) {
       alert("Please fill in all required fields before updating.");
       return false;
     }
@@ -139,7 +158,7 @@ export default function EditArticle() {
       formData.append('title', title.trim());
       formData.append('category_id', category);
       formData.append('content', content.trim());
-      formData.append('tags', tags.trim());
+      formData.append('tags', tags.map(tag => tag.replace('#', '')).join(','));
       formData.append('author_name', author.trim());
       
       if (image) {
@@ -158,9 +177,10 @@ export default function EditArticle() {
       });
       
       if (response.status === 200) {
-        showNotification('success', 'Article updated successfully!');
         clearFormState();
-        navigate(-1);
+        sessionStorage.setItem('notification_message', 'Article updated successfully!');
+        sessionStorage.setItem('notification_type', 'success');
+        navigate(`/article/${response.data.slug}`);
       }
     } catch (error) {
       console.error('❌ Update error:', error);
@@ -298,15 +318,37 @@ export default function EditArticle() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="tags" className="block text-md font-normal text-left text-gray-800">Tags</label>
-              <input 
-                id="tags"
-                type="text" 
-                value={tags}
-                placeholder="Add tags"
-                onChange={(e) => setTags(e.target.value)}
-                className="w-full p-2 border border-gray-400 rounded-md text-gray-800 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all"
-              />
+              <label htmlFor="newTag" className="block text-md font-normal text-left text-gray-800">Tags</label>
+              
+              <div className="flex flex-wrap gap-3 mb-2">
+                {tags.map((tag, index) => (
+                  <div key={index} className="flex items-center bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-sm font-medium border border-gray-300">
+                    <button onClick={() => removeTag(index)} className="mr-2 hover:text-black">
+                      <X size={14} strokeWidth={3} />
+                    </button>
+                    {tag}
+                  </div>
+                ))}
+              </div>
+
+              <div className="relative">
+                <button 
+                  type="button"
+                  onClick={addTag}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-black transition-colors cursor-pointer"
+                >
+                  <Plus size={24} strokeWidth={1.5} />
+                </button>
+                <input 
+                  id="newTag"
+                  type="text" 
+                  placeholder="Add Tags"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="w-full p-2 pl-12 border border-gray-400 rounded-md text-gray-800 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all placeholder-gray-400"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

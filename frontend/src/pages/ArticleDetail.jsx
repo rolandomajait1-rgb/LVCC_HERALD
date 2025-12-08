@@ -34,7 +34,7 @@ const RelatedCard = ({ article, onClick, navigate }) => (
 );
 
 export default function ArticleDetail() {
-  const { identifier } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [article, setArticle] = useState(null);
   const [relatedArticles, setRelatedArticles] = useState([]);
@@ -66,19 +66,24 @@ export default function ArticleDetail() {
   };
 
   useEffect(() => {
+    const notifMsg = sessionStorage.getItem('notification_message');
+    const notifType = sessionStorage.getItem('notification_type');
+    if (notifMsg) {
+      setNotification({ message: notifMsg, type: notifType || 'success' });
+      sessionStorage.removeItem('notification_message');
+      sessionStorage.removeItem('notification_type');
+    }
+  }, []);
+
+  useEffect(() => {
     const fetchArticle = async () => {
       try {
         let response;
         let articleData;
 
-        // If identifier is numeric, fetch by id; otherwise fetch by slug
-        if (identifier && /^\d+$/.test(identifier)) {
-          response = await axios.get(`/api/articles/id/${identifier}`);
-          articleData = response.data;
-        } else {
-          response = await axios.get(`/api/articles/by-slug/${identifier}`);
-          articleData = response.data;
-        }
+        // Fetch by slug
+        response = await axios.get(`/api/articles/by-slug/${slug}`);
+        articleData = response.data;
 
         setArticle(articleData);
         
@@ -120,7 +125,7 @@ export default function ArticleDetail() {
     };
 
     fetchArticle();
-  }, [identifier]);
+  }, [slug]);
 
   if (loading) {
     return (

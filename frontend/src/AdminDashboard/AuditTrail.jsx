@@ -75,7 +75,7 @@ export default function AuditTrail() {
               auditLogs.map((log, index) => (
                 <div key={index} className="grid grid-cols-1 md:grid-cols-12 border-b border-gray-400 last:border-b-0 bg-white">
                   <div className={`md:col-span-2 px-4 py-3 flex flex-col md:flex-row items-start md:items-center md:justify-center border-b md:border-b-0 md:border-r border-gray-400 text-sm font-medium ${
-                    log.action === 'Published' ? 'text-[#2D9CDB]' : 'text-[#EB5757]'
+                    log.action === 'deleted' ? 'text-[#EB5757]' : 'text-[#2D9CDB]'
                   }`}>
                     <span className="md:hidden font-bold text-black mr-2">Action:</span>
                     {log.action}

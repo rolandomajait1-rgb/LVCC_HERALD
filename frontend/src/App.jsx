@@ -557,7 +557,7 @@ function AnimatedRoutes() {
           }
         />
         <Route
-          path="/article/:identifier"
+          path="/article/:slug"
           element={
             <ProtectedRoute>
               <motion.div
