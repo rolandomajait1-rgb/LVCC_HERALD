@@ -58,6 +58,7 @@ Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'get
 Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
 Route::get('/latest-articles', [ArticleController::class, 'latest']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
+Route::get('/tags', [TagController::class, 'getAllTags']);
 Route::get('/tags/{slug}/articles', [TagController::class, 'getArticlesByTag']);
 
 // Protected article routes

@@ -8,30 +8,62 @@ import HeaderLink from '../components/HeaderLink';
 import { isAdmin, isModerator, getUserRole } from '../utils/auth';
 import getCategoryColor from '../utils/getCategoryColor';
 
-const RelatedCard = ({ article, onClick, navigate }) => (
-  <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all" onClick={onClick}>
-    <div className="relative h-44 overflow-hidden">
-      <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-    </div>
-    <div className="p-4 flex flex-col grow">
-      <div className="flex justify-between items-start mb-2">
-        <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
-        <span className="text-gray-500 text-[10px] font-medium">{article.date}</span>
+const RelatedCard = ({ article, onClick, navigate, articleId }) => {
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+    navigate(`${rolePrefix}/edit-article/${articleId}`);
+  };
+
+  const handleDelete = async (e) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this article?')) {
+      try {
+        await axios.delete(`/api/articles/${articleId}`);
+        window.location.reload();
+      } catch (error) {
+        alert('Failed to delete article');
+      }
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group hover:shadow-md transition-all">
+      <div className="relative h-44 overflow-hidden cursor-pointer" onClick={onClick}>
+        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
       </div>
-      <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-blue-800 transition-colors line-clamp-3 text-left">
-        {article.title}
-      </h3>
-      {article.excerpt && (
-        <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed text-left">
-          {article.excerpt}
+      <div className="p-4 flex flex-col grow">
+        <div className="flex justify-between items-start mb-2">
+          <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
+          <span className="text-gray-500 text-[10px] font-medium">{article.date}</span>
+        </div>
+        <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-blue-800 transition-colors line-clamp-3 text-left cursor-pointer" onClick={onClick}>
+          {article.title}
+        </h3>
+        {article.excerpt && (
+          <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed text-left">
+            {article.excerpt}
+          </p>
+        )}
+        <p className="text-xs text-gray-500 font-medium mt-auto text-right">
+          {article.author}
         </p>
-      )}
-      <p className="text-xs text-gray-500 font-medium mt-auto text-right">
-        {article.author}
-      </p>
+        {(isAdmin() || isModerator()) && (
+          <div className="flex gap-2 mt-3">
+            <button onClick={handleEdit} className="flex-1 bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-600">
+              Edit
+            </button>
+            {isAdmin() && (
+              <button onClick={handleDelete} className="flex-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-red-600">
+                Delete
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function ArticleDetail() {
   const { slug } = useParams();
@@ -419,13 +451,14 @@ export default function ArticleDetail() {
         
         {/* Related Articles Section */}
         {relatedArticles.length > 0 && (
-          <div className="max-w-4xl mx-auto mt-12 px-4">
-            <div className="border-t-2 border-gray-200 pt-8">
+          <div className="max-w-4xl mx-auto mt-12 mb-16 px-4">
+            <div className="border-t-2 border-gray-200 pt-8 pb-8">
               <h2 className="text-3xl font-serif font-bold text-gray-900 mb-8 text-left">More from this Category</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {relatedArticles.map((relatedArticle) => (
                   <RelatedCard 
-                    key={relatedArticle.id} 
+                    key={relatedArticle.id}
+                    articleId={relatedArticle.id}
                     article={{
                       title: relatedArticle.title,
                       category: relatedArticle.categories && relatedArticle.categories.length > 0 ? relatedArticle.categories[0].name : 'Uncategorized',

@@ -63,12 +63,7 @@ export default function TagSearchResults() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const hashtags = [
-    "#LVCCTeachers", "#MyTeacherMyHero", "#LVCCSocialWork", "#LVCCSWSAP",
-    "#NSED2025", "#EarthquakeDrillSeminar", "#BasicJournalismTraining",
-    "#NationalPressFreedomDay", "#RamonMagsaysay118", "#CoroDeLaVerdad",
-    "#HappyNationalHeroesDay"
-  ];
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
     const fetchArticlesByTag = async () => {
@@ -91,9 +86,20 @@ export default function TagSearchResults() {
       }
     };
 
+    const fetchAllTags = async () => {
+      try {
+        const response = await fetch('http://localhost:8000/api/tags');
+        const data = await response.json();
+        setHashtags(data.map(t => `#${t.name}`));
+      } catch (error) {
+        console.error('Error fetching tags:', error);
+      }
+    };
+
     if (tag) {
       fetchArticlesByTag();
     }
+    fetchAllTags();
   }, [tag]);
 
   return (
@@ -151,7 +157,7 @@ export default function TagSearchResults() {
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">
               Explore
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-2">
               {hashtags.map(hashtag => (
                 <button 
                   key={hashtag}

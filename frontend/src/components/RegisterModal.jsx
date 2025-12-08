@@ -41,7 +41,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4 overflow-y-auto" onClick={onClose}>
       <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg my-8" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl md:text-4xl font-serif text-gray-800">Register</h2>
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-800 w-full text-center">Register</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -95,7 +95,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }) {
             {errors.password_confirmation && <p className="mt-1 text-xs text-red-500">{errors.password_confirmation[0]}</p>}
           </div>
 
-          <button type="submit" disabled={isLoading} className="w-full rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">{isLoading ? 'Signing Up...' : 'Sign Up'}</button>
+          <button type="submit" disabled={isLoading} className="w-60 mx-auto rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">{isLoading ? 'Signing Up...' : 'Sign Up'}</button>
         </form>
 
         <div className="mt-6 text-center">
