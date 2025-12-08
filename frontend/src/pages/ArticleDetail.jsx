@@ -236,8 +236,8 @@ export default function ArticleDetail() {
       <HeaderLink />
       
       {notification && (
-        <div className={`w-full py-3 px-4 text-left font-medium transition-opacity duration-500 ${
-          notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+        <div className={`w-full py-3 px-4 text-left font-medium transition-opacity duration-500 rounded-md border-2 ${
+          notification.type === 'success' ? 'bg-green-50 text-green-800 border-green-400' : 'bg-red-50 text-red-800 border-red-400'
         }`}>
           {notification.message}
         </div>
