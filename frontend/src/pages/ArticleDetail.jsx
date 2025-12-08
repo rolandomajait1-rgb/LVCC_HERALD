@@ -49,7 +49,7 @@ export default function ArticleDetail() {
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 5000);
   };
 
   const handleDelete = async () => {
@@ -73,6 +73,7 @@ export default function ArticleDetail() {
       setNotification({ message: notifMsg, type: notifType || 'success' });
       sessionStorage.removeItem('notification_message');
       sessionStorage.removeItem('notification_type');
+      setTimeout(() => setNotification(null), 5000);
     }
   }, []);
 
@@ -235,7 +236,7 @@ export default function ArticleDetail() {
       <HeaderLink />
       
       {notification && (
-        <div className={`fixed top-[140px] left-0 right-0 z-50 py-3 px-4 text-center font-medium ${
+        <div className={`fixed top-[140px] left-0 right-0 z-50 py-3 px-4 text-center font-medium transition-opacity duration-500 ${
           notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}>
           {notification.message}
