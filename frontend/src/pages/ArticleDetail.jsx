@@ -235,7 +235,7 @@ export default function ArticleDetail() {
       <HeaderLink />
       
       {notification && (
-        <div className={`fixed top-0 left-0 right-0 z-50 py-3 px-4 text-center font-medium ${
+        <div className={`fixed top-32 left-0 right-0 z-50 py-3 px-4 text-center font-medium ${
           notification.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
         }`}>
           {notification.message}
