@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
+import { MIN_SEARCH_LENGTH } from '../utils/constants';
+import { ArticleListSkeleton } from '../components/LoadingSkeleton';
+import { formatShortDate } from '../utils/dateFormatter';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
@@ -16,7 +19,7 @@ const SearchResults = () => {
 
   useEffect(() => {
     const fetchResults = async () => {
-      if (!query || query.length < 3) {
+      if (!query || query.length < MIN_SEARCH_LENGTH) {
         setResults([]);
         return;
       }
@@ -29,8 +32,7 @@ const SearchResults = () => {
         });
         setResults(response.data.data || []);
       } catch (err) {
-        console.error('Search failed:', err);
-        setError('Failed to search articles');
+        setError('Unable to search articles. Please try again.');
         setResults([]);
       } finally {
         setLoading(false);
@@ -65,10 +67,6 @@ const SearchResults = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setSearchQuery(value);
-    // Auto-search after typing
-    if (value.trim().length >= 3) {
-      navigate(`/search?q=${encodeURIComponent(value)}`);
-    }
   };
 
   return (
@@ -84,10 +82,12 @@ const SearchResults = () => {
               value={searchQuery}
               onChange={handleInputChange}
               placeholder="Search"
+              aria-label="Search articles"
               className="w-full px-6 py-3 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 pr-12"
             />
             <button
               type="submit"
+              aria-label="Submit search"
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
             >
               <Search size={24} />
@@ -95,14 +95,16 @@ const SearchResults = () => {
           </div>
         </form>
 
-        <h1 className="text-3xl font-serif font-bold mb-8 text-left">Latest Articles</h1>
+        <h1 className="text-3xl font-serif font-bold mb-8 text-left">
+          {query ? `Search Results for "${query}"` : 'Search Articles'}
+        </h1>
         
-        {query.length < 3 && query.length > 0 && (
-          <p className="text-gray-600">Please enter at least 3 characters to search.</p>
+        {query.length < MIN_SEARCH_LENGTH && query.length > 0 && (
+          <p className="text-gray-600">Please enter at least {MIN_SEARCH_LENGTH} characters to search.</p>
         )}
         
         {loading && (
-          <div className="text-center py-8">Searching...</div>
+          <ArticleListSkeleton count={6} />
         )}
         
         {error && (
@@ -120,7 +122,7 @@ const SearchResults = () => {
                 <div className="h-48 bg-gray-200 overflow-hidden">
                   <img 
                     src={article.featured_image || 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image'} 
-                    alt={article.title}
+                    alt={`Featured image for ${article.title}`}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -130,17 +132,13 @@ const SearchResults = () => {
                       {article.categories?.[0]?.name || 'Uncategorized'}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {new Date(article.published_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric'
-                      })}
+                      {formatShortDate(article.published_at)}
                     </span>
                   </div>
                   <h2 className="text-lg font-bold mb-2 text-gray-900 line-clamp-2">{article.title}</h2>
                   <p className="text-sm text-gray-600 mb-3 line-clamp-3">{article.excerpt}</p>
                   <p className="text-xs text-gray-500 font-medium">
-                    {article.author_name || article.author?.user?.name || 'Unknown Author'}
+                    {article.author_name}
                   </p>
                 </div>
               </div>
@@ -148,7 +146,7 @@ const SearchResults = () => {
           </div>
         )}
         
-        {!loading && !error && results.length === 0 && query.length >= 3 && (
+        {!loading && !error && results.length === 0 && query.length >= MIN_SEARCH_LENGTH && (
           <p className="text-gray-600 text-center py-8">No articles found matching your search.</p>
         )}
       </main>

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
+import DOMPurify from 'dompurify';
 import { Pencil, Trash2, Heart, Share2, Link } from 'lucide-react';
+import { NOTIFICATION_TIMEOUT, REDIRECT_DELAY, COPY_FEEDBACK_TIMEOUT, RELATED_ARTICLES_LIMIT } from '../utils/constants';
+import { formatDateTime } from '../utils/dateFormatter';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
@@ -81,7 +84,7 @@ export default function ArticleDetail() {
 
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 5000);
+    setTimeout(() => setNotification(null), NOTIFICATION_TIMEOUT);
   };
 
   const handleDelete = async () => {
@@ -90,11 +93,10 @@ export default function ArticleDetail() {
       setShowDeleteModal(false);
       showNotification('Article Deleted Successfully!');
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
-      setTimeout(() => navigate(rolePrefix), 1500);
+      setTimeout(() => navigate(rolePrefix), REDIRECT_DELAY);
     } catch (error) {
-      console.error('Error deleting article:', error);
       setShowDeleteModal(false);
-      showNotification('Failed to delete article: ' + (error.response?.data?.message || error.message), 'error');
+      showNotification('Failed to delete article', 'error');
     }
   };
 
@@ -105,7 +107,7 @@ export default function ArticleDetail() {
       setNotification({ message: notifMsg, type: notifType || 'success' });
       sessionStorage.removeItem('notification_message');
       sessionStorage.removeItem('notification_type');
-      setTimeout(() => setNotification(null), 5000);
+      setTimeout(() => setNotification(null), NOTIFICATION_TIMEOUT);
     }
   }, []);
 
@@ -171,11 +173,10 @@ export default function ArticleDetail() {
           const relatedResponse = await axios.get('/api/articles', {
             params: { category: categoryName.toLowerCase(), limit: 6 }
           });
-          const filtered = relatedResponse.data.data.filter(a => a.id !== articleData.id).slice(0, 6);
+          const filtered = relatedResponse.data.data.filter(a => a.id !== articleData.id).slice(0, RELATED_ARTICLES_LIMIT);
           setRelatedArticles(filtered);
         }
       } catch (err) {
-        console.error('Error fetching article:', err);
         setError('Article not found');
       } finally {
         setLoading(false);
@@ -233,7 +234,6 @@ export default function ArticleDetail() {
       localStorage.setItem(`article_${article.id}_likes`, response.data.likes_count);
       localStorage.setItem(`article_${article.id}_liked`, response.data.liked);
     } catch (error) {
-      console.error('Error liking article:', error);
       if (error.response?.status === 401) {
         alert('Please login to like articles');
       }
@@ -254,7 +254,7 @@ export default function ArticleDetail() {
       case 'copy':
         navigator.clipboard.writeText(url).then(() => {
           setCopied(true);
-          setTimeout(() => setCopied(false), 2000);
+          setTimeout(() => setCopied(false), COPY_FEEDBACK_TIMEOUT);
         });
         break;
     }
@@ -367,15 +367,7 @@ export default function ArticleDetail() {
                   </span>
                 </div>
                 <div className="mt-1">
-                  {new Date(article.published_at).toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })} at {new Date(article.published_at).toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true
-                  })}
+                  {formatDateTime(article.published_at)}
                 </div>
               </div>
               
@@ -411,38 +403,35 @@ export default function ArticleDetail() {
                   style={{ height: '500px' }}
                 />
               </div>
+              <p className="text-xs text-gray-500 italic text-center mt-3">Cartoon: Marianne Toazo</p>
             </div>
           )}
 
           {/* Article Body Content */}
           <div className="p-6 md:p-10">
             <div className="prose prose-lg max-w-none text-gray-800">
-              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: article.content }} />
+              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
             </div>
             
             {/* Like and Share Section */}
             <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-gray-200 flex gap-4">
               <button 
                 onClick={handleLike}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-colors ${
-                  liked 
-                    ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                {likeCount} {liked ? 'Liked' : 'Like'}
+                {likeCount} Likes 👍
               </button>
               <button 
                 onClick={() => handleShare('facebook')}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Share on Facebook <Share2 size={16} />
+                <Share2 size={16} /> Share on Facebook
               </button>
               <button 
                 onClick={() => handleShare('copy')}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                {copied ? 'Copied!' : 'Copy Link'} <Link size={16} />
+                <Link size={16} /> {copied ? 'Copied!' : 'Copy Link'}
               </button>
             </div>
           </div>
@@ -462,16 +451,8 @@ export default function ArticleDetail() {
                     article={{
                       title: relatedArticle.title,
                       category: relatedArticle.categories && relatedArticle.categories.length > 0 ? relatedArticle.categories[0].name : 'Uncategorized',
-                      date: new Date(relatedArticle.published_at).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      }) + ' at ' + new Date(relatedArticle.published_at).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      }),
-                      author: relatedArticle.author_name || relatedArticle.author?.user?.name || 'Unknown Author',
+                      date: formatDateTime(relatedArticle.published_at),
+                      author: relatedArticle.author_name,
                       imageUrl: relatedArticle.featured_image || 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
                       excerpt: relatedArticle.excerpt
                     }}

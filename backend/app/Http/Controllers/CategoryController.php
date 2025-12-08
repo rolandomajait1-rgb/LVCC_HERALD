@@ -156,15 +156,14 @@ class CategoryController extends Controller
     public function articles($category)
     {
         $articles = \App\Models\Article::published()
-            ->with('author.user', 'categories', 'tags')
+            ->with(['author', 'author.user', 'categories', 'tags'])
             ->whereHas('categories', function($q) use ($category) {
                 $q->where('slug', strtolower($category))
                   ->orWhere('name', 'LIKE', '%' . $category . '%');
             })
             ->latest('published_at')
-            ->take(12)
-            ->get();
+            ->paginate(12);
 
-        return response()->json(['data' => $articles]);
+        return response()->json($articles);
     }
 }

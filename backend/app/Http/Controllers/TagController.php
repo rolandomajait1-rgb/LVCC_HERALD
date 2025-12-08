@@ -82,7 +82,7 @@ class TagController extends Controller
             ->whereHas('tags', function ($query) use ($tag) {
                 $query->where('tags.id', $tag->id);
             })
-            ->with(['author.user', 'categories'])
+            ->with(['author', 'author.user', 'categories'])
             ->latest('published_at')
             ->get()
             ->map(function ($article) {
@@ -93,7 +93,7 @@ class TagController extends Controller
                     'excerpt' => $article->excerpt,
                     'image_url' => $article->featured_image ?? 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
                     'published_at' => $article->published_at?->format('F j, Y \a\t g:i A'),
-                    'author_name' => $article->author?->user?->name ?? $article->author?->name ?? 'Unknown Author',
+                    'author_name' => $article->author_name,
                     'category' => $article->categories->first()?->name ?? 'Uncategorized',
                 ];
             });

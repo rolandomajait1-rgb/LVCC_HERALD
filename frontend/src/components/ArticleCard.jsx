@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { FaPencilAlt, FaTrash, FaCalendar } from 'react-icons/fa';
 import { Heart, Share2 } from 'lucide-react';
 import { isAdmin, isModerator, deleteArticle, getAuthToken } from '../utils/auth';
@@ -385,6 +386,31 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     )}
     </>
   );
+};
+
+ArticleCard.propTypes = {
+  articleId: PropTypes.number,
+  slug: PropTypes.string,
+  title: PropTypes.string.isRequired,
+  excerpt: PropTypes.string,
+  author: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  imageUrl: PropTypes.string,
+  featured_image: PropTypes.string,
+  category: PropTypes.string,
+  categories: PropTypes.array,
+  date: PropTypes.string,
+  published_at: PropTypes.string,
+  snippet: PropTypes.string,
+  isPublished: PropTypes.bool,
+  isLarge: PropTypes.bool,
+  isMedium: PropTypes.bool,
+  isSmall: PropTypes.bool,
+  horizontal: PropTypes.bool,
+  showRelated: PropTypes.bool,
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  onEdit: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+  onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
 };
 
 export default ArticleCard;

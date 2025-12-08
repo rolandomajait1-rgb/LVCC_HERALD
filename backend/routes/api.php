@@ -132,13 +132,6 @@ Route::middleware('auth:sanctum')->group(function () {
         });
     });
 
-    // Moderator API Routes
-    Route::middleware(['role:moderator'])->group(function () {
-        Route::apiResource('drafts', DraftController::class);
-    });
-
-    // Author-related Draft routes (no dedicated author role; require auth)
-    Route::middleware(['auth:sanctum'])->group(function () {
-        Route::apiResource('drafts', DraftController::class)->only(['index', 'show', 'store', 'update', 'destroy']);
-    });
+    // Draft routes - accessible by authenticated users
+    Route::apiResource('drafts', DraftController::class);
 });

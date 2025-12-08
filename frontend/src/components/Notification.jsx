@@ -3,22 +3,15 @@ import React from 'react';
 export default function Notification({ show, type = 'success', title, message, onClose }) {
   if (!show) return null;
 
-  const colors = {
-    success: 'bg-green-100 border-green-400 text-green-700',
-    error: 'bg-red-100 border-red-400 text-red-700',
-    warning: 'bg-yellow-100 border-yellow-400 text-yellow-700',
-    info: 'bg-blue-100 border-blue-400 text-blue-700'
-  };
-
   return (
-    <div className={`w-full px-6 py-3 text-left rounded-md border-2 ${
-      type === 'success' ? 'bg-green-50 text-green-700 border-green-400' : 
-      type === 'error' ? 'bg-red-50 text-red-700 border-red-400' :
-      type === 'warning' ? 'bg-yellow-50 text-yellow-700 border-yellow-400' :
-      'bg-blue-50 text-blue-700 border-blue-400'
+    <div className={`w-full px-6 py-3 text-left ${
+      type === 'success' ? 'bg-green-200 text-green-800' : 
+      type === 'error' ? 'bg-red-200 text-red-800' :
+      type === 'warning' ? 'bg-yellow-200 text-yellow-800' :
+      'bg-blue-200 text-blue-800'
     }`}>
-      <p className="font-medium">{title}</p>
-      {message && <p className="text-sm mt-1">{message}</p>}
+      <p className="italic">{title}</p>
+      {message && <p className="text-sm mt-1 italic">{message}</p>}
     </div>
   );
 }

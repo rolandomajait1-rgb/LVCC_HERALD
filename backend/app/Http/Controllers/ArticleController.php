@@ -134,7 +134,7 @@ class ArticleController extends Controller
             return response()->json($article->load('author.user', 'categories', 'tags'), 201);
         } catch (\Exception $e) {
             Log::error('Article creation failed: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to create article'], 500);
         }
     }
 
@@ -154,7 +154,7 @@ class ArticleController extends Controller
             return view('articles.show', compact('article'));
         } catch (\Exception $e) {
             Log::error('Error in ArticleController@show: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to load article: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to load article'], 500);
         }
     }
 
@@ -271,7 +271,8 @@ class ArticleController extends Controller
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             return response()->json(['error' => 'Unauthorized. Only admins can delete articles.'], 403);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to delete article: ' . $e->getMessage()], 500);
+            Log::error('Article deletion failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to delete article'], 500);
         }
     }
 
@@ -385,9 +386,9 @@ class ArticleController extends Controller
                 return response()->json(['data' => []]);
             }
 
-            $searchTerm = '%' . addslashes($query) . '%';
+            $searchTerm = '%' . $query . '%';
             $articles = Article::published()
-                ->with('author.user', 'categories', 'tags')
+                ->with(['author', 'author.user', 'categories', 'tags'])
                 ->where(function($q) use ($searchTerm) {
                     $q->where('title', 'LIKE', $searchTerm)
                     ->orWhere('content', 'LIKE', $searchTerm)
@@ -395,7 +396,7 @@ class ArticleController extends Controller
                     ->orWhereHas('tags', function($query) use ($searchTerm) {
                         $query->where('name', 'LIKE', $searchTerm);
                     })
-                    ->orWhereHas('author.user', function($query) use ($searchTerm) {
+                    ->orWhereHas('author', function($query) use ($searchTerm) {
                         $query->where('name', 'LIKE', $searchTerm);
                     })
                     ->orWhereHas('categories', function($query) use ($searchTerm) {
@@ -416,7 +417,7 @@ class ArticleController extends Controller
             return response()->json(['data' => $articles]);
         } catch (\Exception $e) {
             Log::error('Article search failed: ' . $e->getMessage());
-            return response()->json(['data' => []], 500);
+            return response()->json(['message' => 'Search failed'], 500);
         }
     }
 
@@ -434,8 +435,8 @@ class ArticleController extends Controller
         if (Auth::check()) {
             $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
             
-            // Track view
-            ArticleInteraction::firstOrCreate([
+            // Track view - create new record every time
+            ArticleInteraction::create([
                 'user_id' => Auth::id(),
                 'article_id' => $article->id,
                 'type' => 'viewed'
@@ -459,8 +460,8 @@ class ArticleController extends Controller
         if (Auth::check()) {
             $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
             
-            // Track view
-            ArticleInteraction::firstOrCreate([
+            // Track view - create new record every time
+            ArticleInteraction::create([
                 'user_id' => Auth::id(),
                 'article_id' => $article->id,
                 'type' => 'viewed'

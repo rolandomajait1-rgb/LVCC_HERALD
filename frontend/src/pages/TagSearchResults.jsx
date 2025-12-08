@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { Calendar, Pencil, Trash2 } from 'lucide-react';
+import axios from '../utils/axiosConfig';
 import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import Footer from '../components/Footer';
 import { isAdmin, editArticle, deleteArticle } from '../utils/auth';
-import { getFullUrl } from '../utils/url';
+import { SearchResultListSkeleton } from '../components/LoadingSkeleton';
 
 const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, articleId, slug, onClick }) => (
   <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row mb-6 hover:shadow-md transition-shadow cursor-pointer group">
     <div className="md:w-1/3 relative overflow-hidden h-48 md:h-auto">
       <img 
         src={imageUrl} 
-        alt={title} 
+        alt={`Featured image for ${title}`} 
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
       />
       {isAdmin() && (
@@ -57,6 +59,18 @@ const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, ar
   </div>
 );
 
+SearchResultCard.propTypes = {
+  imageUrl: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  excerpt: PropTypes.string,
+  category: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired,
+  articleId: PropTypes.number.isRequired,
+  slug: PropTypes.string,
+  onClick: PropTypes.func.isRequired
+};
+
 export default function TagSearchResults() {
   const { tag } = useParams();
   const navigate = useNavigate();
@@ -69,17 +83,9 @@ export default function TagSearchResults() {
     const fetchArticlesByTag = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-        const response = await fetch(`http://localhost:8000/api/tags/${tag}/articles`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-        const data = await response.json();
-        setArticles(data.articles || []);
+        const response = await axios.get(`/api/tags/${tag}/articles`);
+        setArticles(response.data.articles || []);
       } catch (error) {
-        console.error('Error fetching articles by tag:', error);
         setArticles([]);
       } finally {
         setLoading(false);
@@ -88,11 +94,10 @@ export default function TagSearchResults() {
 
     const fetchAllTags = async () => {
       try {
-        const response = await fetch('http://localhost:8000/api/tags');
-        const data = await response.json();
-        setHashtags(data.map(t => `#${t.name}`));
+        const response = await axios.get('/api/tags');
+        setHashtags(response.data.map(t => `#${t.name}`));
       } catch (error) {
-        console.error('Error fetching tags:', error);
+        // Silently fail
       }
     };
 
@@ -109,7 +114,7 @@ export default function TagSearchResults() {
 
       <main className="grow">
         {/* Banner */}
-        <div className="text-white py-8 px-4 md:px-12 mb-8 shadow-inner" style={{backgroundImage: 'linear-gradient(to right, rgba(59, 130, 246, 0.5), rgba(165, 243, 252, 0.5)), url(/bg.jpg)', backgroundSize: 'cover', backgroundPosition: 'center'}}>
+        <div className="text-white py-8 px-4 md:px-12 mb-8 shadow-inner bg-gradient-to-r from-blue-500/50 to-cyan-200/50 bg-cover bg-center" style={{backgroundImage: 'url(/bg.jpg)'}}>
           <div className="container mx-auto flex justify-between items-center">
             <h2 className="text-4xl font-bold font-sans">#{tag || 'EarthquakePH'}</h2>
             <span className="font-medium bg-white/20 px-4 py-1 rounded-full text-sm backdrop-blur-sm">
@@ -127,9 +132,7 @@ export default function TagSearchResults() {
             </h3>
 
             {loading ? (
-              <div className="flex justify-center items-center h-15 text-gray-500 animate-pulse">
-                Loading articles...
-              </div>
+              <SearchResultListSkeleton count={3} />
             ) : articles.length > 0 ? (
               articles.map(article => (
                 <SearchResultCard 
@@ -163,6 +166,7 @@ export default function TagSearchResults() {
                   key={hashtag}
                   className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-100 hover:border-gray-400 transition-all"
                   onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
+                  aria-label={`View articles tagged with ${hashtag}`}
                 >
                   {hashtag}
                 </button>

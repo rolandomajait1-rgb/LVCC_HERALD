@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ContentSection from '../components/ContentSection';
@@ -10,6 +9,7 @@ import Navigation from '../components/HeaderLink';
 import Feedback from '../components/Feedback';
 import Notification from '../components/Notification';
 import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
+import { ArticleListSkeleton } from '../components/LoadingSkeleton';
 import { getUserRole } from '../utils/auth';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
@@ -56,9 +56,7 @@ export default function HomePage() {
         setFeaturesArticles(responses[5].data.data || []);
         setSportsArticles(responses[6].data.data || []);
       } catch (err) {
-        console.error('Error fetching home page articles:', err);
-        console.error('Error details:', err.response?.data || err.message);
-        setError(`Failed to load articles: ${err.response?.status || err.message}`);
+        setError('Failed to load articles. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -95,7 +93,7 @@ export default function HomePage() {
         
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading news articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : newsArticles.length === 0 ? (
@@ -109,8 +107,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'News'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'News'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -121,7 +119,7 @@ export default function HomePage() {
         
         <ContentSection title="LITERARY" bgColor="bg-green-600" viewAllUrl="/category/literary">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading literary articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : literaryArticles.length === 0 ? (
@@ -135,8 +133,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Literary'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Literary'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -147,7 +145,7 @@ export default function HomePage() {
         
         <ContentSection title="SPECIALS" bgColor="bg-purple-600" viewAllUrl="/category/specials">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading specials articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : specialsArticles.length === 0 ? (
@@ -161,8 +159,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Specials'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Specials'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -173,7 +171,7 @@ export default function HomePage() {
         
         <ContentSection title="OPINION" bgColor="bg-gray-700" viewAllUrl="/category/opinion">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading opinion articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : opinionArticles.length === 0 ? (
@@ -187,8 +185,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Opinion'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Opinion'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -199,7 +197,7 @@ export default function HomePage() {
         
         <ContentSection title="ART" bgColor="bg-indigo-500" viewAllUrl="/category/art">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading art articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : artArticles.length === 0 ? (
@@ -213,8 +211,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Art'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Art'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -225,7 +223,7 @@ export default function HomePage() {
         
         <ContentSection title="FEATURES" bgColor="bg-yellow-500" viewAllUrl="/category/features">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading features articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : featuresArticles.length === 0 ? (
@@ -239,8 +237,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Features'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Features'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />
@@ -251,7 +249,7 @@ export default function HomePage() {
         
         <ContentSection title="SPORTS" bgColor="bg-red-600" viewAllUrl="/category/sports">
           {loading ? (
-            <div className="text-center text-gray-500 mt-4">Loading sports articles...</div>
+            <ArticleListSkeleton count={3} />
           ) : error ? (
             <div className="text-center text-red-600 mt-4">{error}</div>
           ) : sportsArticles.length === 0 ? (
@@ -265,8 +263,8 @@ export default function HomePage() {
                   imageUrl={(article.featured_image && !article.featured_image.includes('/storage/')) ? article.featured_image : PLACEHOLDER_IMAGE}
                   title={article.title}
                   excerpt={article.excerpt}
-                  author={article.author_name || article.author?.name || 'Unknown Author'}
-                  category={article.categories && article.categories.length > 0 ? article.categories[0].name : 'Sports'}
+                  author={article.author_name}
+                  category={article.categories?.[0]?.name || 'Sports'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
                 />

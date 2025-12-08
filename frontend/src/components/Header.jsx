@@ -104,6 +104,7 @@ function Header() {
             onClick={handleAdminAccess}
             className="flex h-[40px] w-[40px] md:h-[50px] md:w-[50px] items-center justify-center rounded-full bg-yellow-400 shadow-md hover:bg-yellow-500 transition-colors cursor-pointer"
             title="Admin Dashboard"
+            aria-label="Open admin dashboard"
           >
             <img
               src="/dashboard.svg"
@@ -117,6 +118,7 @@ function Header() {
             <button
               onClick={() => navigate('/dashboard')}
               className="flex h-[40px] w-[40px] md:h-[50px] md:w-[50px] items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white transition-colors"
+              aria-label="Go to user dashboard"
             >
               <FaUser className="text-xl md:text-2xl text-[#2a5a82]" />
             </button>

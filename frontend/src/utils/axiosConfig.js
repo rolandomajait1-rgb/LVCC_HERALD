@@ -19,16 +19,12 @@ axios.interceptors.request.use(
         } else if (token && expiresAt && Date.now() >= parseInt(expiresAt)) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('token_expires_at');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_role');
             sessionStorage.removeItem('auth_token');
             sessionStorage.removeItem('token_expires_at');
-        }
-
-        // Add CSRF token for state-changing requests (only if meta tag present)
-        if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
-            if (csrfToken) {
-                config.headers['X-CSRF-TOKEN'] = csrfToken;
-            }
+            window.dispatchEvent(new Event('authChange'));
         }
 
         config.headers['X-Requested-With'] = 'XMLHttpRequest';
