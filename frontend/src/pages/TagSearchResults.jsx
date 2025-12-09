@@ -74,7 +74,6 @@ export default function TagSearchResults() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [hashtags, setHashtags] = useState(['#news', '#breaking', '#sports', '#politics', '#health', '#technology', '#education', '#business']);
 
   useEffect(() => {
@@ -97,7 +96,6 @@ export default function TagSearchResults() {
           setHashtags(response.data.map(t => `#${t.name}`));
         }
       } catch (error) {
-        // Keep default tags if API fails
         console.log('Using default tags');
       }
     };
@@ -114,7 +112,6 @@ export default function TagSearchResults() {
       <Navigation />
 
       <main className="grow">
-        {/* Banner */}
         <div className="text-white py-8 px-4 md:px-12 mb-8 shadow-inner bg-gradient-to-r from-blue-500/50 to-cyan-200/50 bg-cover bg-center" style={{backgroundImage: 'url(/bg.jpg)'}}>
           <div className="container mx-auto flex justify-between items-center">
             <h2 className="text-4xl font-bold font-sans">#{tag || 'EarthquakePH'}</h2>
@@ -125,8 +122,6 @@ export default function TagSearchResults() {
         </div>
 
         <div className="container mx-auto px-4 md:px-12 flex flex-col lg:flex-row gap-12">
-          
-          {/* Left Column: Latest Articles */}
           <div className="lg:w-2/3">
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300 text-left">
               Latest Articles
@@ -149,7 +144,7 @@ export default function TagSearchResults() {
                     slug={article.slug}
                     onClick={() => navigate(`/article/${article.slug || article.id}`)}
                   />
-                )}
+                ))}
               </div>
             ) : (
               <div className="text-center text-gray-500 py-8">
@@ -158,13 +153,12 @@ export default function TagSearchResults() {
             )}
           </div>
 
-          {/* Right Column: Explore */}
           <div className="lg:w-1/3">
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">
               Explore
             </h3>
             <div className="flex flex-col gap-2">
-              {hashtags.map(hashtag => (
+              {hashtags.map((hashtag) => (
                 <button 
                   key={hashtag}
                   className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-100 hover:border-gray-400 transition-all"
@@ -176,7 +170,6 @@ export default function TagSearchResults() {
               ))}
             </div>
           </div>
-
         </div>
       </main>
 
@@ -184,4 +177,3 @@ export default function TagSearchResults() {
     </div>
   );
 }
-
