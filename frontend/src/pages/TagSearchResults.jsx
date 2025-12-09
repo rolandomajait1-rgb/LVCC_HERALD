@@ -52,24 +52,8 @@ const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, ar
           {excerpt}
         </p>
       </div>
-      <div className="flex justify-between items-center">
-        <div className="text-xs text-gray-500 font-medium">
-          {author}
-        </div>
-        <div className="flex items-center gap-4 text-xs">
-          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
-            <span>👍</span>
-            <span>5 Likes</span>
-          </button>
-          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
-            <span>📘</span>
-            <span>Share on Facebook</span>
-          </button>
-          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
-            <span>🔗</span>
-            <span>Copy Link</span>
-          </button>
-        </div>
+      <div className="text-right text-xs text-gray-500 font-medium">
+        {author}
       </div>
     </div>
   </div>
