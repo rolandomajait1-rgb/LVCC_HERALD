@@ -70,10 +70,14 @@ export default function HomePage() {
     const fetchAllTags = async () => {
       try {
         const response = await axios.get('/api/tags');
+        console.log('Tags response:', response.data);
         if (response.data && response.data.length > 0) {
           setHashtags(response.data.map(t => `#${t.name}`));
+        } else {
+          console.log('No tags found in response');
         }
       } catch (error) {
+        console.error('Error fetching tags:', error);
         setHashtags([]);
       }
     };
