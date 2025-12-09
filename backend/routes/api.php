@@ -17,6 +17,11 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SetupController;
+
+// Setup routes (temporary for production setup)
+Route::get('/setup/seed', [SetupController::class, 'seedDatabase']);
+Route::get('/setup/check', [SetupController::class, 'checkDatabase']);
 
 // Ping route for testing
 Route::get('/ping', function () {
