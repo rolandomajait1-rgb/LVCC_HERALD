@@ -111,15 +111,19 @@ export default function HomePage() {
           <div className="lg:w-1/3">
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">Explore</h3>
             <div className="flex flex-wrap gap-2">
-              {hashtags.map((hashtag) => (
-                <div 
-                  key={hashtag}
-                  className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
-                  onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
-                >
-                  {hashtag}
-                </div>
-              ))}
+              {hashtags.length > 0 ? (
+                hashtags.map((hashtag) => (
+                  <div 
+                    key={hashtag}
+                    className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
+                  >
+                    {hashtag}
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No tags available yet.</p>
+              )}
             </div>
           </div>
         </div>
