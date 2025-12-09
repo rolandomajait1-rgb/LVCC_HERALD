@@ -10,8 +10,8 @@ import { isAdmin, editArticle, deleteArticle } from '../utils/auth';
 import { SearchResultListSkeleton } from '../components/LoadingSkeleton';
 
 const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, articleId, slug, onClick }) => (
-  <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group h-full flex flex-col">
-    <div className="relative overflow-hidden h-48">
+  <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group flex mb-6">
+    <div className="w-80 h-48 relative overflow-hidden flex-shrink-0">
       <img 
         src={imageUrl} 
         alt={`Featured image for ${title}`} 
@@ -34,24 +34,42 @@ const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, ar
         </div>
       )}
     </div>
-    <div className="p-4 flex flex-col flex-grow">
-      <div className="flex justify-between items-center mb-2">
-        <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">
-          {category}
-        </span>
-        <div className="flex items-center text-gray-400 text-xs">
-          <Calendar size={12} className="mr-1" />
-          {date}
+    <div className="p-6 flex flex-col justify-between flex-grow">
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">
+            {category}
+          </span>
+          <div className="flex items-center text-gray-400 text-xs">
+            <Calendar size={12} className="mr-1" />
+            {date}
+          </div>
         </div>
+        <h3 className="text-xl font-serif font-bold text-gray-900 mb-3 group-hover:text-blue-800 transition-colors">
+          {title}
+        </h3>
+        <p className="text-gray-600 text-sm leading-relaxed mb-4">
+          {excerpt}
+        </p>
       </div>
-      <h3 className="text-lg font-serif font-bold text-gray-900 mb-2 group-hover:text-blue-800 transition-colors" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
-        {title}
-      </h3>
-      <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow" style={{display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
-        {excerpt}
-      </p>
-      <div className="text-right text-xs text-gray-500 font-medium mt-auto">
-        {author}
+      <div className="flex justify-between items-center">
+        <div className="text-xs text-gray-500 font-medium">
+          {author}
+        </div>
+        <div className="flex items-center gap-4 text-xs">
+          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
+            <span>👍</span>
+            <span>5 Likes</span>
+          </button>
+          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
+            <span>📘</span>
+            <span>Share on Facebook</span>
+          </button>
+          <button className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
+            <span>🔗</span>
+            <span>Copy Link</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -74,7 +92,7 @@ export default function TagSearchResults() {
   const navigate = useNavigate();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [hashtags, setHashtags] = useState(['#news', '#breaking', '#sports', '#politics', '#health', '#technology', '#education', '#business']);
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => {
     const fetchArticlesByTag = async () => {
@@ -94,9 +112,13 @@ export default function TagSearchResults() {
         const response = await axios.get('/api/tags');
         if (response.data && response.data.length > 0) {
           setHashtags(response.data.map(t => `#${t.name}`));
+        } else {
+          // Only show tags if API returns data
+          setHashtags([]);
         }
       } catch (error) {
-        console.log('Using default tags');
+        // Don't show any tags if API fails
+        setHashtags([]);
       }
     };
 
@@ -130,7 +152,7 @@ export default function TagSearchResults() {
             {loading ? (
               <SearchResultListSkeleton count={3} />
             ) : articles.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="space-y-6">
                 {articles.map((article) => (
                   <SearchResultCard 
                     key={article.id}
@@ -157,16 +179,15 @@ export default function TagSearchResults() {
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">
               Explore
             </h3>
-            <div className="flex flex-col gap-2">
+            <div className="space-y-2">
               {hashtags.map((hashtag) => (
-                <button 
+                <div 
                   key={hashtag}
-                  className="px-3 py-1 bg-white border border-gray-300 rounded-full text-sm text-gray-600 hover:bg-gray-100 hover:border-gray-400 transition-all"
+                  className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm font-medium transition-colors"
                   onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
-                  aria-label={`View articles tagged with ${hashtag}`}
                 >
                   {hashtag}
-                </button>
+                </div>
               ))}
             </div>
           </div>
