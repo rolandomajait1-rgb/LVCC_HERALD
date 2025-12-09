@@ -4,6 +4,10 @@ const API_URL = '/api/articles';
 
 // Fetch all articles
 const getArticles = async (params = {}) => {
+  if (params.category) {
+    const response = await axios.get(`/api/categories/${params.category}/articles`, { params: { page: params.page } });
+    return response.data;
+  }
   const response = await axios.get('/api/articles/public', { params });
   return response.data;
 };
