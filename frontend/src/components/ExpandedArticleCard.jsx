@@ -117,7 +117,7 @@ export default function ExpandedArticleCard() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const response = await axios.get('/api/articles/slug/' + slug);
+        const response = await axios.get('/api/articles/by-slug/' + slug);
         const article = response.data;
         setCurrentArticle(article);
         

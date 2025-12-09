@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-export default function ContentSection({ title, bgColor, viewAllUrl, children }) {
+export default function ContentSection({ title = '', bgColor = 'bg-gray-500', viewAllUrl = '#', children }) {
   return (
     <section className="mb-8">
       <div className={`flex justify-between items-center p-4 ${bgColor} text-white rounded-t-lg`}>
