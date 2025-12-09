@@ -9,7 +9,7 @@ import Statistics from "../AdminDashboard/Statistics";
 
 export default function OpenAdminDashboard() {
   useEffect(() => {
-    document.title = getUserRole() === 'moderator' ? 'Moderator | Dashboard' : 'Admin | Dashboard';
+    document.title = getUserRole() === 'moderator' ? 'Moderator | Control Panel' : 'Admin | Control Panel';
   }, []);
 
   return (
