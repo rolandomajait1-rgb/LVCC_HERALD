@@ -20,31 +20,26 @@ class CorsMiddleware
         $allowedOrigins = config('cors.allowed_origins', []);
         $allowedPatterns = config('cors.allowed_origins_patterns', []);
         
-        // Allow all Vercel deployments and configured origins
-        $isAllowed = !$origin || 
-                     in_array($origin, $allowedOrigins) || 
-                     $this->matchesPattern($origin, $allowedPatterns) ||
-                     str_contains($origin, '.vercel.app');
+        // Allow ALL origins temporarily
+        $isAllowed = true;
 
-        // Handle preflight
+        // Handle preflight - allow all
         if ($request->isMethod('OPTIONS')) {
             return response('', 200)
-                ->header('Access-Control-Allow-Origin', $isAllowed ? ($origin ?: '*') : '')
+                ->header('Access-Control-Allow-Origin', '*')
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS')
                 ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept')
-                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Allow-Credentials', 'false')
                 ->header('Access-Control-Max-Age', '86400');
         }
 
         $response = $next($request);
 
-        // Add CORS headers
-        if ($isAllowed) {
-            $response->header('Access-Control-Allow-Origin', $origin ?: '*');
-            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-            $response->header('Access-Control-Allow-Credentials', 'true');
-        }
+        // Add CORS headers - allow all
+        $response->header('Access-Control-Allow-Origin', '*');
+        $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+        $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+        $response->header('Access-Control-Allow-Credentials', 'false');
 
         // Security headers
         $response->header('X-Content-Type-Options', 'nosniff');

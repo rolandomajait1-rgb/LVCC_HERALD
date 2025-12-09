@@ -19,7 +19,13 @@ export default function CategoryPage() {
   useEffect(() => {
     const capitalizedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : '';
     console.log('Fetching articles for category:', capitalizedCategory, 'page:', currentPage);
-    dispatch(fetchArticles({ category: capitalizedCategory, page: currentPage }));
+    // Use category-specific endpoint instead
+    fetch(`https://lvcc-herald.onrender.com/api/categories/${category.toLowerCase()}/articles`)
+      .then(r => r.json())
+      .then(data => {
+        dispatch({ type: 'articles/setArticles', payload: data });
+      })
+      .catch(err => console.error(err));
 
     return () => {
       dispatch(clearError());
