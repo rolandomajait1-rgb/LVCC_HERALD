@@ -1,0 +1,13 @@
+{
+  "name": "la-verdad-herald-tests",
+  "version": "1.0.0",
+  "scripts": {
+    "smoke": "node smoke-test.js",
+    "performance": "node performance-monitor.js",
+    "generate-data": "node test-data-generator.js",
+    "test-all": "npm run smoke && npm run performance"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
