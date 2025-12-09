@@ -210,6 +210,22 @@ export default function ArticleDetail() {
         <ArticleHeader article={currentArticle} navigate={navigate} />
         <ArticleBody article={currentArticle} />
         <ActionButtons likes={currentArticle.likes_count || 0} articleId={currentArticle.id} isLiked={currentArticle.is_liked} />
+        {currentArticle.tags && currentArticle.tags.length > 0 && (
+          <div className="max-w-3xl mx-auto mt-8 pt-6 border-t border-gray-200">
+            <h3 className="text-sm font-bold text-gray-700 mb-3">Tags:</h3>
+            <div className="flex flex-wrap gap-2">
+              {currentArticle.tags.map((tag) => (
+                <span
+                  key={tag.id}
+                  className="text-sm text-gray-800 bg-gray-100 px-3 py-1 rounded-full cursor-pointer hover:bg-gray-200 transition-colors"
+                  onClick={() => navigate(`/tag/${tag.name}`)}
+                >
+                  #{tag.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="border-t-2 border-gray-200 pt-8">
