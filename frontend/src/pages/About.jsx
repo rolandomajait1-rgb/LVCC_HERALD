@@ -21,6 +21,9 @@ const About  = () => {
   const [selectedMember, setSelectedMember] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [editingMember, setEditingMember] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editRole, setEditRole] = useState('');
 
   const handleEditPhoto = (memberName) => {
     if (!isAdmin()) {
@@ -59,6 +62,29 @@ const About  = () => {
     }
   };
 
+  const handleEditText = (member) => {
+    if (!isAdmin()) {
+      alert('Only administrators can edit member information.');
+      return;
+    }
+    setEditingMember(member.name);
+    setEditName(member.name);
+    setEditRole(member.role);
+  };
+
+  const handleSaveText = () => {
+    setTeamMembers(prev => 
+      prev.map(member => 
+        member.name === editingMember 
+          ? { ...member, name: editName, role: editRole }
+          : member
+      )
+    );
+    setEditingMember(null);
+    setEditName('');
+    setEditRole('');
+  };
+
   return (
     <>
       <Header />
@@ -77,6 +103,14 @@ const About  = () => {
                 role={member.role}
                 image={member.image}
                 onEdit={handleEditPhoto}
+                onEditText={handleEditText}
+                isEditing={editingMember === member.name}
+                editName={editName}
+                editRole={editRole}
+                setEditName={setEditName}
+                setEditRole={setEditRole}
+                onSave={handleSaveText}
+                onCancel={() => setEditingMember(null)}
               />
             ))}
           </div>
