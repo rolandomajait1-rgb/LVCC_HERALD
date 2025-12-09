@@ -57,7 +57,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
           localStorage.setItem(`article_${articleId}_likes`, count);
           localStorage.setItem(`article_${articleId}_liked`, isLiked);
         } catch (error) {
-          console.error('Error fetching likes:', error);
+          // Silent fail for likes fetch
         }
       }
     };
@@ -94,7 +94,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
           const filtered = response.data.data.filter(a => a.slug !== slug).slice(0, 3);
           setRelatedArticles(filtered);
         } catch (error) {
-          console.error('Error fetching related articles:', error);
+          setRelatedArticles([]);
         }
       };
       fetchRelated();
@@ -123,7 +123,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       try {
         onClick();
       } catch (err) {
-        console.error('ArticleCard onClick handler error:', err);
+        // Silent fail for onClick handler
       }
       return;
     }
@@ -142,7 +142,6 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     }
 
     // No slug and no articleId — nothing to do
-    console.warn('ArticleCard: click ignored — no slug or onClick provided for this article', { articleId, title, slug });
   };
 
   const handleEditClick = (e) => {
@@ -167,8 +166,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
           await axios.delete(`/api/articles/${articleId}`);
           window.location.reload();
         } catch (error) {
-          console.error('Error deleting article:', error);
-          console.error('Failed to delete article:', error.response?.data?.message || error.message);
+          alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
         }
       }
     }
@@ -198,10 +196,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       localStorage.setItem(`article_${articleId}_likes`, response.data.likes_count);
       localStorage.setItem(`article_${articleId}_liked`, response.data.liked);
     } catch (error) {
-      console.error('Error liking article:', error);
-      if (error.response?.status === 401) {
-        console.log('Please login to like articles');
-      }
+      // Silent fail for like action
     }
   };
 
@@ -210,7 +205,6 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     e.stopPropagation();
     const url = `${window.location.origin}/article/${slug}`;
     navigator.clipboard.writeText(url);
-    console.log('Article link copied to clipboard!');
   };
 
   return (
@@ -232,7 +226,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       {(horizontal) ? (
         <div className="flex flex-col sm:flex-row">
           <div className="sm:w-1/3 relative h-48 sm:h-64 overflow-hidden">
-            <img src={finalImageUrl} alt={title} className="w-full h-full object-cover" onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
+            <img src={finalImageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
             {showAdminButtons && onEdit !== false && onDelete !== false && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
@@ -297,6 +291,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               src={finalImageUrl}
               alt={title}
               className="w-full h-full object-cover"
+              loading="lazy"
               onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }}
             />
             {showAdminButtons && onEdit !== false && onDelete !== false && (
@@ -362,7 +357,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
           {relatedArticles.map((article) => (
             <div key={article.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden cursor-pointer transition-all" onClick={() => navigate(`/article/${article.slug}`)}>
               <div className="h-32 overflow-hidden">
-                <img src={article.featured_image_url || 'https://placehold.co/400x200/e2e8f0/64748b?text=No+Image'} alt={article.title} className="w-full h-full object-cover" />
+                <img src={article.featured_image_url || 'https://placehold.co/400x200/e2e8f0/64748b?text=No+Image'} alt={article.title} className="w-full h-full object-cover" loading="lazy" />
               </div>
               <div className="p-3">
                 <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-1 rounded uppercase">

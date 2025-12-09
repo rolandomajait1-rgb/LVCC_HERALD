@@ -82,17 +82,11 @@ export default function AuthorProfile() {
     const fetchAuthorData = async () => {
       dispatch(setLoading(true));
       try {
-        console.log('Fetching data for author:', authorName);
         const response = await axios.get(`/api/authors/${encodeURIComponent(authorName)}`);
-        
-        console.log('Response status:', response.status);
         const data = response.data;
-        console.log('Response data:', data);
-        
         setAuthor(data.author);
         dispatch(setArticles(data.articles));
       } catch (error) {
-        console.error('Error fetching author data:', error);
         dispatch(setError('Failed to load author articles'));
       } finally {
         dispatch(setLoading(false));

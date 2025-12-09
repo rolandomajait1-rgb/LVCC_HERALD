@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import axios from '../utils/axiosConfig';
+import { TOKEN_EXPIRY_DAYS } from '../utils/constants';
 import ForgotPasswordModal from './ForgotPasswordModal';
+import rateLimiter from '../utils/rateLimiter';
+import { sanitizeEmail } from '../utils/inputSanitizer';
 
 export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '', remember: false });
@@ -10,6 +14,22 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({ email: '', password: '', remember: false });
+      setErrors({});
+      setShowPassword(false);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -21,14 +41,26 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const email = sanitizeEmail(formData.email);
+    const rateLimitKey = `login_${email}`;
+    
+    if (!rateLimiter.canAttempt(rateLimitKey)) {
+      const blockedTime = rateLimiter.getBlockedTime(rateLimitKey);
+      setErrors({ general: `Too many failed attempts. Please wait ${blockedTime} seconds.` });
+      return;
+    }
+    
     setIsLoading(true);
     setErrors({});
     try {
-      const response = await axios.post('/api/login', { email: formData.email, password: formData.password });
+      const response = await axios.post('/api/login', { email, password: formData.password });
       const token = response.data.token;
       const userRole = response.data.role;
       const userData = response.data.user;
-      const expiresAt = Date.now() + (7 * 24 * 60 * 60 * 1000);
+      const expiresAt = Date.now() + (TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000);
+      
+      rateLimiter.recordAttempt(rateLimitKey, true);
       
       if (formData.remember) {
         localStorage.setItem('auth_token', token);
@@ -54,10 +86,22 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       else if (userRole === 'moderator') navigate('/moderator', { state: { fromLogin: true } });
       else navigate('/home', { state: { fromLogin: true } });
     } catch (error) {
-      if (error.response?.status === 401) setErrors({ password: 'Wrong password. Please try again.' });
-      else if (error.response?.data?.errors) setErrors(error.response.data.errors);
-      else if (error.response?.data?.message) setErrors({ general: error.response.data.message });
-      else setErrors({ general: 'An error occurred. Please try again later.' });
+      rateLimiter.recordAttempt(rateLimitKey, false);
+      
+      if (error.response?.status === 401) {
+        setErrors({ password: 'Wrong password. Please try again.' });
+      } else if (error.response?.data?.errors) {
+        const apiErrors = error.response.data.errors;
+        const formattedErrors = {};
+        Object.keys(apiErrors).forEach(key => {
+          formattedErrors[key] = Array.isArray(apiErrors[key]) ? apiErrors[key][0] : apiErrors[key];
+        });
+        setErrors(formattedErrors);
+      } else if (error.response?.data?.message) {
+        setErrors({ general: error.response.data.message });
+      } else {
+        setErrors({ general: 'An error occurred. Please try again later.' });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -68,7 +112,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-3xl md:text-4xl font-serif text-gray-800 w-full text-center">Login</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600" aria-label="Close login modal">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -79,14 +123,14 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           <div className="mb-4">
             <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700 text-left">Email Address</label>
             <input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required autoComplete="email" placeholder='Enter your email' className="w-full rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email[0]}</p>}
+            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
           </div>
 
           <div className="mb-4">
             <label htmlFor="password" className="mb-2 block text-sm font-medium text-gray-700 text-left">Password</label>
             <div className="relative">
-              <input type={showPassword ? 'text' : 'password'} id="password" name="password" value={formData.password} onChange={handleChange} required placeholder='Enter your Password' autoComplete="current-password" onPaste={(e) => e.preventDefault()} className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+              <input type={showPassword ? 'text' : 'password'} id="password" name="password" value={formData.password} onChange={handleChange} required placeholder='Enter your Password' autoComplete="current-password" className="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" aria-label={showPassword ? 'Hide password' : 'Show password'}>
                 {showPassword ? (
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" /></svg>
                 ) : (
@@ -102,7 +146,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
               <input type="checkbox" name="remember" checked={formData.remember} onChange={handleChange} className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
               <span className="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <button type="button" onClick={() => setShowForgotPassword(true)} className="text-sm text-blue-600 hover:text-blue-500">
+            <button type="button" onClick={() => setShowForgotPassword(true)} className="text-sm text-blue-600 hover:text-blue-500" aria-label="Open forgot password modal">
               Forgot password?
             </button>
           </div>
@@ -110,14 +154,14 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
           {errors.general && <p className="mb-4 text-sm text-red-500 text-center">{errors.general}</p>}
 
           <div className="flex justify-center">
-            <button type="submit" disabled={isLoading} className="w-60 rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            <button type="submit" disabled={isLoading} className="w-60 rounded-2xl bg-cyan-700 px-4 py-2 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" aria-label="Submit login form">
               {isLoading ? 'Signing In...' : 'Log in'}
             </button>
           </div>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">Don't have an account? <button onClick={onSwitchToRegister} className="text-blue-600 hover:text-blue-500">Sign up</button></p>
+          <p className="text-sm text-gray-600">Don't have an account? <button onClick={onSwitchToRegister} className="text-blue-600 hover:text-blue-500" aria-label="Switch to registration form">Sign up</button></p>
         </div>
       </div>
 
@@ -125,3 +169,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
     </div>
   );
 }
+
+LoginModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSwitchToRegister: PropTypes.func.isRequired,
+};

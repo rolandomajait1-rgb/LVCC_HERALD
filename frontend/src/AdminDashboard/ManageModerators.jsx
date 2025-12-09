@@ -35,7 +35,7 @@ export default function ManageModerators() {
       const response = await axios.get('/api/admin/moderators');
       setModerators(response.data || []);
     } catch (error) {
-      console.error('Error fetching moderators:', error);
+      setModerators([]);
     } finally {
       setLoading(false);
     }
@@ -53,7 +53,6 @@ export default function ManageModerators() {
       fetchModerators();
       alert('Moderator added successfully!');
     } catch (error) {
-      console.error('Error adding moderator:', error);
       alert(error.response?.data?.message || 'Failed to add moderator');
     }
   };
@@ -66,7 +65,6 @@ export default function ManageModerators() {
       setDeleteId(null);
       alert('Moderator removed successfully!');
     } catch (error) {
-      console.error('Error removing moderator:', error);
       setShowDeleteModal(false);
       setDeleteId(null);
       alert('Failed to remove moderator');

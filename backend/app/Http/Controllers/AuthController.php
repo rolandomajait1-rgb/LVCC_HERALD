@@ -94,12 +94,15 @@ class AuthController extends Controller
         return redirect('/dashboard')->with('success', 'Registration successful. Welcome!');
     }
 
-    public function registerApi(Request $request)
+    public function registerApi(\App\Http\Requests\RegisterRequest $request)
     {
-        $user = $this->createUser($request);
-        $user->role = 'user';
-        $user->email_verified_at = now();
-        $user->save();
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'user',
+            'email_verified_at' => now(),
+        ]);
 
         return response()->json(['message' => 'Registration successful. You can now log in.'], 201);
     }

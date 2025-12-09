@@ -32,7 +32,7 @@ export default function AuditTrail() {
       const response = await axios.get('/api/admin/audit-logs');
       setAuditLogs(response.data || []);
     } catch (error) {
-      console.error('Error fetching audit logs:', error);
+      setAuditLogs([]);
     } finally {
       setLoading(false);
     }

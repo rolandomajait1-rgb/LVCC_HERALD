@@ -1,11 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import axios from '../utils/axiosConfig';
+import { REGISTRATION_SUCCESS_TIMEOUT } from '../utils/constants';
+import rateLimiter from '../utils/rateLimiter';
+import { sanitizeEmail } from '../utils/inputSanitizer';
 
 export default function ForgotPasswordModal({ isOpen, onClose }) {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) handleClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -18,17 +30,29 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const sanitizedEmail = sanitizeEmail(email);
+    const rateLimitKey = `forgot_${sanitizedEmail}`;
+    
+    if (!rateLimiter.canAttempt(rateLimitKey)) {
+      const blockedTime = rateLimiter.getBlockedTime(rateLimitKey);
+      setError(`Too many attempts. Please wait ${blockedTime} seconds.`);
+      return;
+    }
+    
     setLoading(true);
     setMessage('');
     setError('');
 
     try {
-      await axios.post('/api/forgot-password', { email });
+      await axios.post('/api/forgot-password', { email: sanitizedEmail });
+      rateLimiter.recordAttempt(rateLimitKey, true);
       setMessage('Password reset link has been sent to your email address. Please check your inbox.');
       setTimeout(() => {
         handleClose();
-      }, 3000);
+      }, REGISTRATION_SUCCESS_TIMEOUT);
     } catch (err) {
+      rateLimiter.recordAttempt(rateLimitKey, false);
       setError(err.response?.data?.message || 'Failed to send reset link. Please try again.');
     } finally {
       setLoading(false);
@@ -40,7 +64,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
       <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg" onClick={(e) => e.stopPropagation()}>
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-3xl md:text-4xl font-serif text-gray-800">Forgot Password?</h2>
-          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors">
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Close forgot password modal">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -79,6 +103,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
             type="submit"
             disabled={loading || message}
             className="w-full rounded-2xl bg-cyan-700 px-4 py-3 text-white font-bold hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            aria-label="Send password reset link"
           >
             {loading ? (
               <span className="flex items-center justify-center">
@@ -99,3 +124,8 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
     </div>
   );
 }
+
+ForgotPasswordModal.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+};

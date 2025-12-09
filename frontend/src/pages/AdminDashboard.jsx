@@ -53,7 +53,6 @@ export default function AdminDashboard() {
         setTimeout(() => window.location.reload(), 1500);
       }
     } catch (err) {
-      console.error('Error deleting article:', err);
       setShowDeleteModal(false);
       setDeleteId(null);
       setNotification({ show: true, type: 'error', title: 'Failed to delete article', message: err.response?.data?.error || err.message });
@@ -86,8 +85,6 @@ export default function AdminDashboard() {
         setSportsArticles(responses[6].data.data || []);
         
       } catch (err) {
-        console.error('Error fetching home page articles:', err);
-        console.error('Error details:', err.response?.data || err.message);
         setError(`Failed to load articles: ${err.response?.status || err.message}`);
       } finally {
         setLoading(false);

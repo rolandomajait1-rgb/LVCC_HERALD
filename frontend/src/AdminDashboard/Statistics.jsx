@@ -42,7 +42,6 @@ export default function Statistics({ onResetData }) {
       ]);
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching stats:', error);
       setError(error.message);
       setLoading(false);
     }
@@ -54,7 +53,7 @@ export default function Statistics({ onResetData }) {
       const data = response.data;
       setRecentActivity(data);
     } catch (error) {
-      console.error('Error fetching recent activity:', error);
+      setRecentActivity([]);
     }
   };
 

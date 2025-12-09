@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
 import { MIN_SEARCH_LENGTH } from '../utils/constants';
+import { sanitizeSearchQuery } from '../utils/inputSanitizer';
 import { ArticleListSkeleton } from '../components/LoadingSkeleton';
 import { formatShortDate } from '../utils/dateFormatter';
 import Header from '../components/Header';
@@ -59,14 +60,14 @@ const SearchResults = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    const sanitized = sanitizeSearchQuery(searchQuery);
+    if (sanitized.trim()) {
+      navigate(`/search?q=${encodeURIComponent(sanitized)}`);
     }
   };
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setSearchQuery(value);
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -124,6 +125,7 @@ const SearchResults = () => {
                     src={article.featured_image || 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image'} 
                     alt={`Featured image for ${article.title}`}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
                 <div className="p-4">

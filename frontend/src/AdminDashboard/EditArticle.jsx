@@ -34,13 +34,7 @@ export default function EditArticle() {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        console.log('Fetching article with ID:', id);
-        
         const response = await axios.get(`/api/articles/${id}`);
-        
-        console.log('Response status:', response.status);
-        console.log('Article data:', response.data);
-        
         const article = response.data;
         setTitle(article.title || "");
         setAuthor(article.author_name || article.author?.user?.name || article.author?.name || "");
@@ -52,8 +46,6 @@ export default function EditArticle() {
         setContent(article.content || "");
         setCurrentImage(article.featured_image || null);
       } catch (error) {
-        console.error('Error fetching article:', error);
-        console.error('Error details:', error.response?.data);
         showNotification('error', 'Failed to load article', error.response?.data?.message || error.message || 'Network error');
       } finally {
         setLoading(false);
@@ -76,7 +68,7 @@ export default function EditArticle() {
         const res = await axios.get('/api/categories?for_dropdown=true');
         setCategories(res.data);
       } catch (e) {
-        console.error('Failed to fetch categories:', e);
+        showNotification('error', 'Failed to load categories');
       }
     };
     fetchCategories();
@@ -100,12 +92,6 @@ export default function EditArticle() {
         e.target.value = '';
         return;
       }
-      
-      console.log('Image selected:', {
-        name: file.name,
-        type: file.type,
-        size: (file.size / 1024 / 1024).toFixed(2) + 'MB'
-      });
       
       setImage(file);
     }
@@ -162,11 +148,8 @@ export default function EditArticle() {
       formData.append('author_name', author.trim());
       
       if (image) {
-        console.log('📸 Uploading new image:', image.name);
         formData.append('featured_image', image, image.name);
       }
-
-      console.log('💾 Updating article ID:', id);
       
       const response = await axios.post(`/api/articles/${id}`, formData, {
         headers: {
@@ -183,8 +166,6 @@ export default function EditArticle() {
         navigate(`/article/${response.data.slug}`);
       }
     } catch (error) {
-      console.error('❌ Update error:', error);
-      
       let errorMessage = 'Failed to update article';
       
       if (error.code === 'ECONNABORTED') {

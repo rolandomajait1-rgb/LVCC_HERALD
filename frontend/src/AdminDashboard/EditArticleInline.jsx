@@ -43,7 +43,7 @@ export default function EditArticleInline() {
           setTags(article.tags?.map(tag => tag.name).join(', ') || '');
         }
       } catch (error) {
-        console.error('Error fetching article:', error);
+        alert('Failed to load article');
       } finally {
         setLoading(false);
       }
@@ -99,7 +99,6 @@ export default function EditArticleInline() {
       alert("Article updated successfully!");
       navigate(-1); // Go back to previous page
     } catch (error) {
-      console.error('Update error:', error);
       alert(`Error: ${error.response?.data?.message || error.message}`);
     } finally {
       setIsUpdating(false);

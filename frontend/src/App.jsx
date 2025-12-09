@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import GlobalErrorBoundary from './components/GlobalErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AnimatePresence, motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import LandingPage from './pages/LandingPage';
 import HomePage from './pages/HomePage';
@@ -653,10 +654,12 @@ export default function App() {
   return loading ? (
     <Preloader />
   ) : (
-    <GlobalErrorBoundary>
-      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <AnimatedRoutes />
-      </Router>
-    </GlobalErrorBoundary>
+    <ErrorBoundary>
+      <GlobalErrorBoundary>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <AnimatedRoutes />
+        </Router>
+      </GlobalErrorBoundary>
+    </ErrorBoundary>
   );
 }

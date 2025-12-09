@@ -40,7 +40,7 @@ export default function CreateArticle() {
         const response = await axios.get('/api/categories?for_dropdown=true');
         setCategories(response.data);
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
+        showNotification('error', 'Error', 'Failed to fetch categories');
       }
     };
     fetchCategories();
@@ -86,7 +86,7 @@ export default function CreateArticle() {
         }
         setLastSaved(new Date());
       } catch (error) {
-        console.error('Auto-save failed:', error);
+        // Silent fail for auto-save
       } finally {
         setAutoSaving(false);
       }
@@ -123,12 +123,6 @@ export default function CreateArticle() {
         e.target.value = '';
         return;
       }
-      
-      console.log('📸 Image selected:', {
-        name: file.name,
-        type: file.type,
-        size: (file.size / 1024 / 1024).toFixed(2) + 'MB'
-      });
       
       setImage(file);
     }
@@ -222,8 +216,6 @@ export default function CreateArticle() {
       sessionStorage.setItem('notification_type', 'success');
       navigate(`${rolePrefix}/draft-articles`);
     } catch (error) {
-      console.error('Save draft error:', error);
-      console.error('Error response:', error.response);
       let errorMessage = 'Failed to save draft';
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
@@ -273,7 +265,6 @@ export default function CreateArticle() {
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
       navigate(`${rolePrefix}/statistics`);
     } catch (error) {
-      console.error('Publish error:', error);
       let errorMessage = 'Failed to publish article';
       if (error.response?.data?.error) {
         errorMessage = error.response.data.error;
@@ -294,7 +285,6 @@ export default function CreateArticle() {
   const isMod = getUserRole() === 'moderator';
 
   useEffect(() => {
-    console.log('CreateArticle - Role:', getUserRole(), 'isMod:', isMod);
     document.title = dashboardTitle;
   }, [dashboardTitle]);
 

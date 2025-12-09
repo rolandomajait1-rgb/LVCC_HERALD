@@ -149,43 +149,13 @@ export default function DraftArticles() {
 
   const fetchDrafts = async () => {
     try {
-      console.log('🔍 Fetching drafts from API...');
       const response = await axios.get('/api/articles?status=draft');
-      
-      console.log('📦 API Response:', {
-        status: response.status,
-        hasData: !!response.data,
-        dataKeys: Object.keys(response.data || {}),
-        totalItems: response.data.total || 0
-      });
-      
-      // Backend returns paginated response: { data: [...], current_page, last_page, etc }
       const articles = response.data.data || [];
-      console.log(`📄 Articles array length: ${articles.length}`);
-      
-      // Log actual statuses
-      if (articles.length > 0) {
-        console.log('📋 Article statuses:', articles.map(a => ({ id: a.id, title: a.title?.substring(0, 30), status: a.status })));
-      }
-      
-      // Filter to ensure only drafts (double check)
       const onlyDrafts = articles.filter(article => article.status === 'draft');
-      console.log(`✅ Found ${onlyDrafts.length} draft(s)`);
-      
-      if (onlyDrafts.length > 0) {
-        console.log('📝 First draft:', {
-          id: onlyDrafts[0].id,
-          title: onlyDrafts[0].title,
-          status: onlyDrafts[0].status,
-          author: onlyDrafts[0].author_name
-        });
-      }
-      
       setDrafts(onlyDrafts);
     } catch (error) {
-      console.error('❌ Error fetching drafts:', error);
-      console.error('Error details:', error.response?.data || error.message);
       setDrafts([]);
+      showNotification('error', 'Failed to load drafts');
     } finally {
       setLoading(false);
     }
@@ -204,7 +174,6 @@ export default function DraftArticles() {
       showNotification('success', 'Draft Deleted Successfully!');
       fetchDrafts();
     } catch (error) {
-      console.error('Error deleting draft:', error);
       setShowDeleteModal(false);
       setDeleteId(null);
       showNotification('error', 'Failed to delete draft', error.response?.data?.message || error.message);
@@ -219,8 +188,6 @@ export default function DraftArticles() {
   const handlePublish = async (id) => {
     if (window.confirm('Are you sure you want to publish this article?')) {
       try {
-        console.log('📤 Publishing article ID:', id);
-        
         // Fetch article data first
         const articleResponse = await axios.get(`/api/articles/${id}`);
         const article = articleResponse.data;
@@ -234,16 +201,13 @@ export default function DraftArticles() {
         formData.append('author_name', article.author_name || article.author?.user?.name || '');
         formData.append('status', 'published');
 
-        const response = await axios.post(`/api/articles/${id}`, formData, {
+        await axios.post(`/api/articles/${id}`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         
-        console.log('✅ Published successfully:', response.data);
         showNotification('success', 'Article Published Successfully!');
         fetchDrafts();
       } catch (error) {
-        console.error('❌ Error publishing article:', error);
-        console.error('Error details:', error.response?.data);
         showNotification('error', 'Failed to publish article', error.response?.data?.message || error.message);
       }
     }

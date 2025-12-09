@@ -14,19 +14,34 @@ class DashboardController extends Controller
 
     public function stats(Request $request)
     {
-        $users = \App\Models\User::count();
-        $articles = \App\Models\Article::where('status', 'published')->count();
-        $drafts = \App\Models\Draft::count();
-        $views = \App\Models\ArticleInteraction::where('type', 'viewed')->count();
-        $likes = \App\Models\ArticleInteraction::where('type', 'liked')->count();
+        try {
+            $users = \App\Models\User::count();
+            $articles = \App\Models\Article::where('status', 'published')->count();
+            
+            // Check if article_user_interactions table exists
+            $views = 0;
+            $likes = 0;
+            
+            if (\Schema::hasTable('article_user_interactions')) {
+                $views = \App\Models\ArticleInteraction::where('type', 'view')->count();
+                $likes = \App\Models\ArticleInteraction::where('type', 'like')->count();
+            }
 
-        return response()->json([
-            'users' => $users,
-            'articles' => $articles,
-            'drafts' => $drafts,
-            'views' => $views,
-            'likes' => $likes
-        ]);
+            return response()->json([
+                'users' => $users,
+                'articles' => $articles,
+                'views' => $views,
+                'likes' => $likes
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Dashboard stats error: ' . $e->getMessage());
+            return response()->json([
+                'users' => 0,
+                'articles' => 0,
+                'views' => 0,
+                'likes' => 0
+            ]);
+        }
     }
 
     public function recentActivity(Request $request)

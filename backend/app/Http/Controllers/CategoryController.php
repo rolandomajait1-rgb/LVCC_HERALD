@@ -15,7 +15,9 @@ class CategoryController extends Controller
         $allowedCategories = ['News', 'Sports', 'Opinion', 'Literary', 'Features', 'Specials', 'Art'];
         
         if ($request->has('for_dropdown')) {
-            $categories = Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
+            $categories = \Illuminate\Support\Facades\Cache::remember('categories_dropdown', 3600, function() use ($allowedCategories) {
+                return Category::whereIn('name', $allowedCategories)->orderBy('name')->get();
+            });
             return response()->json($categories);
         }
 

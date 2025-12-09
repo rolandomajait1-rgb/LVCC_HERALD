@@ -104,14 +104,16 @@ export const MostViewedCard = ({ article }) => (
 );
 
 // Main Grid Layout Component
-export const ArticleGrid = ({ mainFeatured, subFeatured, latests, mostViewed, onEdit, onDelete }) => (
+export const ArticleGrid = ({ mainFeatured, subFeatured, latests, mostViewed, onEdit, onDelete, categoryTitle, categoryColor }) => (
   <div className="container mx-auto px-4 md:px-12 py-8">
-    {/* Section Header */}
-    <div className="flex justify-center mb-8">
-      <div className="bg-[#1E4B7A] text-white px-12 py-2 rounded shadow-md relative">
-         <h2 className="text-3xl font-serif font-bold tracking-wide">NEWS</h2>
+    {/* Section Header - Only show if categoryTitle provided */}
+    {categoryTitle && (
+      <div className="flex justify-center mb-8">
+        <div className={`${categoryColor || 'bg-[#1E4B7A]'} text-white px-12 py-2 rounded shadow-md relative`}>
+          <h2 className="text-3xl font-serif font-bold tracking-wide">{categoryTitle}</h2>
+        </div>
       </div>
-    </div>
+    )}
 
     {/* FEATURED SECTION */}
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12 items-stretch">

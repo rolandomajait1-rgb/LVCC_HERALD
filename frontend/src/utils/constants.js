@@ -11,6 +11,10 @@ export const MIN_SEARCH_LENGTH = 3;
 export const NOTIFICATION_TIMEOUT = 5000;
 export const REDIRECT_DELAY = 1500;
 export const COPY_FEEDBACK_TIMEOUT = 2000;
+export const REGISTRATION_SUCCESS_TIMEOUT = 3000;
+
+// Authentication
+export const TOKEN_EXPIRY_DAYS = 7;
 
 // API
 export const API_TIMEOUT = 30000;

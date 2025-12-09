@@ -28,7 +28,6 @@ const CategoryPage = () => {
         const response = await axios.get(`/api/categories/${category}/articles`);
         setArticles(response.data.data || []);
       } catch (error) {
-        console.error('Error fetching articles:', error);
         setArticles([]);
       } finally {
         setLoading(false);
@@ -75,13 +74,6 @@ const CategoryPage = () => {
       
       <main className="grow">
         <div className="container mx-auto px-4 md:px-12 py-8">
-          {/* Category Header */}
-          <div className="flex justify-center mb-8">
-            <div className={`${categoryColors[category] || 'bg-gray-600'} text-white px-12 py-2 rounded shadow-md`}>
-              <h2 className="text-3xl font-serif font-bold tracking-wide">{category.toUpperCase()}</h2>
-            </div>
-          </div>
-
           {articles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">No {category} articles available.</p>
@@ -92,6 +84,8 @@ const CategoryPage = () => {
               subFeatured={subFeatured}
               latests={latests}
               mostViewed={mostViewed}
+              categoryTitle={category.toUpperCase()}
+              categoryColor={categoryColors[category] || 'bg-gray-600'}
               onEdit={(id) => navigate(`/admin/edit-article/${id}`)}
             />
           )}

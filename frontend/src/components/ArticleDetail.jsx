@@ -88,7 +88,6 @@ const ActionButtons = ({ likes, articleId, isLiked }) => {
       setLiked(response.data.liked);
       setLikeCount(response.data.likes_count);
     } catch (error) {
-      console.error('Error liking article:', error);
       alert('Failed to like article');
     }
   };
@@ -186,7 +185,7 @@ export default function ArticleDetail() {
           setRelatedArticles(filtered);
         }
       } catch (error) {
-        console.error('Error fetching article:', error);
+        // Silent fail
       } finally {
         setLoading(false);
       }

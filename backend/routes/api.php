@@ -38,6 +38,9 @@ Route::middleware('throttle:5,1')->group(function () {
     Route::post('/reset-password', [AuthenticationController::class, 'resetPassword']);
 });
 
+// Search with rate limiting
+Route::middleware('throttle:30,1')->get('/articles/search', [ArticleController::class, 'search']);
+
 // Email Verification Routes
 Route::get('/email/verify/{id}/{hash}', [AuthenticationController::class, 'verifyEmail'])
     ->middleware('signed')
@@ -54,7 +57,6 @@ Route::middleware('throttle:5,1')->post('/contact/subscribe', [ContactController
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/public', [ArticleController::class, 'publicIndex']);
-Route::get('/articles/search', [ArticleController::class, 'search']);
 Route::get('/articles/by-slug/{slug}', [ArticleController::class, 'showBySlug']);
 Route::get('/articles/id/{id}', [ArticleController::class, 'showById']);
 Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
