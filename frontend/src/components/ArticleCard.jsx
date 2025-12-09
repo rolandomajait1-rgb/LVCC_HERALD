@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FaPencilAlt, FaTrash, FaCalendar } from 'react-icons/fa';
-import { Heart, Share2 } from 'lucide-react';
+import { ThumbsUp, Share2 } from 'lucide-react';
 import { isAdmin, isModerator, deleteArticle, getAuthToken } from '../utils/auth';
 import { getFullUrl } from '../utils/url';
 import axios from '../utils/axiosConfig';

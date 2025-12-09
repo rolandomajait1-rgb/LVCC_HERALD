@@ -97,12 +97,10 @@ export default function TagSearchResults() {
         if (response.data && response.data.length > 0) {
           setHashtags(response.data.map(t => `#${t.name}`));
         } else {
-          // Show sample tags if no data from API
-          setHashtags(['#LVCCTeachers', '#MyTeacherMyHero', '#LVCCSocialWork', '#LVCCSWSAP', '#NSED2025', '#EarthquakeDrillSeminar', '#BasicJournalismTraining', '#NationalPressFreedomDay']);
+          setHashtags([]);
         }
       } catch (error) {
-        // Show sample tags if API fails
-        setHashtags(['#LVCCTeachers', '#MyTeacherMyHero', '#LVCCSocialWork', '#LVCCSWSAP', '#NSED2025', '#EarthquakeDrillSeminar', '#BasicJournalismTraining', '#NationalPressFreedomDay']);
+        setHashtags([]);
       }
     };
 
@@ -127,7 +125,7 @@ export default function TagSearchResults() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 md:px-12 flex flex-col lg:flex-row gap-12">
+        <div className="container mx-auto px-4 md:px-12 pb-12 flex flex-col lg:flex-row gap-12">
           <div className="lg:w-2/3">
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300 text-left">
               Latest Articles
@@ -163,11 +161,11 @@ export default function TagSearchResults() {
             <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">
               Explore
             </h3>
-            <div className="space-y-2">
+            <div className="flex flex-wrap gap-2">
               {hashtags.map((hashtag) => (
                 <div 
                   key={hashtag}
-                  className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm font-medium transition-colors"
+                  className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
                 >
                   {hashtag}
