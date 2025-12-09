@@ -6,7 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\ArticleInteraction;
-use App\Models\Log as ActivityLog;
+use App\Models\Log;
 use App\Models\Author;
 use App\Models\User;
 use App\Models\SearchLog;
@@ -125,6 +125,14 @@ class ArticleController extends Controller
                 }
             }
 
+            Log::create([
+                'user_id' => Auth::id(),
+                'action' => 'created',
+                'model_type' => 'Article',
+                'model_id' => $article->id,
+                'new_values' => $article->toArray(),
+            ]);
+
             return response()->json($article->load('author.user', 'categories', 'tags'), 201);
         } catch (\Exception $e) {
             Log::error('Article creation failed: ' . $e->getMessage());
@@ -240,6 +248,15 @@ class ArticleController extends Controller
             }
         }
 
+        Log::create([
+            'user_id' => Auth::id(),
+            'action' => 'updated',
+            'model_type' => 'Article',
+            'model_id' => $article->id,
+            'old_values' => $article->getOriginal(),
+            'new_values' => $article->toArray(),
+        ]);
+
         return response()->json($article->load('author.user', 'categories', 'tags'));
     }
 
@@ -253,7 +270,7 @@ class ArticleController extends Controller
             $article->interactions()->delete();
             $article->delete();
 
-            ActivityLog::create([
+            Log::create([
                 'user_id' => Auth::id(),
                 'action' => 'deleted',
                 'model_type' => 'Article',

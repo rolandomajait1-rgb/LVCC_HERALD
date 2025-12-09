@@ -124,16 +124,12 @@ export default function Opinion() {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get('/api/articles', {
-          params: { category: 'opinion', page: currentPage }
-        });
+        const response = await axios.get('/api/categories/opinion/articles');
         setArticles(response.data.data || []);
         
         // Fetch related articles for "More from this Category" section
-        const relatedResponse = await axios.get('/api/articles', {
-          params: { category: 'opinion', limit: 12 }
-        });
-        const allRelated = relatedResponse.data.data || [];
+        const relatedResponse = await axios.get('/api/categories/opinion/articles');
+        const allRelated = relatedResponse.data.data || relatedResponse.data || [];
         const displayedIds = response.data.data.map(article => article.id);
         const filteredRelated = allRelated.filter(article => !displayedIds.includes(article.id)).slice(0, 6);
         setRelatedArticles(filteredRelated);

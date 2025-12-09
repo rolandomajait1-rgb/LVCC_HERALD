@@ -72,7 +72,11 @@ class AuthenticationController extends Controller
 
         $token = $user->createToken('API Token')->plainTextToken;
 
-        BrevoMailer::sendVerificationLink($user->email, $signedUrl);
+        try {
+            BrevoMailer::sendVerificationLink($user->email, $signedUrl);
+        } catch (\Exception $e) {
+            \Log::error('Failed to send verification email', ['error' => $e->getMessage()]);
+        }
 
         return response()->json([
             'message' => 'Registration successful! Please verify your email before logging in.',
@@ -117,7 +121,11 @@ class AuthenticationController extends Controller
             ['id' => $user->id, 'hash' => sha1($user->email)]
         );
 
-        BrevoMailer::sendVerificationLink($user->email, $signedUrl);
+        try {
+            BrevoMailer::sendVerificationLink($user->email, $signedUrl);
+        } catch (\Exception $e) {
+            \Log::error('Failed to resend verification email', ['error' => $e->getMessage()]);
+        }
 
         return response()->json(['message' => 'Verification email resent!']);
     }
@@ -180,13 +188,17 @@ class AuthenticationController extends Controller
 
         $token = Password::createToken($user);
         $resetUrl = env('APP_FRONTEND_URL') . "/reset-password?token={$token}&email=" . urlencode($user->email);
-        $sent = BrevoMailer::sendResetLink($user->email, $resetUrl);
-
-        if (!$sent) {
-            return response()->json(['message' => 'Failed to send reset email. Please try again later.'], 500);
+        try {
+            $sent = BrevoMailer::sendResetLink($user->email, $resetUrl);
+            if (!$sent) {
+                \Log::error('Brevo failed to send reset email', ['email' => $user->email]);
+                return response()->json(['message' => 'Failed to send reset email. Please try again later.'], 500);
+            }
+            return response()->json(['message' => 'Password reset link sent! Check your email.']);
+        } catch (\Exception $e) {
+            \Log::error('Exception sending reset email', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Failed to send reset email: ' . $e->getMessage()], 500);
         }
-
-        return response()->json(['message' => 'Password reset link sent! Check your email.']);
     }
 
     public function resetPassword(Request $request)
