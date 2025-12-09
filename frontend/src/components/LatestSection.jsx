@@ -91,8 +91,8 @@ export default function LatestSection({ onEdit, onDelete }) {
     author: latestArticles[0].author_name || latestArticles[0].author?.user?.name || latestArticles[0].author?.name || 'Unknown Author',
     isLarge: true,
     slug: latestArticles[0].slug,
-    onEdit,
-    onDelete: onDelete || handleDelete,
+    onEdit: false,
+    onDelete: false,
     articleId: latestArticles[0].id,
   } : null;
 
@@ -105,8 +105,8 @@ export default function LatestSection({ onEdit, onDelete }) {
     author: article.author_name || article.author?.user?.name || article.author?.name || 'Unknown Author',
     slug: article.slug,
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
-    onEdit,
-    onDelete: onDelete || handleDelete,
+    onEdit: false,
+    onDelete: false,
     articleId: article.id,
     isSmall: true
   }));
@@ -116,8 +116,8 @@ export default function LatestSection({ onEdit, onDelete }) {
       <h2 className="text-3xl font-bold text-gray-800 text-left mb-5">Latest</h2>
       <hr className="mb-6" />
 
-      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
-        <div className="w-full lg:w-2/3">
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6 lg:h-[600px]">
+        <div className="w-full lg:w-2/3 h-full">
           {featuredArticle && (
             <div
               className="cursor-pointer h-full"
@@ -132,7 +132,7 @@ export default function LatestSection({ onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="w-full lg:w-1/3 flex flex-col gap-4">
+        <div className="w-full lg:w-1/3 flex flex-col gap-4 h-full">
           {sideArticles.map((article, index) => (
             <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} className="flex-1" />
           ))}
