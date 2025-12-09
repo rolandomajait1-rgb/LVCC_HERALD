@@ -158,6 +158,11 @@ export default function ArticleDetail() {
         updateMetaTag('twitter:image', articleData.featured_image || '/logo.svg');
         
         // Load likes and views from backend response
+        console.log('Article data:', articleData);
+        console.log('Likes count:', articleData.likes_count);
+        console.log('Views count:', articleData.views_count);
+        console.log('Is liked:', articleData.is_liked);
+        
         setLikeCount(articleData.likes_count || 0);
         setLiked(articleData.is_liked || false);
         setViewCount(articleData.views_count || 0);
@@ -186,14 +191,15 @@ export default function ArticleDetail() {
   const handleLike = async () => {
     try {
       const response = await axios.post(`/api/articles/${article.id}/like`);
+      console.log('Like response:', response.data);
       setLiked(response.data.liked);
       setLikeCount(response.data.likes_count);
     } catch (error) {
+      console.error('Like error:', error);
       if (error.response?.status === 401) {
-        const newLiked = !liked;
-        const newCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
-        setLiked(newLiked);
-        setLikeCount(newCount);
+        showNotification('Login Required', 'Please login to like articles', 'error');
+      } else {
+        showNotification('Error', 'Failed to like article', 'error');
       }
     }
   };
