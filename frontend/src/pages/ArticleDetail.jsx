@@ -171,32 +171,6 @@ export default function ArticleDetail() {
     fetchArticle();
   }, [slug]);
 
-  if (loading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <HeaderLink />
-        <main className="container mx-auto px-4 py-8 grow">
-          <div className="text-center">Loading article...</div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (error || !article) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <HeaderLink />
-        <main className="container mx-auto px-4 py-8 grow">
-          <div className="text-center text-red-600">{error || 'Article not found'}</div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   const handleLike = async () => {
     try {
       const response = await axios.post(`/api/articles/${article.id}/like`);
@@ -204,7 +178,6 @@ export default function ArticleDetail() {
       setLikeCount(response.data.likes_count);
     } catch (error) {
       if (error.response?.status === 401) {
-        // Guest user - toggle locally
         const newLiked = !liked;
         const newCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
         setLiked(newLiked);
@@ -233,7 +206,31 @@ export default function ArticleDetail() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <HeaderLink />
+        <main className="container mx-auto px-4 py-8 grow">
+          <div className="text-center">Loading article...</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
+  if (error || !article) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <HeaderLink />
+        <main className="container mx-auto px-4 py-8 grow">
+          <div className="text-center text-red-600">{error || 'Article not found'}</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
