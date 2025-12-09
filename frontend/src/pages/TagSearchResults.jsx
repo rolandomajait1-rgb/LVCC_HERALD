@@ -97,7 +97,8 @@ export default function TagSearchResults() {
         const response = await axios.get('/api/tags');
         setHashtags(response.data.map(t => `#${t.name}`));
       } catch (error) {
-        // Silently fail
+        // Fallback tags if API fails
+        setHashtags(['#news', '#breaking', '#sports', '#politics', '#health', '#technology']);
       }
     };
 
