@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Log;
+use App\Models\Log as ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +37,7 @@ class UserController extends Controller
             'role' => $request->role,
         ]);
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'created',
             'model_type' => 'User',
@@ -74,7 +74,7 @@ class UserController extends Controller
 
         $user->update($request->only(['name', 'email', 'role']));
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'updated',
             'model_type' => 'User',
@@ -99,7 +99,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'deleted',
             'model_type' => 'User',
@@ -136,7 +136,7 @@ class UserController extends Controller
                 'role' => 'moderator',
             ]);
 
-            Log::create([
+            ActivityLog::create([
                 'user_id' => Auth::id(),
                 'action' => 'created',
                 'model_type' => 'User',
@@ -154,7 +154,7 @@ class UserController extends Controller
         $oldValues = $user->toArray();
         $user->update(['role' => 'moderator']);
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'updated',
             'model_type' => 'User',
@@ -168,25 +168,33 @@ class UserController extends Controller
 
     public function removeModerator($id)
     {
-        $user = User::findOrFail($id);
+        try {
+            $user = User::findOrFail($id);
 
-        if ($user->role !== 'moderator') {
-            return response()->json(['message' => 'User is not a moderator'], 400);
+            if ($user->role !== 'moderator') {
+                return response()->json(['message' => 'User is not a moderator'], 400);
+            }
+
+            $oldValues = $user->toArray();
+            $user->update(['role' => 'user']);
+
+            try {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'action' => 'updated',
+                    'model_type' => 'User',
+                    'model_id' => $user->id,
+                    'old_values' => $oldValues,
+                    'new_values' => $user->toArray(),
+                ]);
+            } catch (\Exception $e) {
+                // Log creation failed but user update succeeded
+            }
+
+            return response()->json(['message' => 'Moderator removed successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to remove moderator'], 500);
         }
-
-        $oldValues = $user->toArray();
-        $user->update(['role' => 'subscriber']); // Default role
-
-        Log::create([
-            'user_id' => Auth::id(),
-            'action' => 'updated',
-            'model_type' => 'User',
-            'model_id' => $user->id,
-            'old_values' => $oldValues,
-            'new_values' => $user->toArray(),
-        ]);
-
-        return response()->json(['message' => 'Moderator removed successfully']);
     }
 
     public function revokeAccess($id)
@@ -197,7 +205,7 @@ class UserController extends Controller
 
         $user->tokens()->delete();
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'revoked_access',
             'model_type' => 'User',

@@ -17,8 +17,8 @@ export default function OpenAdminDashboard() {
       <Header />
       <Navigation/>
       
-      <div className={`relative h-20 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
-        <h1 className="text-white font-serif font-bold tracking-widest leading-none text-3xl drop-shadow-lg">
+      <div className={`relative h-14 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
+        <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
           {getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard'}
         </h1>
       </div>

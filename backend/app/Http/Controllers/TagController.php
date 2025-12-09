@@ -7,6 +7,7 @@ use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class TagController extends Controller
@@ -20,18 +21,16 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            // Simple query without relationships
-            $tags = \DB::table('tags')->select('id', 'name', 'slug')->get();
+            // Check if tags table exists
+            if (!\Schema::hasTable('tags')) {
+                return response()->json([]);
+            }
+            
+            $tags = \DB::table('tags')->select('id', 'name')->get();
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Tags fetch failed: ' . $e->getMessage());
-            // Return hardcoded tags as fallback
-            return response()->json([
-                ['id' => 1, 'name' => 'news', 'slug' => 'news'],
-                ['id' => 2, 'name' => 'breaking', 'slug' => 'breaking'],
-                ['id' => 3, 'name' => 'sports', 'slug' => 'sports'],
-                ['id' => 4, 'name' => 'politics', 'slug' => 'politics']
-            ]);
+            return response()->json([]);
         }
     }
 
