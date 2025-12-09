@@ -33,14 +33,16 @@ export default function AdminDashboard() {
   const handleOpenAdminDashboard = () => {
     const role = getUserRole();
     if (role === 'moderator') {
-      navigate('/admin/statistics');
+      navigate('/moderator/statistics');
     } else {
       navigate('/admin/statistics');
     }
   };
 
   const handleEditArticle = (articleId) => {
-    navigate(`/admin/edit-article/${articleId}`);
+    const role = getUserRole();
+    const prefix = role === 'moderator' ? '/moderator' : '/admin';
+    navigate(`${prefix}/edit-article/${articleId}`);
   };
 
   const handleDeleteArticle = getUserRole() === 'admin' ? async () => {

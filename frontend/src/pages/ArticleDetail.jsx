@@ -40,7 +40,7 @@ const RelatedCard = ({ article, onClick, navigate, articleId }) => {
           <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
           <span className="text-gray-500 text-[10px] font-medium">{article.date}</span>
         </div>
-        <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-blue-800 transition-colors line-clamp-3 text-left cursor-pointer" onClick={onClick}>
+        <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-yellow-600 transition-colors line-clamp-3 text-left cursor-pointer" onClick={onClick}>
           {article.title}
         </h3>
         {article.excerpt && (
@@ -170,10 +170,8 @@ export default function ArticleDetail() {
         // Fetch related articles from the same category
         if (articleData.categories && articleData.categories.length > 0) {
           const categoryName = articleData.categories[0].name;
-          const relatedResponse = await axios.get('/api/articles', {
-            params: { category: categoryName.toLowerCase(), limit: 6 }
-          });
-          const filtered = relatedResponse.data.data.filter(a => a.id !== articleData.id).slice(0, RELATED_ARTICLES_LIMIT);
+          const relatedResponse = await axios.get(`/api/categories/${categoryName.toLowerCase()}/articles`);
+          const filtered = (relatedResponse.data.data || relatedResponse.data || []).filter(a => a.id !== articleData.id).slice(0, RELATED_ARTICLES_LIMIT);
           setRelatedArticles(filtered);
         }
       } catch (err) {

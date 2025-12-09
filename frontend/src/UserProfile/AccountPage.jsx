@@ -154,11 +154,10 @@ const AccountPage = () => {
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_email');
-      localStorage.removeItem('user_role');
+      localStorage.clear();
+      sessionStorage.clear();
       window.dispatchEvent(new Event('authChange'));
-      navigate('/');
+      navigate('/landing');
     }
   };
 
