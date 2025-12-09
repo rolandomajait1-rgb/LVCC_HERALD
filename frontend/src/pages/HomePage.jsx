@@ -12,7 +12,7 @@ import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 import { ArticleListSkeleton } from '../components/LoadingSkeleton';
 import { getUserRole } from '../utils/auth';
 import { FiExternalLink } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
 
 export default function HomePage() {

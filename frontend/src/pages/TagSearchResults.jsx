@@ -10,8 +10,8 @@ import { isAdmin, editArticle, deleteArticle } from '../utils/auth';
 import { SearchResultListSkeleton } from '../components/LoadingSkeleton';
 
 const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, articleId, slug, onClick }) => (
-  <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col md:flex-row mb-6 hover:shadow-md transition-shadow cursor-pointer group">
-    <div className="md:w-1/3 relative overflow-hidden h-48 md:h-auto">
+  <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow cursor-pointer group h-full flex flex-col">
+    <div className="relative overflow-hidden h-48">
       <img 
         src={imageUrl} 
         alt={`Featured image for ${title}`} 
@@ -34,25 +34,23 @@ const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, ar
         </div>
       )}
     </div>
-    <div className="p-6 md:w-2/3 flex flex-col justify-between">
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">
-            {category}
-          </span>
-          <div className="flex items-center text-gray-400 text-xs">
-            <Calendar size={12} className="mr-1" />
-            {date}
-          </div>
+    <div className="p-4 flex flex-col flex-grow">
+      <div className="flex justify-between items-center mb-2">
+        <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">
+          {category}
+        </span>
+        <div className="flex items-center text-gray-400 text-xs">
+          <Calendar size={12} className="mr-1" />
+          {date}
         </div>
-        <h3 className="text-2xl font-serif font-bold text-gray-900 mb-3 group-hover:text-blue-800 transition-colors">
-          {title}
-        </h3>
-        <p className="text-gray-600 text-sm leading-relaxed mb-4">
-          {excerpt}
-        </p>
       </div>
-      <div className="text-right text-xs text-gray-500 font-medium">
+      <h3 className="text-lg font-serif font-bold text-gray-900 mb-2 group-hover:text-blue-800 transition-colors" style={{display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
+        {title}
+      </h3>
+      <p className="text-gray-600 text-sm leading-relaxed mb-4 flex-grow" style={{display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>
+        {excerpt}
+      </p>
+      <div className="text-right text-xs text-gray-500 font-medium mt-auto">
         {author}
       </div>
     </div>
@@ -77,7 +75,7 @@ export default function TagSearchResults() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [hashtags, setHashtags] = useState([]);
+  const [hashtags, setHashtags] = useState(['#news', '#breaking', '#sports', '#politics', '#health', '#technology', '#education', '#business']);
 
   useEffect(() => {
     const fetchArticlesByTag = async () => {
@@ -95,10 +93,12 @@ export default function TagSearchResults() {
     const fetchAllTags = async () => {
       try {
         const response = await axios.get('/api/tags');
-        setHashtags(response.data.map(t => `#${t.name}`));
+        if (response.data && response.data.length > 0) {
+          setHashtags(response.data.map(t => `#${t.name}`));
+        }
       } catch (error) {
-        // Fallback tags if API fails
-        setHashtags(['#news', '#breaking', '#sports', '#politics', '#health', '#technology']);
+        // Keep default tags if API fails
+        console.log('Using default tags');
       }
     };
 
@@ -135,20 +135,22 @@ export default function TagSearchResults() {
             {loading ? (
               <SearchResultListSkeleton count={3} />
             ) : articles.length > 0 ? (
-              articles.map(article => (
-                <SearchResultCard 
-                  key={article.id}
-                  articleId={article.id}
-                  imageUrl={article.image_url}
-                  title={article.title}
-                  category={article.category}
-                  date={article.published_at}
-                  excerpt={article.excerpt}
-                  author={article.author_name}
-                  slug={article.slug}
-                  onClick={() => navigate(`/article/${article.slug || article.id}`)}
-                />
-              ))
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {articles.map(article => (
+                  <SearchResultCard 
+                    key={article.id}
+                    articleId={article.id}
+                    imageUrl={article.image_url}
+                    title={article.title}
+                    category={article.category}
+                    date={article.published_at}
+                    excerpt={article.excerpt}
+                    author={article.author_name}
+                    slug={article.slug}
+                    onClick={() => navigate(`/article/${article.slug || article.id}`)}
+                  />
+                )}
+              </div>
             ) : (
               <div className="text-center text-gray-500 py-8">
                 No articles found for this tag.
