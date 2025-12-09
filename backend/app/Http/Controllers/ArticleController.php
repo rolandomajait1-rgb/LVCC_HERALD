@@ -379,16 +379,15 @@ class ArticleController extends Controller
     public function search(Request $request)
     {
         try {
-            $validated = $request->validate(['q' => 'nullable|string|max:255']);
-            $query = $validated['q'] ?? '';
+            $query = $request->get('q', '');
 
             if (strlen(trim($query)) < 3) {
                 return response()->json(['data' => []]);
             }
 
             $searchTerm = '%' . $query . '%';
-            $articles = Article::published()
-                ->with(['author', 'author.user', 'categories', 'tags'])
+            $articles = Article::where('status', 'published')
+                ->with(['author', 'categories', 'tags'])
                 ->where(function($q) use ($searchTerm) {
                     $q->where('title', 'LIKE', $searchTerm)
                     ->orWhere('content', 'LIKE', $searchTerm)
@@ -403,21 +402,41 @@ class ArticleController extends Controller
                         $query->where('name', 'LIKE', $searchTerm);
                     });
                 })
-                ->latest('published_at')
+                ->orderBy('published_at', 'desc')
                 ->take(20)
-                ->get();
+                ->get()
+                ->map(function($article) {
+                    return [
+                        'id' => $article->id,
+                        'title' => $article->title,
+                        'slug' => $article->slug,
+                        'excerpt' => $article->excerpt,
+                        'content' => $article->content,
+                        'featured_image' => $article->featured_image,
+                        'published_at' => $article->published_at,
+                        'author_name' => $article->author->name ?? 'Unknown',
+                        'categories' => $article->categories->map(function($cat) {
+                            return ['name' => $cat->name];
+                        }),
+                        'tags' => $article->tags->pluck('name')
+                    ];
+                });
 
-            SearchLog::create([
-                'user_id' => Auth::id(),
-                'query' => $query,
-                'results_count' => $articles->count(),
-                'ip_address' => $request->ip(),
-            ]);
+            try {
+                SearchLog::create([
+                    'user_id' => Auth::id(),
+                    'query' => $query,
+                    'results_count' => $articles->count(),
+                    'ip_address' => $request->ip(),
+                ]);
+            } catch (\Exception $e) {
+                // Ignore search log errors
+            }
 
             return response()->json(['data' => $articles]);
         } catch (\Exception $e) {
             Log::error('Article search failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Search failed'], 500);
+            return response()->json(['data' => [], 'error' => 'Search failed'], 200);
         }
     }
 
