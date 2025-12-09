@@ -83,8 +83,10 @@ export default function TagSearchResults() {
       setLoading(true);
       try {
         const response = await axios.get(`/api/tags/${tag}/articles`);
+        console.log('Articles by tag response:', response.data);
         setArticles(response.data.articles || []);
       } catch (error) {
+        console.error('Error fetching articles by tag:', error);
         setArticles([]);
       } finally {
         setLoading(false);
@@ -94,12 +96,14 @@ export default function TagSearchResults() {
     const fetchAllTags = async () => {
       try {
         const response = await axios.get('/api/tags');
-        if (response.data && response.data.length > 0) {
+        console.log('Tags response:', response.data);
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
           setHashtags(response.data.map(t => `#${t.name}`));
         } else {
           setHashtags([]);
         }
       } catch (error) {
+        console.error('Error fetching tags:', error);
         setHashtags([]);
       }
     };
