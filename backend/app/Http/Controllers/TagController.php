@@ -21,7 +21,9 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            $tags = Tag::all(['id', 'name']);
+            $tags = Tag::whereHas('articles', function ($query) {
+                $query->where('status', 'published');
+            })->get(['id', 'name']);
             return response()->json($tags);
         } catch (\Exception $e) {
             return response()->json([]);
