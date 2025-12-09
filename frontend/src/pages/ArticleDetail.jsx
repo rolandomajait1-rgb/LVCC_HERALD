@@ -371,7 +371,7 @@ export default function ArticleDetail() {
             
             {/* Tags - Vertical List */}
             {article.tags?.length > 0 && (
-              <div className="mb-6">
+              <div className="mb-6 flex flex-col gap-2 items-start">
                 {article.tags.map(tag => (
                   <div 
                     key={tag.id} 
@@ -379,7 +379,7 @@ export default function ArticleDetail() {
                       e.stopPropagation();
                       navigate(`/tag/${tag.name}`);
                     }}
-                    className="inline-block text-sm text-gray-800 bg-white px-3 py-2 mb-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
                   >
                     #{tag.name}
                   </div>
