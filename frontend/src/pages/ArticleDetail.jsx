@@ -33,38 +33,38 @@ const RelatedCard = ({ article, onClick, navigate, articleId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group hover:shadow-md transition-all">
-      <div className="relative h-44 overflow-hidden cursor-pointer" onClick={onClick}>
-        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      </div>
-      <div className="p-4 flex flex-col grow">
-        <div className="flex justify-between items-start mb-2">
-          <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
-          <span className="text-gray-500 text-[10px] font-medium">{article.date}</span>
-        </div>
-        <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-yellow-600 transition-colors line-clamp-3 text-left cursor-pointer" onClick={onClick}>
-          {article.title}
-        </h3>
-        {article.excerpt && (
-          <p className="text-xs text-gray-600 mb-2 line-clamp-2 leading-relaxed text-left">
-            {article.excerpt}
-          </p>
-        )}
-        <p className="text-xs text-gray-500 font-medium mt-auto text-right">
-          {article.author}
-        </p>
+    <div className="bg-white rounded-lg shadow-md border border-gray-300 overflow-hidden flex flex-col hover:shadow-lg transition-all relative">
+      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onClick}>
+        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
         {(isAdmin() || isModerator()) && (
-          <div className="flex gap-2 mt-3">
-            <button onClick={handleEdit} className="flex-1 bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-600">
-              Edit
+          <div className="absolute top-2 right-2 flex gap-1">
+            <button onClick={handleEdit} className="bg-blue-500 text-white p-2 rounded shadow-lg hover:bg-blue-600">
+              <Pencil size={16} />
             </button>
             {isAdmin() && (
-              <button onClick={handleDelete} className="flex-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-red-600">
-                Delete
+              <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded shadow-lg hover:bg-red-600">
+                <Trash2 size={16} />
               </button>
             )}
           </div>
         )}
+      </div>
+      <div className="p-4 flex flex-col grow">
+        <div className="flex justify-between items-center mb-2">
+          <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
+          <span className="text-gray-500 text-[9px]">{article.date}</span>
+        </div>
+        <h3 className="text-sm font-bold text-gray-900 mb-2 leading-snug hover:text-blue-600 transition-colors line-clamp-2 cursor-pointer" onClick={onClick}>
+          {article.title}
+        </h3>
+        {article.excerpt && (
+          <p className="text-xs text-gray-600 mb-3 line-clamp-3 leading-relaxed">
+            {article.excerpt}
+          </p>
+        )}
+        <p className="text-xs text-gray-700 font-medium mt-auto">
+          {article.author}
+        </p>
       </div>
     </div>
   );
