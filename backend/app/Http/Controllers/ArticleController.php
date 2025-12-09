@@ -144,12 +144,14 @@ class ArticleController extends Controller
     {
         try {
             if (request()->wantsJson()) {
-                $article->load('author.user', 'categories', 'tags');
+                $article->load('author.user', 'categories', 'tags', 'interactions');
                 $article->loadCount(['interactions as likes_count' => function ($query) {
                     $query->where('type', 'like');
                 }]);
                 if (Auth::check()) {
                     $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'like')->isNotEmpty();
+                } else {
+                    $article->is_liked = false;
                 }
                 return response()->json($article);
             }
