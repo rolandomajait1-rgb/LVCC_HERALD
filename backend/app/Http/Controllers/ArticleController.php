@@ -477,39 +477,28 @@ class ArticleController extends Controller
                 return response()->json(['error' => 'Article not found'], 404);
             }
 
-            // Track view
-            try {
-                ArticleInteraction::create([
-                    'user_id' => Auth::id() ?? null,
-                    'article_id' => $article->id,
-                    'type' => 'view',
-                    'ip_address' => request()->ip()
-                ]);
-            } catch (\Exception $e) {
-                // Ignore view tracking errors
-            }
+            // Track view - always create new view record
+            ArticleInteraction::create([
+                'user_id' => Auth::id() ?? null,
+                'article_id' => $article->id,
+                'type' => 'view',
+                'ip_address' => request()->ip()
+            ]);
 
-            // Load counts safely
-            try {
-                $article->loadCount([
-                    'interactions as likes_count' => function ($query) {
-                        $query->where('type', 'like');
-                    },
-                    'interactions as views_count' => function ($query) {
-                        $query->where('type', 'view');
-                    }
-                ]);
-            } catch (\Exception $e) {
-                $article->likes_count = 0;
-                $article->views_count = 0;
-            }
+            // Load counts
+            $article->loadCount([
+                'interactions as likes_count' => function ($query) {
+                    $query->where('type', 'like');
+                },
+                'interactions as views_count' => function ($query) {
+                    $query->where('type', 'view');
+                }
+            ]);
             
             if (Auth::check()) {
-                try {
-                    $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'like')->isNotEmpty();
-                } catch (\Exception $e) {
-                    $article->is_liked = false;
-                }
+                $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'like')->isNotEmpty();
+            } else {
+                $article->is_liked = false;
             }
 
             return response()->json($article);

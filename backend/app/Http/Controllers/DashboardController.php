@@ -17,15 +17,8 @@ class DashboardController extends Controller
         try {
             $users = \App\Models\User::count();
             $articles = \App\Models\Article::where('status', 'published')->count();
-            
-            // Check if article_user_interactions table exists
-            $views = 0;
-            $likes = 0;
-            
-            if (\Schema::hasTable('article_user_interactions')) {
-                $views = \App\Models\ArticleInteraction::where('type', 'view')->count();
-                $likes = \App\Models\ArticleInteraction::where('type', 'like')->count();
-            }
+            $views = \App\Models\ArticleInteraction::where('type', 'view')->count();
+            $likes = \App\Models\ArticleInteraction::where('type', 'like')->count();
 
             return response()->json([
                 'users' => $users,

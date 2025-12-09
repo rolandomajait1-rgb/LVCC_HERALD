@@ -147,23 +147,10 @@ export default function ArticleDetail() {
         updateMetaTag('twitter:description', articleData.excerpt || 'Read this article on La Verdad Herald');
         updateMetaTag('twitter:image', articleData.featured_image || '/logo.svg');
         
-        // Load likes from localStorage or backend
-        const localLikes = localStorage.getItem(`article_${articleData.id}_likes`);
-        const localLiked = localStorage.getItem(`article_${articleData.id}_liked`) === 'true';
-        
-        if (localLikes) {
-          setLikeCount(parseInt(localLikes));
-          setLiked(localLiked);
-        } else {
-          setLikeCount(articleData.interactions_count || 0);
-          setLiked(articleData.is_liked || false);
-        }
-        
-        // Track views
-        const viewKey = `article_${articleData.id}_viewed`;
-        if (!sessionStorage.getItem(viewKey)) {
-          sessionStorage.setItem(viewKey, 'true');
-        }
+        // Load likes and views from backend response
+        setLikeCount(articleData.likes_count || 0);
+        setLiked(articleData.is_liked || false);
+        setViewCount(articleData.views_count || 0);
 
         // Author article count is intentionally not fetched for public display
 
@@ -211,29 +198,17 @@ export default function ArticleDetail() {
   }
 
   const handleLike = async () => {
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-    
-    if (!token) {
-      // Guest user - use localStorage
-      const newLiked = !liked;
-      const newCount = newLiked ? likeCount + 1 : likeCount - 1;
-      setLiked(newLiked);
-      setLikeCount(newCount);
-      localStorage.setItem(`article_${article.id}_likes`, newCount);
-      localStorage.setItem(`article_${article.id}_liked`, newLiked);
-      return;
-    }
-    
-    // Authenticated user - call backend
     try {
       const response = await axios.post(`/api/articles/${article.id}/like`);
       setLiked(response.data.liked);
       setLikeCount(response.data.likes_count);
-      localStorage.setItem(`article_${article.id}_likes`, response.data.likes_count);
-      localStorage.setItem(`article_${article.id}_liked`, response.data.liked);
     } catch (error) {
       if (error.response?.status === 401) {
-        alert('Please login to like articles');
+        // Guest user - toggle locally
+        const newLiked = !liked;
+        const newCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+        setLiked(newLiked);
+        setLikeCount(newCount);
       }
     }
   };
@@ -415,9 +390,13 @@ export default function ArticleDetail() {
             <div className="max-w-3xl mx-auto mt-12 pt-8 border-t border-gray-200 flex gap-4">
               <button 
                 onClick={handleLike}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
+                className={`flex items-center gap-2 px-4 py-2 border rounded-full text-sm font-bold transition-colors ${
+                  liked 
+                    ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600' 
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
               >
-                {likeCount} Likes <ThumbsUp size={16} />
+                <ThumbsUp size={16} className={liked ? 'fill-current' : ''} /> {likeCount} {likeCount === 1 ? 'Like' : 'Likes'}
               </button>
               <button 
                 onClick={() => handleShare('facebook')}
