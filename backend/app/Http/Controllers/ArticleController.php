@@ -445,32 +445,55 @@ class ArticleController extends Controller
 
     public function showBySlug($slug)
     {
-        $article = Article::published()
-            ->with('author.user', 'categories', 'tags')
-            ->where('slug', $slug)
-            ->firstOrFail();
+        try {
+            $article = Article::where('status', 'published')
+                ->with(['author', 'categories', 'tags'])
+                ->where('slug', $slug)
+                ->first();
 
-        // Track view for all users
-        ArticleInteraction::create([
-            'user_id' => Auth::id(),
-            'article_id' => $article->id,
-            'type' => 'viewed'
-        ]);
-
-        $article->loadCount([
-            'interactions as likes_count' => function ($query) {
-                $query->where('type', 'liked');
-            },
-            'interactions as views_count' => function ($query) {
-                $query->where('type', 'viewed');
+            if (!$article) {
+                return response()->json(['error' => 'Article not found'], 404);
             }
-        ]);
-        
-        if (Auth::check()) {
-            $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
-        }
 
-        return response()->json($article);
+            // Track view for all users
+            try {
+                ArticleInteraction::create([
+                    'user_id' => Auth::id(),
+                    'article_id' => $article->id,
+                    'type' => 'viewed'
+                ]);
+            } catch (\Exception $e) {
+                // Ignore view tracking errors
+            }
+
+            // Load counts safely
+            try {
+                $article->loadCount([
+                    'interactions as likes_count' => function ($query) {
+                        $query->where('type', 'liked');
+                    },
+                    'interactions as views_count' => function ($query) {
+                        $query->where('type', 'viewed');
+                    }
+                ]);
+            } catch (\Exception $e) {
+                $article->likes_count = 0;
+                $article->views_count = 0;
+            }
+            
+            if (Auth::check()) {
+                try {
+                    $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
+                } catch (\Exception $e) {
+                    $article->is_liked = false;
+                }
+            }
+
+            return response()->json($article);
+        } catch (\Exception $e) {
+            \Log::error('Article showBySlug failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to load article'], 500);
+        }
     }
 
     public function showById($id)
