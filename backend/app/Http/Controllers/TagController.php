@@ -21,11 +21,17 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            $tags = Tag::select('id', 'name')->get();
+            // Check if tags table exists
+            if (!Schema::hasTable('tags')) {
+                return response()->json([]);
+            }
+            
+            $tags = Tag::all(['id', 'name']);
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Tags fetch failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to fetch tags'], 500);
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json([]);
         }
     }
 
