@@ -497,7 +497,7 @@ class ArticleController extends Controller
 
             return response()->json($article);
         } catch (\Exception $e) {
-            \Log::error('Article showBySlug failed: ' . $e->getMessage());
+            Log::error('Article showBySlug failed: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to load article'], 500);
         }
     }
