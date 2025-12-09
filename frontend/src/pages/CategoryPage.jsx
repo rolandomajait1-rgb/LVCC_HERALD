@@ -18,12 +18,17 @@ export default function CategoryPage() {
 
   useEffect(() => {
     const capitalizedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : '';
+    console.log('Fetching articles for category:', capitalizedCategory, 'page:', currentPage);
     dispatch(fetchArticles({ category: capitalizedCategory, page: currentPage }));
 
     return () => {
       dispatch(clearError());
     };
   }, [category, currentPage, dispatch]);
+
+  useEffect(() => {
+    console.log('Articles received:', articles);
+  }, [articles]);
 
   useEffect(() => {
     if (articles) {
