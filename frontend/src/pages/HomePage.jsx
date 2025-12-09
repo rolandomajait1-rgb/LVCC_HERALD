@@ -31,6 +31,7 @@ export default function HomePage() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hashtags, setHashtags] = useState([]);
 
   const handleOpenAdminDashboard = () => {
     navigate('/admin/statistics');
@@ -65,6 +66,20 @@ export default function HomePage() {
     fetchHomePageArticles();
   }, []);
 
+  useEffect(() => {
+    const fetchAllTags = async () => {
+      try {
+        const response = await axios.get('/api/tags');
+        if (response.data && response.data.length > 0) {
+          setHashtags(response.data.map(t => `#${t.name}`));
+        }
+      } catch (error) {
+        setHashtags([]);
+      }
+    };
+    fetchAllTags();
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 gap-4 ">
       <Notification {...notification} />
@@ -89,7 +104,25 @@ export default function HomePage() {
           </header>
         )}
 
-        <LatestSection />
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="lg:w-2/3">
+            <LatestSection />
+          </div>
+          <div className="lg:w-1/3">
+            <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">Explore</h3>
+            <div className="flex flex-wrap gap-2">
+              {hashtags.map((hashtag) => (
+                <div 
+                  key={hashtag}
+                  className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
+                >
+                  {hashtag}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
         
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (

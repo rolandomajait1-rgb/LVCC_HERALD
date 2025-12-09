@@ -12,7 +12,7 @@ const getUserRole = () => {
   return localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
 };
 
-const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, isSmall = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false }) => {
+const ArticleCard = ({ featured_image, categories, published_at, title, excerpt, author, imageUrl, category, date, snippet, isPublished = true, isLarge = false, isMedium = false, isSmall = false, horizontal = false, className = '', onClick, onEdit, onDelete, articleId, slug, showRelated = false, tags = [] }) => {
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -267,6 +267,15 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left break-words ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
                 {title}
               </h3>
+              {tags && tags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {tags.map((tag, idx) => (
+                    <span key={idx} className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded">
+                      #{tag.name || tag}
+                    </span>
+                  ))}
+                </div>
+              )}
               <p className={`text-gray-600 mb-3 line-clamp-3 text-left break-words ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
                 {finalSnippet}
               </p>
@@ -333,6 +342,15 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left break-words ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
               {title}
             </h3>
+            {tags && tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mb-2">
+                {tags.map((tag, idx) => (
+                  <span key={idx} className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded">
+                    #{tag.name || tag}
+                  </span>
+                ))}
+              </div>
+            )}
             <p className={`text-gray-600 mb-3 line-clamp-3 text-left break-words ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
@@ -405,7 +423,8 @@ ArticleCard.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
   onEdit: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
-  onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool])
+  onDelete: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
+  tags: PropTypes.array
 };
 
 export default ArticleCard;
