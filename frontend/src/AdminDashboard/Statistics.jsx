@@ -32,7 +32,6 @@ export default function Statistics({ onResetData }) {
   const fetchStats = async () => {
     try {
       const response = await axios.get('/api/admin/dashboard-stats');
-      
       const data = response.data;
       setStats([
         { label: "Registered Users", value: data.users || 0, icon: <IconUser size={38} /> },
@@ -41,8 +40,10 @@ export default function Statistics({ onResetData }) {
         { label: "Total Likes", value: data.likes || 0, icon: <IconHeart size={38} /> },
       ]);
       setLoading(false);
+      setError(null);
     } catch (error) {
-      setError(error.message);
+      console.error('Stats fetch error:', error);
+      setError(error.response?.data?.error || error.message || 'Failed to load statistics');
       setLoading(false);
     }
   };
@@ -51,8 +52,9 @@ export default function Statistics({ onResetData }) {
     try {
       const response = await axios.get('/api/admin/recent-activity');
       const data = response.data;
-      setRecentActivity(data);
+      setRecentActivity(Array.isArray(data) ? data : []);
     } catch (error) {
+      console.error('Recent activity fetch error:', error);
       setRecentActivity([]);
     }
   };

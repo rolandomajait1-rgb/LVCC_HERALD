@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-// Set base URL and normalize to avoid double /api
-const rawBase =
-    import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const rawBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const normalizedBase = rawBase.replace(/\/+$/, '').replace(/\/api$/, '');
 axios.defaults.baseURL = normalizedBase;
 axios.defaults.timeout = 30000;
-axios.defaults.withCredentials = true; // Enable for CSRF cookies
+axios.defaults.withCredentials = false;
+axios.defaults.headers.common['Accept'] = 'application/json';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // Add auth token and CSRF protection to requests
 axios.interceptors.request.use(
@@ -37,6 +37,9 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
     (response) => response,
     (error) => {
+        if (error.code === 'ECONNABORTED' || error.message === 'Network Error') {
+            console.error('Network error:', error.message);
+        }
         if (error.response?.status === 401 && !window.location.pathname.includes('/login')) {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user_email');
