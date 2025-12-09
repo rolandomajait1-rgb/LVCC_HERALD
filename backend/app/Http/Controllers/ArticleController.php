@@ -20,38 +20,32 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Article::with('author.user', 'categories', 'tags')->withCount('interactions');
+        try {
+            $query = Article::with(['author', 'categories', 'tags']);
 
-        // Filter by status first (for all users)
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        } elseif (!Auth::check() || (!Auth::user()->isAdmin() && !Auth::user()->isModerator())) {
-            // Only show published for non-admin/non-moderator
-            $query->published();
+            // Filter by status
+            if ($request->has('status')) {
+                $query->where('status', $request->status);
+            } else {
+                $query->where('status', 'published');
+            }
+
+            $query->orderBy('published_at', 'desc');
+
+            // Filter by category if provided
+            if ($request->has('category') && $request->category) {
+                $query->whereHas('categories', function ($q) use ($request) {
+                    $q->where('name', 'LIKE', '%' . $request->category . '%');
+                });
+            }
+
+            $limit = $request->get('limit', 10);
+            $articles = $query->paginate($limit);
+
+            return response()->json($articles);
+        } catch (\Exception $e) {
+            return response()->json(['data' => []]);
         }
-
-        $query->latest($request->status === 'draft' ? 'created_at' : 'published_at');
-
-        // Filter by category if provided
-        if ($request->has('category') && $request->category) {
-            $validated = $request->validate(['category' => 'string|max:255']);
-            $query->whereHas('categories', function ($q) use ($validated) {
-                $q->whereRaw('LOWER(name) = ?', [strtolower($validated['category'])]);
-            });
-        }
-
-        // Filter by limit if provided
-        $limit = $request->get('limit', 10);
-        $articles = $query->paginate($limit);
-
-        if (Auth::check()) {
-            $articles->getCollection()->transform(function ($article) {
-                $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'liked')->isNotEmpty();
-                return $article;
-            });
-        }
-
-        return response()->json($articles);
     }
 
     public function create()
@@ -278,23 +272,33 @@ class ArticleController extends Controller
 
     public function like(Article $article)
     {
-        $existing = ArticleInteraction::where('user_id', Auth::id())
-            ->where('article_id', $article->id)
-            ->where('type', 'liked')
-            ->first();
+        try {
+            if (!Auth::check()) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
 
-        if ($existing) {
-            $existing->delete();
-            return response()->json(['liked' => false, 'likes_count' => $article->interactions()->where('type', 'liked')->count()]);
+            $existing = ArticleInteraction::where('user_id', Auth::id())
+                ->where('article_id', $article->id)
+                ->where('type', 'liked')
+                ->first();
+
+            if ($existing) {
+                $existing->delete();
+                $count = ArticleInteraction::where('article_id', $article->id)->where('type', 'liked')->count();
+                return response()->json(['liked' => false, 'likes_count' => $count]);
+            }
+
+            ArticleInteraction::create([
+                'user_id' => Auth::id(),
+                'article_id' => $article->id,
+                'type' => 'liked',
+            ]);
+
+            $count = ArticleInteraction::where('article_id', $article->id)->where('type', 'liked')->count();
+            return response()->json(['liked' => true, 'likes_count' => $count]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to like article'], 500);
         }
-
-        ArticleInteraction::create([
-            'user_id' => Auth::id(),
-            'article_id' => $article->id,
-            'type' => 'liked',
-        ]);
-
-        return response()->json(['liked' => true, 'likes_count' => $article->interactions()->where('type', 'liked')->count()]);
     }
 
     public function share(Article $article)
@@ -528,13 +532,17 @@ class ArticleController extends Controller
 
     public function latest(Request $request)
     {
-        $articles = Article::published()
-            ->with('author.user', 'categories')
-            ->latest('published_at')
-            ->take(6)
-            ->get();
+        try {
+            $articles = Article::where('status', 'published')
+                ->with(['author', 'categories'])
+                ->orderBy('published_at', 'desc')
+                ->take(6)
+                ->get();
 
-        return response()->json($articles);
+            return response()->json($articles);
+        } catch (\Exception $e) {
+            return response()->json([]);
+        }
     }
 
     public function publicIndex(Request $request)

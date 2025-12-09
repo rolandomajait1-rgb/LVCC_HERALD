@@ -15,6 +15,7 @@ class ArticleInteraction extends Model
         'user_id',
         'article_id',
         'type',
+        'ip_address',
     ];
 
     public function user()
