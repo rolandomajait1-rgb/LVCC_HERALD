@@ -32,8 +32,20 @@ const RelatedCard = ({ article, onClick, navigate, articleId }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group hover:shadow-md transition-all">
-      <div className="relative h-44 overflow-hidden cursor-pointer" onClick={onClick}>
+      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onClick}>
         <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        {(isAdmin() || isModerator()) && (
+          <div className="absolute top-2 right-2 flex gap-1 z-10">
+            <button onClick={handleEdit} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 shadow-md">
+              <Pencil size={16}/>
+            </button>
+            {isAdmin() && (
+              <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded hover:bg-red-600 shadow-md">
+                <Trash2 size={16}/>
+              </button>
+            )}
+          </div>
+        )}
       </div>
       <div className="p-4 flex flex-col grow">
         <div className="flex justify-between items-start mb-2">
@@ -51,18 +63,6 @@ const RelatedCard = ({ article, onClick, navigate, articleId }) => {
         <p className="text-xs text-gray-500 font-medium mt-auto text-right">
           {article.author}
         </p>
-        {(isAdmin() || isModerator()) && (
-          <div className="flex gap-2 mt-3">
-            <button onClick={handleEdit} className="flex-1 bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-600">
-              Edit
-            </button>
-            {isAdmin() && (
-              <button onClick={handleDelete} className="flex-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-red-600">
-                Delete
-              </button>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
@@ -371,7 +371,7 @@ export default function ArticleDetail() {
               
               {/* Tags - Right side */}
               {article.tags?.length > 0 && (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1 text-right">
                   {article.tags.map(tag => (
                     <span 
                       key={tag.id} 
@@ -379,7 +379,7 @@ export default function ArticleDetail() {
                         e.stopPropagation();
                         navigate(`/tag/${tag.name}`);
                       }}
-                      className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors text-left"
+                      className="text-xs text-blue-600 cursor-pointer hover:underline"
                     >
                       #{tag.name}
                     </span>

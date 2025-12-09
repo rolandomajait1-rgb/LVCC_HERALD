@@ -85,12 +85,7 @@ const RelatedCard = ({ article, onClick, navigate }) => (
   <div onClick={onClick} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all">
     <div className="relative h-48 overflow-hidden">
       <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-      {(isAdmin() || isModerator()) && (
-        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 bg-blue-500 text-white rounded shadow hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); navigate(`/admin/edit-article/${article.id}`); }}><Pencil size={12}/></button>
-          {isAdmin() && <button className="p-1.5 bg-red-500 text-white rounded shadow hover:bg-red-600" onClick={(e) => e.stopPropagation()}><Trash2 size={12}/></button>}
-        </div>
-      )}
+
     </div>
     <div className="p-4 flex flex-col grow">
       <div className="flex justify-between items-center mb-2">
@@ -102,6 +97,12 @@ const RelatedCard = ({ article, onClick, navigate }) => (
       </h3>
       <p className="text-xs text-gray-600 mb-2 line-clamp-2">{article.excerpt || ''}</p>
       <p className="text-xs text-gray-700 font-medium text-right">{article.author}</p>
+      {(isAdmin() || isModerator()) && (
+        <div className="flex gap-2 mt-3">
+          <button className="flex-1 bg-blue-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-600" onClick={(e) => { e.stopPropagation(); navigate(`/admin/edit-article/${article.id}`); }}>Edit</button>
+          {isAdmin() && <button className="flex-1 bg-red-500 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-red-600" onClick={(e) => e.stopPropagation()}>Delete</button>}
+        </div>
+      )}
     </div>
   </div>
 );

@@ -13,15 +13,32 @@ export default function ChangePassword() {
     new_password_confirmation: ''
   });
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+    return regex.test(password);
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError('');
+    setSuccess('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!formData.new_password) {
+      setError('New password is required');
+      return;
+    }
+
+    if (!validatePassword(formData.new_password)) {
+      setError('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character');
+      return;
+    }
     
     if (formData.new_password !== formData.new_password_confirmation) {
       setError('New passwords do not match');
@@ -33,10 +50,15 @@ export default function ChangePassword() {
 
     try {
       await axios.post('/api/change-password', formData);
-      alert('Password changed successfully!');
-      navigate('/');
+      setSuccess('Password changed successfully!');
+      setFormData({
+        current_password: '',
+        new_password: '',
+        new_password_confirmation: ''
+      });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to change password');
+      const errorMsg = err.response?.data?.message || err.response?.data?.errors?.new_password?.[0] || 'Failed to change password';
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -53,6 +75,12 @@ export default function ChangePassword() {
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+              {success}
             </div>
           )}
 

@@ -16,4 +16,4 @@ export default function ContentSection({ title, bgColor, viewAllUrl, children })
       </div>
     </section>
   );
-}
+}yes 
