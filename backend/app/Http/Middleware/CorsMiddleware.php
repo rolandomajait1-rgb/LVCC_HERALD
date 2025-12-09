@@ -20,8 +20,11 @@ class CorsMiddleware
         $allowedOrigins = config('cors.allowed_origins', []);
         $allowedPatterns = config('cors.allowed_origins_patterns', []);
         
-        // Check if origin is allowed (allow all temporarily, or use config lists)
-        $isAllowed = in_array($origin, $allowedOrigins) || $this->matchesPattern($origin, $allowedPatterns) || !$origin;
+        // Allow all Vercel deployments and configured origins
+        $isAllowed = !$origin || 
+                     in_array($origin, $allowedOrigins) || 
+                     $this->matchesPattern($origin, $allowedPatterns) ||
+                     str_contains($origin, '.vercel.app');
 
         // Handle preflight
         if ($request->isMethod('OPTIONS')) {
