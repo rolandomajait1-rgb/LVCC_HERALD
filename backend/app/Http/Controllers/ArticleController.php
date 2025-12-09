@@ -23,7 +23,6 @@ class ArticleController extends Controller
         try {
             $query = Article::with(['author', 'categories', 'tags']);
 
-            // Filter by status
             if ($request->has('status')) {
                 $query->where('status', $request->status);
             } else {
@@ -32,7 +31,6 @@ class ArticleController extends Controller
 
             $query->orderBy('published_at', 'desc');
 
-            // Filter by category if provided
             if ($request->has('category') && $request->category) {
                 $query->whereHas('categories', function ($q) use ($request) {
                     $q->where('name', 'LIKE', '%' . $request->category . '%');
@@ -44,7 +42,8 @@ class ArticleController extends Controller
 
             return response()->json($articles);
         } catch (\Exception $e) {
-            return response()->json(['data' => []]);
+            Log::error('Article index error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch articles'], 500);
         }
     }
 
@@ -317,6 +316,7 @@ class ArticleController extends Controller
             $count = ArticleInteraction::where('article_id', $article->id)->where('type', 'like')->count();
             return response()->json(['liked' => true, 'likes_count' => $count]);
         } catch (\Exception $e) {
+            Log::error('Like article error: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to like article'], 500);
         }
     }
@@ -337,32 +337,42 @@ class ArticleController extends Controller
 
     public function getLikedArticles(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-        $page = $request->get('page', 1);
+        try {
+            $perPage = $request->get('per_page', 10);
+            $page = $request->get('page', 1);
 
-        $articles = Article::whereHas('interactions', function ($query) {
-            $query->where('user_id', Auth::id())
-                  ->where('type', 'like');
-        })
-        ->with('author.user', 'categories', 'tags')
-        ->paginate($perPage, ['*'], 'page', $page);
+            $articles = Article::whereHas('interactions', function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->where('type', 'like');
+            })
+            ->with('author.user', 'categories', 'tags')
+            ->paginate($perPage, ['*'], 'page', $page);
 
-        return response()->json($articles);
+            return response()->json($articles);
+        } catch (\Exception $e) {
+            Log::error('Get liked articles error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch liked articles'], 500);
+        }
     }
 
     public function getSharedArticles(Request $request)
     {
-        $perPage = $request->get('per_page', 10);
-        $page = $request->get('page', 1);
+        try {
+            $perPage = $request->get('per_page', 10);
+            $page = $request->get('page', 1);
 
-        $articles = Article::whereHas('interactions', function ($query) {
-            $query->where('user_id', Auth::id())
-                  ->where('type', 'shared');
-        })
-        ->with('author.user', 'categories', 'tags')
-        ->paginate($perPage, ['*'], 'page', $page);
+            $articles = Article::whereHas('interactions', function ($query) {
+                $query->where('user_id', Auth::id())
+                      ->where('type', 'shared');
+            })
+            ->with('author.user', 'categories', 'tags')
+            ->paginate($perPage, ['*'], 'page', $page);
 
-        return response()->json($articles);
+            return response()->json($articles);
+        } catch (\Exception $e) {
+            Log::error('Get shared articles error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch shared articles'], 500);
+        }
     }
 
     public function getArticlesByAuthor(Request $request, $authorId)
@@ -564,30 +574,36 @@ class ArticleController extends Controller
 
             return response()->json($articles);
         } catch (\Exception $e) {
-            return response()->json([]);
+            Log::error('Latest articles error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch latest articles'], 500);
         }
     }
 
     public function publicIndex(Request $request)
     {
-        $query = Article::published()->with('author.user', 'categories', 'tags');
+        try {
+            $query = Article::published()->with('author.user', 'categories', 'tags');
 
-        if ($request->has('category')) {
-            $validated = $request->validate(['category' => 'string|max:255']);
-            $query->whereHas('categories', function ($q) use ($validated) {
-                $q->where('name', 'LIKE', '%' . $validated['category'] . '%');
-            });
-        }
+            if ($request->has('category')) {
+                $validated = $request->validate(['category' => 'string|max:255']);
+                $query->whereHas('categories', function ($q) use ($validated) {
+                    $q->where('name', 'LIKE', '%' . $validated['category'] . '%');
+                });
+            }
 
-        if ($request->has('latest') && $request->latest) {
-            $limit = $request->get('limit', 9);
-            $articles = $query->latest('published_at')->take($limit)->get();
+            if ($request->has('latest') && $request->latest) {
+                $limit = $request->get('limit', 9);
+                $articles = $query->latest('published_at')->take($limit)->get();
+                return response()->json($articles);
+            }
+
+            $limit = $request->get('limit', 10);
+            $articles = $query->latest('published_at')->paginate($limit);
+
             return response()->json($articles);
+        } catch (\Exception $e) {
+            Log::error('Public index error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch articles'], 500);
         }
-
-        $limit = $request->get('limit', 10);
-        $articles = $query->latest('published_at')->paginate($limit);
-
-        return response()->json($articles);
     }
 }

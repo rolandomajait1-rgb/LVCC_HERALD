@@ -39,25 +39,30 @@ class DashboardController extends Controller
 
     public function recentActivity(Request $request)
     {
-        $activities = [];
+        try {
+            $activities = [];
 
-        $recentArticles = \App\Models\Article::with('author.user')
-            ->where('status', 'published')
-            ->latest('published_at')
-            ->take(20)
-            ->get();
+            $recentArticles = \App\Models\Article::with('author.user')
+                ->where('status', 'published')
+                ->latest('published_at')
+                ->take(20)
+                ->get();
 
-        foreach ($recentArticles as $article) {
-            $activities[] = [
-                'action' => 'Published',
-                'title' => $article->title,
-                'slug' => $article->slug,
-                'user' => $article->author->user->email ?? 'Unknown',
-                'timestamp' => $article->published_at->format('n/j/Y g:i A')
-            ];
+            foreach ($recentArticles as $article) {
+                $activities[] = [
+                    'action' => 'Published',
+                    'title' => $article->title,
+                    'slug' => $article->slug,
+                    'user' => $article->author && $article->author->user ? $article->author->user->email : 'Unknown',
+                    'timestamp' => $article->published_at ? $article->published_at->format('n/j/Y g:i A') : 'N/A'
+                ];
+            }
+
+            return response()->json($activities);
+        } catch (\Exception $e) {
+            \Log::error('Recent activity error: ' . $e->getMessage());
+            return response()->json([]);
         }
-
-        return response()->json($activities);
     }
 
 
