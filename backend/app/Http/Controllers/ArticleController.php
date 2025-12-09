@@ -471,7 +471,7 @@ class ArticleController extends Controller
     {
         try {
             $article = Article::where('status', 'published')
-                ->with(['author', 'categories', 'tags'])
+                ->with(['author', 'categories', 'tags', 'interactions'])
                 ->where('slug', $slug)
                 ->first();
 
@@ -518,7 +518,7 @@ class ArticleController extends Controller
 
     public function showById($id)
     {
-        $article = Article::published()->with('author.user', 'categories', 'tags')->find($id);
+        $article = Article::published()->with('author.user', 'categories', 'tags', 'interactions')->find($id);
         if (!$article) {
             return response()->json(['error' => 'Article not found'], 404);
         }
@@ -546,6 +546,8 @@ class ArticleController extends Controller
         
         if (Auth::check()) {
             $article->is_liked = $article->interactions->where('user_id', Auth::id())->where('type', 'like')->isNotEmpty();
+        } else {
+            $article->is_liked = false;
         }
 
         return response()->json($article);
