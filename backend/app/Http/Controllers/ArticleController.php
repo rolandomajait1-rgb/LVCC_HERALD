@@ -474,7 +474,10 @@ class ArticleController extends Controller
                 ->first();
 
             if (!$article) {
-                return response()->json(['error' => 'Article not found'], 404);
+                return response()->json([
+                    'error' => 'Article not found',
+                    'message' => 'The requested article does not exist or has been removed.'
+                ], 404);
             }
 
             // Track view - always create new view record
@@ -504,7 +507,10 @@ class ArticleController extends Controller
             return response()->json($article);
         } catch (\Exception $e) {
             \Log::error('Article showBySlug failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to load article'], 500);
+            return response()->json([
+                'error' => 'Server error',
+                'message' => 'An error occurred while loading the article. Please try again later.'
+            ], 500);
         }
     }
 

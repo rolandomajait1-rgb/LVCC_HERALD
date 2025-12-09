@@ -3,7 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
 import DOMPurify from 'dompurify';
 import { Pencil, Trash2, ThumbsUp, Share2, Link } from 'lucide-react';
-import { NOTIFICATION_TIMEOUT, REDIRECT_DELAY, COPY_FEEDBACK_TIMEOUT, RELATED_ARTICLES_LIMIT } from '../utils/constants';
+import { REDIRECT_DELAY, COPY_FEEDBACK_TIMEOUT, RELATED_ARTICLES_LIMIT } from '../utils/constants';
+import Notification from '../components/Notification';
+import { handleApiError } from '../utils/errorHandler';
 import { formatDateTime } from '../utils/dateFormatter';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -82,32 +84,40 @@ export default function ArticleDetail() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), NOTIFICATION_TIMEOUT);
+  const showNotification = (title, message = '', type = 'success') => {
+    setNotification({ title, message, type });
+  };
+
+  const closeNotification = () => {
+    setNotification(null);
   };
 
   const handleDelete = async () => {
     try {
       await axios.delete(`/api/articles/${article.id}`);
       setShowDeleteModal(false);
-      showNotification('Article Deleted Successfully!');
+      showNotification('Success', 'Article deleted successfully!');
       const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
       setTimeout(() => navigate(rolePrefix), REDIRECT_DELAY);
     } catch (error) {
       setShowDeleteModal(false);
-      showNotification('Failed to delete article', 'error');
+      handleApiError(error, showNotification);
     }
   };
 
   useEffect(() => {
+    const notifTitle = sessionStorage.getItem('notification_title');
     const notifMsg = sessionStorage.getItem('notification_message');
     const notifType = sessionStorage.getItem('notification_type');
-    if (notifMsg) {
-      setNotification({ message: notifMsg, type: notifType || 'success' });
+    if (notifTitle || notifMsg) {
+      setNotification({ 
+        title: notifTitle || 'Notification', 
+        message: notifMsg || '', 
+        type: notifType || 'success' 
+      });
+      sessionStorage.removeItem('notification_title');
       sessionStorage.removeItem('notification_message');
       sessionStorage.removeItem('notification_type');
-      setTimeout(() => setNotification(null), NOTIFICATION_TIMEOUT);
     }
   }, []);
 
@@ -162,7 +172,9 @@ export default function ArticleDetail() {
           setRelatedArticles(filtered);
         }
       } catch (err) {
-        setError('Article not found');
+        console.error('Error fetching article:', err);
+        const errorInfo = handleApiError(err, showNotification);
+        setError(errorInfo.message);
       } finally {
         setLoading(false);
       }
@@ -224,8 +236,28 @@ export default function ArticleDetail() {
       <div className="flex flex-col min-h-screen">
         <Header />
         <HeaderLink />
+        <Notification
+          show={!!notification}
+          type={notification?.type}
+          title={notification?.title}
+          message={notification?.message}
+          onClose={closeNotification}
+        />
         <main className="container mx-auto px-4 py-8 grow">
-          <div className="text-center text-red-600">{error || 'Article not found'}</div>
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="bg-gray-50 rounded-lg p-8">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Article Not Found</h1>
+              <p className="text-gray-600 mb-6">
+                The article you are looking for does not exist or has been removed.
+              </p>
+              <button
+                onClick={() => navigate('/')}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Go Back to Home
+              </button>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
@@ -237,13 +269,13 @@ export default function ArticleDetail() {
       <Header />
       <HeaderLink />
       
-      {notification && (
-        <div className={`w-full py-3 px-4 text-left font-medium transition-opacity duration-500 rounded-md border-2 ${
-          notification.type === 'success' ? 'bg-green-50 text-green-700 border-green-400' : 'bg-red-50 text-red-700 border-red-400'
-        }`}>
-          {notification.message}
-        </div>
-      )}
+      <Notification
+        show={!!notification}
+        type={notification?.type}
+        title={notification?.title}
+        message={notification?.message}
+        onClose={closeNotification}
+      />
 
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
