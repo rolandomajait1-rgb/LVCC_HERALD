@@ -3,6 +3,7 @@ import TeamMemberCard from '../components/TeamCard';
 import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import Footer from '../components/Footer';
+import { isAdmin } from '../utils/auth';
 
 
 const initialTeamMembers = [
@@ -22,6 +23,10 @@ const About  = () => {
   const [previewUrl, setPreviewUrl] = useState(null);
 
   const handleEditPhoto = (memberName) => {
+    if (!isAdmin()) {
+      alert('Only administrators can edit photos.');
+      return;
+    }
     setSelectedMember(memberName);
     setShowUploadModal(true);
   };

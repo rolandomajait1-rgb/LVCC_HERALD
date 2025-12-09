@@ -1,9 +1,8 @@
 import React from 'react';
 import { Edit2 } from 'lucide-react';
+import { isAdmin } from '../utils/auth';
 
 const TeamMemberCard = ({ name, role, image, onEdit }) => {
-  const userRole = localStorage.getItem('user_role');
-  const isAdmin = userRole === 'admin';
 
   return (
     <div className="border border-gray-300 p-6 flex flex-col items-center text-center h-100 justify-center relative">
@@ -13,7 +12,7 @@ const TeamMemberCard = ({ name, role, image, onEdit }) => {
           alt={name}
           className="w-50 h-50 rounded-full mb-4 object-cover"
         />
-        {isAdmin && (
+        {isAdmin() && (
           <button
             onClick={() => onEdit && onEdit(name)}
             className="absolute top-0 right-0 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors shadow-md"
