@@ -26,7 +26,7 @@ export default function Statistics({ onResetData }) {
   }, []);
 
   useEffect(() => {
-    document.title = getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard';
+    document.title = getUserRole() === 'moderator' ? 'MODERATOR | Control Panel' : 'ADMIN | Control Panel';
   }, []);
 
   const fetchStats = async () => {
@@ -73,7 +73,7 @@ export default function Statistics({ onResetData }) {
       
       <div className={`relative h-20 flex items-center justify-center ${getUserRole() === 'moderator' ? 'bg-gradient-to-r from-orange-500 to-yellow-500' : 'bg-gradient-to-b from-blue-600 to-blue-800'}`}>
         <h1 className="text-white font-serif font-bold tracking-widest leading-none text-2xl drop-shadow-lg">
-          {getUserRole() === 'moderator' ? 'MODERATOR | Dashboard' : 'ADMIN | Dashboard'}
+          {getUserRole() === 'moderator' ? 'MODERATOR | Control Panel' : 'ADMIN | Control Panel'}
         </h1>
       </div>
 
