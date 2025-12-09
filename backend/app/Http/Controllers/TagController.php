@@ -21,12 +21,11 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            // Check if tags table exists
             if (!\Schema::hasTable('tags')) {
                 return response()->json([]);
             }
             
-            $tags = \DB::table('tags')->select('id', 'name')->get();
+            $tags = Tag::select('id', 'name', 'slug')->get();
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Tags fetch failed: ' . $e->getMessage());
@@ -58,7 +57,7 @@ class TagController extends Controller
             'new_values' => $tag->toArray(),
         ]);
 
-        return redirect()->route('tags.index')->with('success', 'Tag created successfully.');
+        return response()->json($tag, 201);
     }
 
     public function show(Tag $tag)
@@ -81,30 +80,21 @@ class TagController extends Controller
         return view('tags.public', compact('tag', 'articles'));
     }
 
-    // API: Get articles by tag slug
     public function getArticlesByTag(string $slug)
     {
         try {
-            // Direct DB query to avoid model issues
-            $articles = \DB::table('articles')
-                ->join('article_tag', 'articles.id', '=', 'article_tag.article_id')
-                ->join('tags', 'article_tag.tag_id', '=', 'tags.id')
-                ->leftJoin('authors', 'articles.author_id', '=', 'authors.id')
-                ->where('articles.status', 'published')
-                ->where(function($query) use ($slug) {
-                    $query->where('tags.slug', $slug)
-                          ->orWhere('tags.name', $slug);
+            $tag = Tag::where('slug', $slug)->orWhere('name', $slug)->first();
+            
+            if (!$tag) {
+                return response()->json(['articles' => []]);
+            }
+
+            $articles = \App\Models\Article::where('status', 'published')
+                ->whereHas('tags', function ($query) use ($tag) {
+                    $query->where('tags.id', $tag->id);
                 })
-                ->select(
-                    'articles.id',
-                    'articles.title',
-                    'articles.slug',
-                    'articles.excerpt',
-                    'articles.featured_image',
-                    'articles.published_at',
-                    'authors.name as author_name'
-                )
-                ->orderBy('articles.published_at', 'desc')
+                ->with(['author.user', 'categories'])
+                ->orderBy('published_at', 'desc')
                 ->get()
                 ->map(function ($article) {
                     return [
@@ -113,9 +103,9 @@ class TagController extends Controller
                         'slug' => $article->slug,
                         'excerpt' => $article->excerpt,
                         'image_url' => $article->featured_image ?? 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
-                        'published_at' => $article->published_at ? date('F j, Y', strtotime($article->published_at)) : 'No date',
-                        'author_name' => $article->author_name ?? 'Unknown Author',
-                        'category' => 'News'
+                        'published_at' => $article->published_at ? $article->published_at->format('F j, Y') : 'No date',
+                        'author_name' => $article->author->user->name ?? 'Unknown Author',
+                        'category' => $article->categories->first()->name ?? 'News'
                     ];
                 });
 
@@ -153,7 +143,7 @@ class TagController extends Controller
             'new_values' => $tag->toArray(),
         ]);
 
-        return redirect()->route('tags.index')->with('success', 'Tag updated successfully.');
+        return response()->json($tag);
     }
 
     public function destroy(Tag $tag)
@@ -170,6 +160,6 @@ class TagController extends Controller
             'old_values' => $oldValues,
         ]);
 
-        return redirect()->route('tags.index')->with('success', 'Tag deleted successfully.');
+        return response()->json(['message' => 'Tag deleted successfully']);
     }
 }

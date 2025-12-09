@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $users = \App\Models\User::count();
         $articles = \App\Models\Article::where('status', 'published')->count();
-        $drafts = \App\Models\Article::where('status', 'draft')->count();
+        $drafts = \App\Models\Draft::count();
         $views = \App\Models\ArticleInteraction::where('type', 'viewed')->count();
         $likes = \App\Models\ArticleInteraction::where('type', 'liked')->count();
 
@@ -52,21 +52,5 @@ class DashboardController extends Controller
         return response()->json($activities);
     }
 
-    public function adminStats(Request $request)
-    {
-        $totalArticles = \App\Models\Article::count();
-        $totalUsers = \App\Models\User::count();
-        $totalViews = \App\Models\ArticleInteraction::where('type', 'viewed')->count();
-        $recentArticles = \App\Models\Article::with('author.user', 'categories')
-            ->latest('published_at')
-            ->take(5)
-            ->get();
 
-        return response()->json([
-            'totalArticles' => $totalArticles,
-            'totalUsers' => $totalUsers,
-            'totalViews' => $totalViews,
-            'recentArticles' => $recentArticles
-        ]);
-    }
 }

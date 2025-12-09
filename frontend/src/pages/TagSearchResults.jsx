@@ -97,12 +97,12 @@ export default function TagSearchResults() {
         if (response.data && response.data.length > 0) {
           setHashtags(response.data.map(t => `#${t.name}`));
         } else {
-          // Only show tags if API returns data
-          setHashtags([]);
+          // Show sample tags if no data from API
+          setHashtags(['#LVCCTeachers', '#MyTeacherMyHero', '#LVCCSocialWork', '#LVCCSWSAP', '#NSED2025', '#EarthquakeDrillSeminar', '#BasicJournalismTraining', '#NationalPressFreedomDay']);
         }
       } catch (error) {
-        // Don't show any tags if API fails
-        setHashtags([]);
+        // Show sample tags if API fails
+        setHashtags(['#LVCCTeachers', '#MyTeacherMyHero', '#LVCCSocialWork', '#LVCCSWSAP', '#NSED2025', '#EarthquakeDrillSeminar', '#BasicJournalismTraining', '#NationalPressFreedomDay']);
       }
     };
 

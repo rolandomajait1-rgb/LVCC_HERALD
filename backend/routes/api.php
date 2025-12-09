@@ -46,10 +46,10 @@ Route::get('/email/verify/{id}/{hash}', [AuthenticationController::class, 'verif
 Route::post('/email/resend', [AuthenticationController::class, 'resendVerificationEmail'])
     ->middleware('auth:sanctum');
 
-Route::middleware('throttle:10,1')->post('/contact/feedback', [ContactController::class, 'sendFeedback']);
+Route::middleware('throttle:5,1')->post('/contact/feedback', [ContactController::class, 'sendFeedback']);
 Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
 Route::middleware('throttle:5,1')->post('/contact/join-herald', [ContactController::class, 'joinHerald']);
-Route::middleware('throttle:10,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
+Route::middleware('throttle:5,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
@@ -113,12 +113,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/admin/dashboard-stats', [DashboardController::class, 'stats']);
         Route::get('/admin/recent-activity', [DashboardController::class, 'recentActivity']);
         Route::get('/admin/audit-logs', [LogController::class, 'auditLogs']);
+        Route::apiResource('drafts', DraftController::class);
     });
 
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/admin/check-access', [UserController::class, 'checkAdmin']);
-        Route::get('/admin/stats', [DashboardController::class, 'adminStats']);
         Route::get('/admin/moderators', [UserController::class, 'getModerators']);
         Route::post('/admin/moderators', [UserController::class, 'addModerator']);
         Route::delete('/admin/moderators/{id}', [UserController::class, 'removeModerator']);
@@ -126,15 +126,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('admin/users', UserController::class);
         Route::apiResource('staff', StaffController::class);
         Route::apiResource('authors', AuthorController::class);
-        Route::post('/admin/fix-categories', function() {
-            $literary = \App\Models\Category::where('name', 'Literary')->first();
-            if(!$literary) return response()->json(['error' => 'Category not found'], 404);
-            $articles = \App\Models\Article::doesntHave('categories')->where('status', 'published')->get();
-            foreach($articles as $a) { $a->categories()->attach($literary->id); }
-            return response()->json(['fixed' => $articles->count()]);
-        });
+        Route::post('/admin/fix-categories', [AdminController::class, 'fixCategories']);
     });
-
-    // Draft routes - accessible by authenticated users
-    Route::apiResource('drafts', DraftController::class);
 });
