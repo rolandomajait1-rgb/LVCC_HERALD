@@ -21,11 +21,11 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            $tags = Tag::select('id', 'name', 'slug')->get();
+            $tags = Tag::select('id', 'name')->get();
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Tags fetch failed: ' . $e->getMessage());
-            return response()->json([], 500);
+            return response()->json(['error' => 'Failed to fetch tags'], 500);
         }
     }
 

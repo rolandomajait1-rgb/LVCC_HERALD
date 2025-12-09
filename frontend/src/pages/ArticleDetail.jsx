@@ -353,45 +353,48 @@ export default function ArticleDetail() {
               {article.title}
             </h1>
             
-            {/* Author and Date */}
-            <div className="text-sm text-gray-600 text-left mb-6">
-              <div>
-                <span>Written by </span>
-                <span 
-                  className="font-semibold text-gray-800 cursor-pointer hover:text-blue-600 hover:underline transition-colors"
-                  onClick={() => navigate(`/author/${encodeURIComponent(article.author_name || article.author?.user?.name || 'Unknown Author')}`)}
-                >
-                  {article.author_name || article.author?.user?.name || 'Unknown Author'}
-                </span>
-              </div>
-              <div className="mt-1">
-                {formatDateTime(article.published_at)}
-              </div>
-            </div>
-            
-            {/* Tags - Vertical List */}
-            {article.tags?.length > 0 && (
-              <div className="mb-6 flex flex-col gap-2 items-start">
-                {article.tags.map(tag => (
-                  <div 
-                    key={tag.id} 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/tag/${tag.name}`);
-                    }}
-                    className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
+            {/* Author/Date and Tags on same line */}
+            <div className="flex justify-between items-start mb-6">
+              {/* Author and Date - Left side */}
+              <div className="text-sm text-gray-600 text-left">
+                <div>
+                  <span>Written by </span>
+                  <span 
+                    className="font-semibold text-gray-800 cursor-pointer hover:text-blue-600 hover:underline transition-colors"
+                    onClick={() => navigate(`/author/${encodeURIComponent(article.author_name || article.author?.user?.name || 'Unknown Author')}`)}
                   >
-                    #{tag.name}
-                  </div>
-                ))}
+                    {article.author_name || article.author?.user?.name || 'Unknown Author'}
+                  </span>
+                </div>
+                <div className="mt-1">
+                  {formatDateTime(article.published_at)}
+                </div>
               </div>
-            )}
+              
+              {/* Tags - Right side */}
+              {article.tags?.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  {article.tags.map(tag => (
+                    <span 
+                      key={tag.id} 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/tag/${tag.name}`);
+                      }}
+                      className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors text-left"
+                    >
+                      #{tag.name}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
             
           </header>
 
           {/* Image Section */}
           {article.featured_image && (
-            <div className="w-full bg-gray-100 p-4 md:p-10">
+            <div className="w-full bg-gray-100 p-4 md:p-10 border-t-2 border-gray-200">
               <div className="w-full rounded-lg overflow-hidden shadow-inner">
                 <img
                   src={article.featured_image}
