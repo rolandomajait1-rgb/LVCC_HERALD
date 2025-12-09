@@ -422,13 +422,16 @@ class ArticleController extends Controller
                     ];
                 });
 
+            // Optional search logging
             try {
-                SearchLog::create([
-                    'user_id' => Auth::id(),
-                    'query' => $query,
-                    'results_count' => $articles->count(),
-                    'ip_address' => $request->ip(),
-                ]);
+                if (class_exists('App\Models\SearchLog')) {
+                    SearchLog::create([
+                        'user_id' => Auth::id(),
+                        'query' => $query,
+                        'results_count' => $articles->count(),
+                        'ip_address' => $request->ip(),
+                    ]);
+                }
             } catch (\Exception $e) {
                 // Ignore search log errors
             }

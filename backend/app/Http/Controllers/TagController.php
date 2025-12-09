@@ -18,8 +18,13 @@ class TagController extends Controller
 
     public function getAllTags()
     {
-        $tags = Tag::all(['id', 'name', 'slug']);
-        return response()->json($tags);
+        try {
+            $tags = Tag::select('id', 'name', 'slug')->get();
+            return response()->json($tags);
+        } catch (\Exception $e) {
+            \Log::error('Tags fetch failed: ' . $e->getMessage());
+            return response()->json([]);
+        }
     }
 
     public function create()
@@ -72,33 +77,38 @@ class TagController extends Controller
     // API: Get articles by tag slug
     public function getArticlesByTag(string $slug)
     {
-        $tag = Tag::where('slug', $slug)->first();
-        
-        if (!$tag) {
+        try {
+            $tag = Tag::where('slug', $slug)->orWhere('name', $slug)->first();
+            
+            if (!$tag) {
+                return response()->json(['articles' => []]);
+            }
+
+            $articles = \App\Models\Article::where('status', 'published')
+                ->whereHas('tags', function ($query) use ($tag) {
+                    $query->where('tags.id', $tag->id);
+                })
+                ->with(['author', 'categories'])
+                ->orderBy('published_at', 'desc')
+                ->get()
+                ->map(function ($article) {
+                    return [
+                        'id' => $article->id,
+                        'title' => $article->title,
+                        'slug' => $article->slug,
+                        'excerpt' => $article->excerpt,
+                        'image_url' => $article->featured_image ?? 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
+                        'published_at' => $article->published_at ? $article->published_at->format('F j, Y') : 'No date',
+                        'author_name' => $article->author->name ?? 'Unknown Author',
+                        'category' => $article->categories->first()->name ?? 'Uncategorized',
+                    ];
+                });
+
+            return response()->json(['articles' => $articles]);
+        } catch (\Exception $e) {
+            \Log::error('Tag articles fetch failed: ' . $e->getMessage());
             return response()->json(['articles' => []]);
         }
-
-        $articles = \App\Models\Article::published()
-            ->whereHas('tags', function ($query) use ($tag) {
-                $query->where('tags.id', $tag->id);
-            })
-            ->with(['author', 'author.user', 'categories'])
-            ->latest('published_at')
-            ->get()
-            ->map(function ($article) {
-                return [
-                    'id' => $article->id,
-                    'title' => $article->title,
-                    'slug' => $article->slug,
-                    'excerpt' => $article->excerpt,
-                    'image_url' => $article->featured_image ?? 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
-                    'published_at' => $article->published_at?->format('F j, Y \a\t g:i A'),
-                    'author_name' => $article->author_name,
-                    'category' => $article->categories->first()?->name ?? 'Uncategorized',
-                ];
-            });
-
-        return response()->json(['articles' => $articles]);
     }
 
     public function edit(Tag $tag)

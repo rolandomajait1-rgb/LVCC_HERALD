@@ -23,6 +23,9 @@ Route::get('/ping', function () {
     return response()->json(['message' => 'pong']);
 });
 
+// Health check
+Route::get('/health', [\App\Http\Controllers\HealthController::class, 'check']);
+
 // Team Members Routes
 Route::get('/team-members', [TeamMemberController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberController::class, 'update']);
