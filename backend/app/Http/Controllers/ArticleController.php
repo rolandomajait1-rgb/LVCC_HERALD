@@ -479,7 +479,7 @@ class ArticleController extends Controller
 
             // Track view
             try {
-                ArticleInteraction::firstOrCreate([
+                ArticleInteraction::create([
                     'user_id' => Auth::id() ?? null,
                     'article_id' => $article->id,
                     'type' => 'view',
@@ -528,7 +528,7 @@ class ArticleController extends Controller
 
         // Track view
         try {
-            ArticleInteraction::firstOrCreate([
+            ArticleInteraction::create([
                 'user_id' => Auth::id() ?? null,
                 'article_id' => $article->id,
                 'type' => 'view',
