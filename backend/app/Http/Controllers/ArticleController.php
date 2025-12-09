@@ -459,15 +459,17 @@ class ArticleController extends Controller
                 return response()->json(['error' => 'Article not found'], 404);
             }
 
-            // Track view for all users
-            try {
-                ArticleInteraction::create([
-                    'user_id' => Auth::id(),
-                    'article_id' => $article->id,
-                    'type' => 'viewed'
-                ]);
-            } catch (\Exception $e) {
-                // Ignore view tracking errors
+            // Track view only for authenticated users
+            if (Auth::check()) {
+                try {
+                    ArticleInteraction::create([
+                        'user_id' => Auth::id(),
+                        'article_id' => $article->id,
+                        'type' => 'viewed'
+                    ]);
+                } catch (\Exception $e) {
+                    // Ignore view tracking errors
+                }
             }
 
             // Load counts safely
@@ -507,12 +509,18 @@ class ArticleController extends Controller
             return response()->json(['error' => 'Article not found'], 404);
         }
 
-        // Track view for all users
-        ArticleInteraction::create([
-            'user_id' => Auth::id(),
-            'article_id' => $article->id,
-            'type' => 'viewed'
-        ]);
+        // Track view only for authenticated users
+        if (Auth::check()) {
+            try {
+                ArticleInteraction::create([
+                    'user_id' => Auth::id(),
+                    'article_id' => $article->id,
+                    'type' => 'viewed'
+                ]);
+            } catch (\Exception $e) {
+                // Ignore view tracking errors
+            }
+        }
 
         $article->loadCount([
             'interactions as likes_count' => function ($query) {
