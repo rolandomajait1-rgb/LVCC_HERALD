@@ -63,7 +63,7 @@ export default function LatestArticles({ onArticleClick }) {
                     className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
                     onClick={onArticleClick}
                   >
-                    <div className="relative h-48 overflow-hidden">
+                    <div className="relative h-64 overflow-hidden">
                       <img 
                         src={article.featured_image_url || 'https://placehold.co/400x300/e2e8f0/64748b?text=No+Image'} 
                         alt={article.title}
@@ -82,10 +82,10 @@ export default function LatestArticles({ onArticleClick }) {
                           {date} {time}
                         </span>
                       </div>
-                      <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2 text-left leading-tight">
+                      <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 text-left">
                         {article.title}
                       </h3>
-                      <p className="text-xs text-gray-600 line-clamp-3 text-left mb-3 leading-relaxed">
+                      <p className="text-sm text-gray-600 line-clamp-2 text-left mb-3">
                         {article.excerpt}
                       </p>
                       <p 

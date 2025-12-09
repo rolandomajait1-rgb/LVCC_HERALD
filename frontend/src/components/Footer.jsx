@@ -67,17 +67,17 @@ function Footer({ onOpenLogin }) {
 
           {/* Navigation Links */}
           <div className="lg:w-1/3 grid grid-cols-3 gap-y-4 gap-x-2 text-xs md:text-sm font-bold text-center lg:text-left tracking-wider text-gray-100">
-            <Link to="/category/news" onClick={(e) => handleCategoryClick(e, 'news')} className="hover:text-amber-400 transition-colors">NEWS</Link>
-              <Link to="/category/literary" onClick={(e) => handleCategoryClick(e, 'literary')} className="hover:text-amber-400 transition-colors">LITERARY</Link>
-            <Link to="/category/art" onClick={(e) => handleCategoryClick(e, 'art')} className="hover:text-amber-400 transition-colors">ART</Link>
+            <Link to="/category/news" onClick={(e) => handleCategoryClick(e, 'news')} className="hover:text-cyan-400 transition-colors">NEWS</Link>
+            <Link to="/category/literary" onClick={(e) => handleCategoryClick(e, 'literary')} className="hover:text-cyan-400 transition-colors">LITERARY</Link>
+            <Link to="/category/art" onClick={(e) => handleCategoryClick(e, 'art')} className="hover:text-cyan-400 transition-colors">ART</Link>
             
-            <Link to="/category/sports" onClick={(e) => handleCategoryClick(e, 'sports')} className="hover:text-amber-400 transition-colors">SPORTS</Link>
-            <Link to="/category/features" onClick={(e) => handleCategoryClick(e, 'features')} className="hover:text-amber-400 transition-colors">FEATURES</Link>
-            <Link to="/about" onClick={handleCategoryClick} className="hover:text-amber-400 transition-colors">ABOUT</Link>
+            <Link to="/category/sports" onClick={(e) => handleCategoryClick(e, 'sports')} className="hover:text-cyan-400 transition-colors">SPORTS</Link>
+            <Link to="/category/features" onClick={(e) => handleCategoryClick(e, 'features')} className="hover:text-cyan-400 transition-colors">FEATURES</Link>
+            <Link to="/about" onClick={handleCategoryClick} className="hover:text-cyan-400 transition-colors">ABOUT</Link>
             
-            <Link to="/category/opinion" onClick={(e) => handleCategoryClick(e, 'opinion')} className="hover:text-amber-400 transition-colors">OPINION</Link>
-            <Link to="/category/specials" onClick={(e) => handleCategoryClick(e, 'specials')} className="hover:text-amber-400 transition-colors">SPECIALS</Link>
-            <Link to="/contact" onClick={handleCategoryClick} className="hover:text-amber-400 transition-colors whitespace-nowrap">CONTACT US</Link>
+            <Link to="/category/opinion" onClick={(e) => handleCategoryClick(e, 'opinion')} className="hover:text-cyan-400 transition-colors">OPINION</Link>
+            <Link to="/category/specials" onClick={(e) => handleCategoryClick(e, 'specials')} className="hover:text-cyan-400 transition-colors">SPECIALS</Link>
+            <Link to="/contact" onClick={handleCategoryClick} className="hover:text-cyan-400 transition-colors whitespace-nowrap">CONTACT US</Link>
           </div>
 
           {/* Subscribe Section */}

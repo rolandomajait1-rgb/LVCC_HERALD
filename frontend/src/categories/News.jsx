@@ -15,7 +15,7 @@ import logo from '../assets/images/logo.svg';
 
 const RelatedCard = ({ article, onClick }) => (
   <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex flex-col group cursor-pointer hover:shadow-md transition-all" onClick={onClick}>
-    <div className="relative h-48 overflow-hidden">
+    <div className="relative h-44 overflow-hidden">
       <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
     </div>
     <div className="p-5 flex flex-col grow">
@@ -23,11 +23,11 @@ const RelatedCard = ({ article, onClick }) => (
         <span className={`text-xs font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
         <span className="text-gray-500 text-xs font-medium">{article.date}</span>
       </div>
-      <h3 className="text-base font-serif font-bold text-gray-900 mb-2 leading-tight group-hover:text-blue-800 transition-colors line-clamp-2 text-left">
+      <h3 className="text-lg font-serif font-bold text-gray-900 mb-3 leading-tight group-hover:text-blue-800 transition-colors line-clamp-2 text-left">
         {article.title}
       </h3>
       {article.excerpt && (
-        <p className="text-xs text-gray-600 mb-3 line-clamp-3 leading-relaxed text-left">
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2 leading-relaxed text-left">
           {article.excerpt}
         </p>
       )}
@@ -63,10 +63,10 @@ const LatestCard = ({ article, onClick, onEdit, onDelete }) => (
           <span className="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded uppercase">{article.category}</span>
           <span className="text-gray-400 text-xs flex items-center gap-1 text-left"><Calendar size={12}/> {article.date}</span>
         </div>
-        <h3 className="text-lg font-serif font-bold text-gray-900 mb-2 group-hover:text-blue-800 transition-colors text-left leading-tight">
+        <h3 className="text-xl font-serif font-bold text-gray-900 mb-2 group-hover:text-blue-800 transition-colors text-left">
           {article.title}
         </h3>
-        <p className="text-gray-600 text-xs leading-relaxed line-clamp-3 text-left">
+        <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 text-left">
           {article.excerpt}
         </p>
       </div>
@@ -83,10 +83,10 @@ const MostViewedCard = ({ article, onClick }) => (
       <span className="text-[10px] text-gray-400 text-left flex items-center gap-1"><Calendar size={10}/> {article.date}</span>
       <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">{article.category}</span>
     </div>
-    <h4 className="text-xs font-bold text-gray-800 leading-tight mb-2 group-hover:text-blue-700 text-left line-clamp-2">
+    <h4 className="text-sm font-bold text-gray-800 leading-snug mb-2 group-hover:text-blue-700 text-left">
       {article.title}
     </h4>
-    <p className="text-gray-600 text-[10px] leading-relaxed line-clamp-2 mb-2 text-left">
+    <p className="text-gray-600 text-xs leading-relaxed line-clamp-2 mb-2 text-left">
       {article.excerpt}
     </p>
     <div className="text-right text-xs text-gray-500 font-medium">

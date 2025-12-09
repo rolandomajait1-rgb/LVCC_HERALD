@@ -108,11 +108,11 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4 overflow-y-auto" onClick={onClose}>
-      <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg my-8" onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-serif text-gray-800 flex-1 text-center">Login</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 flex-shrink-0" aria-label="Close login modal">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4" onClick={onClose}>
+      <div className="w-full max-w-md rounded-lg bg-white p-6 md:p-8 shadow-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-3xl md:text-4xl font-serif text-gray-800 w-full text-center">Login</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600" aria-label="Close login modal">
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>

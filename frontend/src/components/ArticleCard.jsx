@@ -295,7 +295,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
       ) : (
         // Default vertical layout (image on top)
         <>
-          <div className={`relative overflow-hidden ${isSmall ? 'h-48' : isMedium ? 'h-56' : isLarge ? 'h-80' : 'h-64'}`}>
+          <div className={`relative overflow-hidden ${isSmall ? 'h-40' : isMedium ? 'h-48' : isLarge ? 'h-96' : 'h-60'}`}>
             <img
               src={finalImageUrl}
               alt={title}
@@ -339,7 +339,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               </span>
             </div>
 
-            <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left break-words ${isLarge ? 'text-xl md:text-2xl' : 'text-sm md:text-base'}`}>
+            <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left break-words ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
               {title}
             </h3>
             {tags && tags.length > 0 && (
@@ -351,7 +351,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 ))}
               </div>
             )}
-            <p className={`text-gray-600 mb-3 line-clamp-3 text-left break-words ${isLarge ? 'text-sm md:text-base' : 'text-xs'}`}>
+            <p className={`text-gray-600 mb-3 line-clamp-3 text-left break-words ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
               {finalSnippet}
             </p>
             <p 
