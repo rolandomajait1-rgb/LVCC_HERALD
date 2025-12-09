@@ -6,7 +6,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\ArticleInteraction;
-use App\Models\Log;
+use App\Models\Log as ActivityLog;
 use App\Models\Author;
 use App\Models\User;
 use App\Models\SearchLog;
@@ -125,7 +125,7 @@ class ArticleController extends Controller
                 }
             }
 
-            Log::create([
+            ActivityLog::create([
                 'user_id' => Auth::id(),
                 'action' => 'created',
                 'model_type' => 'Article',
@@ -248,7 +248,7 @@ class ArticleController extends Controller
             }
         }
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'updated',
             'model_type' => 'Article',
@@ -270,7 +270,7 @@ class ArticleController extends Controller
             $article->interactions()->delete();
             $article->delete();
 
-            Log::create([
+            ActivityLog::create([
                 'user_id' => Auth::id(),
                 'action' => 'deleted',
                 'model_type' => 'Article',
