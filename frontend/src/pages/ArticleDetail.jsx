@@ -16,7 +16,8 @@ import getCategoryColor from '../utils/getCategoryColor';
 const RelatedCard = ({ article, onClick, navigate, articleId }) => {
   const handleEdit = (e) => {
     e.stopPropagation();
-    navigate(`/admin/edit-article/${articleId}`);
+    const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+    navigate(`${rolePrefix}/edit-article/${articleId}`);
   };
 
   const handleDelete = async (e) => {
@@ -334,7 +335,8 @@ export default function ArticleDetail() {
                 <div className="flex space-x-2">
                   <button 
                     onClick={() => {
-                      navigate(`/admin/edit-article/${article.id}`);
+                      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
+                      navigate(`${rolePrefix}/edit-article/${article.id}`);
                     }}
                     className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
                   >
@@ -416,7 +418,7 @@ export default function ArticleDetail() {
           {/* Article Body Content */}
           <div className="p-6 md:p-10">
             <div className="prose prose-lg max-w-none text-gray-800">
-              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content, { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a'], ALLOWED_ATTR: ['href', 'target'] }) }} />
+              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
             </div>
             
             {/* Like and Share Section */}

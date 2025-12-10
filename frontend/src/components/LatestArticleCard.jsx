@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ArticleCard from './ArticleCard';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
 import getCategoryColor from '../utils/getCategoryColor';
-import { isAdmin, isModerator, getUserRole } from '../utils/auth';
-import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 
 export default function LatestArticles({ onArticleClick }) {
   const [articles, setArticles] = useState([]);
@@ -71,39 +69,6 @@ export default function LatestArticles({ onArticleClick }) {
                         alt={article.title}
                         className="w-full h-full object-cover"
                       />
-                      {(isAdmin() || isModerator()) && (
-                        <div className="absolute top-3 right-3 flex space-x-2 z-20">
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              window.location.href = `/admin/edit-article/${article.id}`;
-                            }}
-                            className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-                            title="Edit Article"
-                          >
-                            <FaPencilAlt />
-                          </button>
-                          {isAdmin() && (
-                            <button 
-                              onClick={async (e) => {
-                                e.stopPropagation();
-                                if (window.confirm('Are you sure you want to delete this article?')) {
-                                  try {
-                                    await axios.delete(`/api/articles/${article.id}`);
-                                    window.location.reload();
-                                  } catch (error) {
-                                    alert('Failed to delete article');
-                                  }
-                                }
-                              }}
-                              className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
-                              title="Delete Article"
-                            >
-                              <FaTrash />
-                            </button>
-                          )}
-                        </div>
-                      )}
                     </div>
                     <div className="p-5">
                       <div className="flex justify-between items-center mb-3">
