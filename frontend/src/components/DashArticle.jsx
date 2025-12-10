@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Pencil, Trash2 } from 'lucide-react';
-import { isAdmin, getUserRole } from '../utils/auth';
+import { isAdmin, isModerator, getUserRole } from '../utils/auth';
 import { FaCalendar } from 'react-icons/fa';
 import axios from '../utils/axiosConfig';
 import getCategoryColor from '../utils/getCategoryColor';
@@ -10,9 +10,8 @@ export default function ArticleCard({ imageUrl, title, excerpt, category, onClic
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
   const [relatedArticles, setRelatedArticles] = useState([]);
-  const userRole = getUserRole();
-  const canEdit = isAdmin();
-  const canDelete = userRole === 'admin';
+  const canEdit = isAdmin() || isModerator();
+  const canDelete = isAdmin();
 
   useEffect(() => {
     if (expanded && showRelated && category) {
@@ -65,17 +64,31 @@ export default function ArticleCard({ imageUrl, title, excerpt, category, onClic
     >
       <div className="relative">
         <img className="w-full h-56 object-cover" src={imageUrl} alt={title} />
-        {canEdit && (
+        {(isAdmin() || isModerator()) && (
           <div className="absolute top-2 right-2 flex gap-1">
             <button 
-              onClick={(e) => { e.stopPropagation(); onEdit ? onEdit() : navigate(`/edit-article/${articleId}`); }}
+              onClick={(e) => { e.stopPropagation(); onEdit ? onEdit() : navigate(`/admin/edit-article/${articleId}`); }}
               className="p-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-sm"
             >
               <Pencil size={14} />
             </button>
-            {canDelete && (
+            {isAdmin() && (
               <button 
-                onClick={(e) => { e.stopPropagation(); onDelete ? onDelete() : navigate(`/delete-article/${articleId}`); }}
+                onClick={async (e) => { 
+                  e.stopPropagation(); 
+                  if (onDelete) {
+                    onDelete();
+                  } else {
+                    if (window.confirm('Are you sure you want to delete this article?')) {
+                      try {
+                        await axios.delete(`/api/articles/${articleId}`);
+                        window.location.reload();
+                      } catch (error) {
+                        alert('Failed to delete article');
+                      }
+                    }
+                  }
+                }}
                 className="p-1.5 bg-red-500 text-white rounded hover:bg-red-600 shadow-sm"
               >
                 <Trash2 size={14} />

@@ -150,8 +150,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     if (onEdit) {
       onEdit(articleId);
     } else {
-      const rolePrefix = getUserRole() === 'moderator' ? '/moderator' : '/admin';
-      navigate(`${rolePrefix}/edit-article/${articleId}`);
+      navigate(`/admin/edit-article/${articleId}`);
     }
   };
 
@@ -166,7 +165,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
           await axios.delete(`/api/articles/${articleId}`);
           window.location.reload();
         } catch (error) {
-          alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+          alert('Failed to delete article: ' + (error.response?.data?.error || error.message));
         }
       }
     }
@@ -227,7 +226,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
         <div className="flex flex-col sm:flex-row">
           <div className="sm:w-1/3 relative h-48 sm:h-64 overflow-hidden">
             <img src={finalImageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
-            {showAdminButtons && onEdit !== false && onDelete !== false && (
+            {(isAdmin() || isModerator()) && onEdit !== false && onDelete !== false && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
                   onClick={handleEditClick} 
@@ -236,7 +235,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 >
                   <FaPencilAlt />
                 </button>
-                {getUserRole() === 'admin' && (
+                {isAdmin() && (
                   <button 
                     onClick={handleDeleteClick} 
                     className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
@@ -303,7 +302,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               loading="lazy"
               onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }}
             />
-            {showAdminButtons && onEdit !== false && onDelete !== false && (
+            {(isAdmin() || isModerator()) && onEdit !== false && onDelete !== false && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
                 <button 
                   onClick={handleEditClick} 
@@ -312,7 +311,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 >
                   <FaPencilAlt />
                 </button>
-                {getUserRole() === 'admin' && (
+                {isAdmin() && (
                   <button 
                     onClick={handleDeleteClick} 
                     className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
