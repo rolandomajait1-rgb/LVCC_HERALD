@@ -74,23 +74,20 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        return new User([
+        $user = new User([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+        $user->role = 'user';
+        $user->save();
+        return $user;
     }
 
     public function register(Request $request)
     {
         $user = $this->createUser($request);
-        // Manually set role after creation to avoid mass assignment
-        $user->role = 'user';
-        $user->save();
-
-
         Auth::login($user);
-
         return redirect('/dashboard')->with('success', 'Registration successful. Welcome!');
     }
 

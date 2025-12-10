@@ -170,7 +170,7 @@ class AuthenticationController extends Controller
             'token' => $token
         ]);
         } catch (\Exception $e) {
-            Log::error('Login failed: ' . $e->getMessage());
+            \Log::error('Login failed: ' . $e->getMessage());
             return response()->json(['message' => 'Login failed'], 500);
         }
     }

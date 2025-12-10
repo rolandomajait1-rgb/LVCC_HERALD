@@ -10,9 +10,14 @@ class ContactController extends Controller
 {
     protected $brevoMailer;
 
-    public function __construct(BrevoMailer $brevoMailer)
+    public function __construct()
     {
-        $this->brevoMailer = $brevoMailer;
+        try {
+            $this->brevoMailer = new BrevoMailer();
+        } catch (\Exception $e) {
+            Log::error('Failed to initialize BrevoMailer: ' . $e->getMessage());
+            $this->brevoMailer = null;
+        }
     }
 
     public function sendFeedback(Request $request)
@@ -30,7 +35,11 @@ class ContactController extends Controller
             $subject = 'New Feedback - La Verdad Herald';
             $htmlContent = "<h3>New Feedback Received</h3><p><strong>From:</strong> " . htmlspecialchars($email, ENT_QUOTES, 'UTF-8') . "</p><p><strong>Feedback:</strong><br>" . nl2br($feedback) . "</p>";
 
-            $this->brevoMailer->sendEmail($adminEmail, $subject, $htmlContent);
+            if ($this->brevoMailer) {
+                $this->brevoMailer->sendEmail($adminEmail, $subject, $htmlContent);
+            } else {
+                throw new \Exception('Email service unavailable');
+            }
 
             return response()->json(['message' => 'Feedback received successfully']);
         } catch (\Exception $e) {

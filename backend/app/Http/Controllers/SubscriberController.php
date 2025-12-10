@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Subscriber;
-use App\Models\Log;
+use App\Models\Log as ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,7 +33,7 @@ class SubscriberController extends Controller
 
         $subscriber = Subscriber::create($data);
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'created',
             'model_type' => 'Subscriber',
@@ -66,7 +66,7 @@ class SubscriberController extends Controller
 
         $subscriber->update($request->all());
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'updated',
             'model_type' => 'Subscriber',
@@ -84,7 +84,7 @@ class SubscriberController extends Controller
 
         $subscriber->delete();
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'deleted',
             'model_type' => 'Subscriber',

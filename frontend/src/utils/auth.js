@@ -36,8 +36,6 @@ const clearAuthData = () => {
 };
 
 export const getUserRole = () => {
-    const token = getAuthToken();
-    if (!token) return null;
     return localStorage.getItem('user_role') || sessionStorage.getItem('user_role');
 };
 
