@@ -293,7 +293,7 @@ export default function ArticleDetail() {
             <div className="flex flex-col gap-4">
               <button
                 onClick={handleDelete}
-                className="w-full bg-red-600 text-black py-4 rounded-full font-semibold hover:bg-red-700 transition-colors text-base"
+                className="w-full bg-red-600 text-white py-4 rounded-full font-semibold hover:bg-red-700 transition-colors text-base"
               >
                 Delete
               </button>
