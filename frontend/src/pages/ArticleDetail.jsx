@@ -416,7 +416,7 @@ export default function ArticleDetail() {
           {/* Article Body Content */}
           <div className="p-6 md:p-10">
             <div className="prose prose-lg max-w-none text-gray-800">
-              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content) }} />
+              <div className="whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content, { ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a'], ALLOWED_ATTR: ['href', 'target'] }) }} />
             </div>
             
             {/* Like and Share Section */}

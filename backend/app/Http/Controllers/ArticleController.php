@@ -73,16 +73,28 @@ class ArticleController extends Controller
 
             $imagePath = null;
             if ($request->hasFile('featured_image')) {
+                $file = $request->file('featured_image');
+                
+                // Validate file type and size
+                $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                if (!in_array($file->getMimeType(), $allowedTypes)) {
+                    return response()->json(['error' => 'Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed.'], 400);
+                }
+                
+                if ($file->getSize() > 5 * 1024 * 1024) { // 5MB limit
+                    return response()->json(['error' => 'File size too large. Maximum 5MB allowed.'], 400);
+                }
+                
                 try {
-                    $uploadedFile = cloudinary()->uploadApi()->upload($request->file('featured_image')->getRealPath(), [
-                        'folder' => 'laverdad-herald/articles'
+                    $uploadedFile = cloudinary()->uploadApi()->upload($file->getRealPath(), [
+                        'folder' => 'laverdad-herald/articles',
+                        'resource_type' => 'image'
                     ]);
                     $imagePath = $uploadedFile['secure_url'];
                 } catch (\Exception $e) {
                     Log::error('Cloudinary upload failed: ' . $e->getMessage());
-                    $image = $request->file('featured_image');
-                    $imageName = time() . '.' . $image->getClientOriginalExtension();
-                    $image->move(public_path('storage/articles'), $imageName);
+                    $imageName = uniqid() . '_' . time() . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('storage/articles'), $imageName);
                     $imagePath = '/storage/articles/' . $imageName;
                 }
             }
@@ -170,10 +182,11 @@ class ArticleController extends Controller
 
     public function update(ArticleRequest $request, Article $article)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        // Authorize using policy (admins and moderators may update per policy)
-        $this->authorize('update', $article);
+            // Authorize using policy (admins and moderators may update per policy)
+            $this->authorize('update', $article);
 
         // Resolve author by provided 'author_name' or 'author'
         $authorName = $validated['author_name'] ?? ($validated['author'] ?? Auth::user()->name);
@@ -185,13 +198,17 @@ class ArticleController extends Controller
         // Keep the original slug to maintain URL consistency
         $slug = $article->slug;
 
+        // Sanitize input data
+        $sanitizedTitle = strip_tags(trim($validated['title']));
+        $sanitizedContent = $validated['content'];
+
         // Update article data
         $data = [
-            'title' => $validated['title'],
-            'content' => $validated['content'],
+            'title' => $sanitizedTitle,
+            'content' => $sanitizedContent,
             'author_id' => $author->id,
             'slug' => $slug,
-            'excerpt' => Str::limit(strip_tags($validated['content']), 150),
+            'excerpt' => Str::limit(strip_tags($sanitizedContent), 150),
         ];
         
         // Handle status update
@@ -259,6 +276,12 @@ class ArticleController extends Controller
         ]);
 
         return response()->json($article->load('author.user', 'categories', 'tags'));
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return response()->json(['error' => 'Unauthorized to update this article'], 403);
+        } catch (\Exception $e) {
+            Log::error('Article update failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to update article'], 500);
+        }
     }
 
     public function destroy(Article $article)
@@ -419,7 +442,7 @@ class ArticleController extends Controller
                 return response()->json(['data' => []]);
             }
 
-            $searchTerm = '%' . $query . '%';
+            $searchTerm = '%' . str_replace(['%', '_'], ['\%', '\_'], trim($query)) . '%';
             $articles = Article::where('status', 'published')
                 ->with(['author', 'categories', 'tags'])
                 ->where(function($q) use ($searchTerm) {

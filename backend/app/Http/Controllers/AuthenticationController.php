@@ -16,7 +16,7 @@ class AuthenticationController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:1|max:255',
+            'name' => 'required|min:1|max:255|regex:/^[a-zA-Z\s]+$/',
             'email' => [
                 'required',
                 'email',
@@ -33,6 +33,7 @@ class AuthenticationController extends Controller
                 'confirmed',
             ],
         ], [
+            'name.regex' => 'Name can only contain letters and spaces.',
             'email.regex' => 'Only register with your La Verdad email address.',
             'password.string' => 'Password must be a valid string.',
             'password.min' => 'Password must be at least 8 characters long.',
@@ -48,18 +49,22 @@ class AuthenticationController extends Controller
             ], 422);
         }
 
+        // Sanitize input
+        $sanitizedName = strip_tags(trim($request->name));
+        $sanitizedEmail = filter_var($request->email, FILTER_SANITIZE_EMAIL);
+
         if ($user && !$user->hasVerifiedEmail()) {
             // Update user details and resend verification email
             $user->fill([
-                'name' => $request->name,
+                'name' => $sanitizedName,
                 'password' => Hash::make($request->password),
             ]);
             $user->save();
         } else {
             // Create a new user
             $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
+                'name' => $sanitizedName,
+                'email' => $sanitizedEmail,
                 'password' => Hash::make($request->password),
             ]);
         }
@@ -132,10 +137,11 @@ class AuthenticationController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        try {
+            $request->validate([
+                'email' => 'required|email|max:255',
+                'password' => 'required|string|max:255'
+            ]);
 
         $user = User::where('email', $request->email)->first();
 
@@ -163,6 +169,10 @@ class AuthenticationController extends Controller
             'role' => $user->role,
             'token' => $token
         ]);
+        } catch (\Exception $e) {
+            Log::error('Login failed: ' . $e->getMessage());
+            return response()->json(['message' => 'Login failed'], 500);
+        }
     }
 
     public function userInfo(Request $request)

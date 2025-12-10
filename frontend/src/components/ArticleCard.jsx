@@ -22,13 +22,19 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   
   // Check admin/moderator status on mount and when localStorage changes
   useEffect(() => {
+    let isMounted = true;
     const checkRole = () => {
-      const hasAccess = getAuthToken() && (isAdmin() || isModerator());
-      setShowAdminButtons(hasAccess);
+      if (isMounted) {
+        const hasAccess = getAuthToken() && (isAdmin() || isModerator());
+        setShowAdminButtons(hasAccess);
+      }
     };
     checkRole();
     const interval = setInterval(checkRole, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   // Fetch likes data from backend or localStorage
@@ -264,7 +270,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               </div>
 
               <h3 className={`font-bold text-gray-900 mb-3 line-clamp-2 text-left break-words ${isLarge ? 'text-2xl md:text-4xl' : 'text-sm md:text-base'}`}>
-                {title}
+                {title?.replace(/<[^>]*>/g, '')}
               </h3>
               {tags && tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-2">
@@ -276,7 +282,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                 </div>
               )}
               <p className={`text-gray-600 mb-3 line-clamp-3 text-left break-words ${isLarge ? 'text-base md:text-xl' : 'text-xs'}`}>
-                {finalSnippet}
+                {finalSnippet?.replace(/<[^>]*>/g, '')}
               </p>
             </div>
 

@@ -10,6 +10,11 @@ import Statistics from "../AdminDashboard/Statistics";
 export default function OpenAdminDashboard() {
   useEffect(() => {
     document.title = getUserRole() === 'moderator' ? 'Moderator | Control Panel' : 'Admin | Control Panel';
+    
+    // Prevent clickjacking
+    if (window.top !== window.self) {
+      window.top.location = window.self.location;
+    }
   }, []);
 
   return (

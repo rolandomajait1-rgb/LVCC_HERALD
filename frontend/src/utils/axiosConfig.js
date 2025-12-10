@@ -3,7 +3,7 @@ import axios from 'axios';
 const rawBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const normalizedBase = rawBase.replace(/\/+$/, '').replace(/\/api$/, '');
 axios.defaults.baseURL = normalizedBase;
-axios.defaults.timeout = 30000;
+axios.defaults.timeout = 15000;
 axios.defaults.withCredentials = false;
 axios.defaults.headers.common['Accept'] = 'application/json';
 axios.defaults.headers.common['Content-Type'] = 'application/json';
@@ -48,6 +48,14 @@ axios.interceptors.response.use(
             localStorage.removeItem('remember_me');
             sessionStorage.clear();
             window.location.href = '/landing';
+        }
+        
+        if (error.response?.status === 403) {
+            console.error('Access forbidden - insufficient permissions');
+        }
+        
+        if (error.response?.status >= 500) {
+            console.error('Server error - please try again later');
         }
         return Promise.reject(error);
     }

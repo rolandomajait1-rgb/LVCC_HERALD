@@ -35,11 +35,11 @@ Route::get('/health', [\App\Http\Controllers\HealthController::class, 'check']);
 Route::get('/team-members', [TeamMemberController::class, 'index']);
 Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberController::class, 'update']);
 
-// Public API Routes
-Route::post('/login', [AuthenticationController::class, 'login']);
-Route::post('/register', [AuthenticationController::class, 'register']);
-Route::post('/forgot-password', [AuthenticationController::class, 'forgotPassword']);
-Route::post('/reset-password', [AuthenticationController::class, 'resetPassword']);
+// Public API Routes with rate limiting
+Route::middleware('throttle:5,1')->post('/login', [AuthenticationController::class, 'login']);
+Route::middleware('throttle:3,1')->post('/register', [AuthenticationController::class, 'register']);
+Route::middleware('throttle:3,1')->post('/forgot-password', [AuthenticationController::class, 'forgotPassword']);
+Route::middleware('throttle:3,1')->post('/reset-password', [AuthenticationController::class, 'resetPassword']);
 
 // Search with rate limiting
 Route::middleware('throttle:30,1')->get('/articles/search', [ArticleController::class, 'search']);
