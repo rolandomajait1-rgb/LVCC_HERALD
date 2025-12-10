@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchArticles, clearError } from '../store/slices/articlesSlice';
+import axios from '../utils/axiosConfig';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
@@ -20,10 +21,9 @@ export default function CategoryPage() {
     const capitalizedCategory = category ? category.charAt(0).toUpperCase() + category.slice(1).toLowerCase() : '';
     console.log('Fetching articles for category:', capitalizedCategory, 'page:', currentPage);
     // Use category-specific endpoint instead
-    fetch(`https://lvcc-herald.onrender.com/api/categories/${category.toLowerCase()}/articles`)
-      .then(r => r.json())
-      .then(data => {
-        dispatch({ type: 'articles/setArticles', payload: data });
+    axios.get(`/api/categories/${category.toLowerCase()}/articles`)
+      .then(response => {
+        dispatch({ type: 'articles/setArticles', payload: response.data });
       })
       .catch(err => console.error(err));
 
