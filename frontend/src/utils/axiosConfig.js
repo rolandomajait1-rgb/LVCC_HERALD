@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const rawBase = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const rawBase = import.meta.env.VITE_API_URL || 'https://lvcc-herald.onrender.com';
 const normalizedBase = rawBase.replace(/\/+$/, '').replace(/\/api$/, '');
 axios.defaults.baseURL = normalizedBase;
 axios.defaults.timeout = 15000;
