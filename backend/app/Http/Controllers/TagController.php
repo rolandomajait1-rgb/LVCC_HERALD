@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tag;
-use App\Models\Log;
+use App\Models\Log as ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -53,7 +53,7 @@ class TagController extends Controller
 
         $tag = Tag::create($data);
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'created',
             'model_type' => 'Tag',
@@ -138,7 +138,7 @@ class TagController extends Controller
 
         $tag->update($data);
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'updated',
             'model_type' => 'Tag',
@@ -156,7 +156,7 @@ class TagController extends Controller
 
         $tag->delete();
 
-        Log::create([
+        ActivityLog::create([
             'user_id' => Auth::id(),
             'action' => 'deleted',
             'model_type' => 'Tag',
