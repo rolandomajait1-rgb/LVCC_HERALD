@@ -32,7 +32,8 @@ function Header() {
       setShowWelcome(true);
       sessionStorage.removeItem('login_notification');
       sessionStorage.removeItem('login_notification_message');
-      setTimeout(() => setShowWelcome(false), 5000);
+      const timer = setTimeout(() => setShowWelcome(false), 5000);
+      return () => clearTimeout(timer);
     }
   }, []);
 

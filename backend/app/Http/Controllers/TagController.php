@@ -108,8 +108,8 @@ class TagController extends Controller
                         'excerpt' => $article->excerpt,
                         'image_url' => $article->featured_image ?? 'https://placehold.co/400x250/e2e8f0/64748b?text=No+Image',
                         'published_at' => $article->published_at ? $article->published_at->format('F j, Y') : 'No date',
-                        'author_name' => $article->author->user->name ?? 'Unknown Author',
-                        'category' => $article->categories->first()->name ?? 'News'
+                        'author_name' => $article->author?->user?->name ?? $article->author?->name ?? 'Unknown Author',
+                        'category' => $article->categories->first()?->name ?? 'News'
                     ];
                 });
 

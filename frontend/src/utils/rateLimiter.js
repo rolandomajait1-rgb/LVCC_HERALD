@@ -1,50 +1,43 @@
-// Rate limiter for authentication attempts
 class RateLimiter {
   constructor() {
     this.attempts = new Map();
+    this.maxAttempts = 5;
+    this.blockDuration = 300000; // 5 minutes
   }
 
   canAttempt(key) {
     const now = Date.now();
     const record = this.attempts.get(key);
-
+    
     if (!record) return true;
-
-    if (now > record.blockedUntil) {
+    
+    if (now - record.lastAttempt > this.blockDuration) {
       this.attempts.delete(key);
       return true;
     }
-
-    return false;
+    
+    return record.count < this.maxAttempts;
   }
 
   recordAttempt(key, success) {
     const now = Date.now();
-    const record = this.attempts.get(key) || { count: 0, blockedUntil: 0 };
-
+    const record = this.attempts.get(key) || { count: 0, lastAttempt: now };
+    
     if (success) {
       this.attempts.delete(key);
-      return;
+    } else {
+      record.count++;
+      record.lastAttempt = now;
+      this.attempts.set(key, record);
     }
-
-    record.count++;
-    
-    // Exponential backoff: 3 attempts = 30s, 5 attempts = 2min, 7+ attempts = 5min
-    if (record.count >= 7) {
-      record.blockedUntil = now + 5 * 60 * 1000;
-    } else if (record.count >= 5) {
-      record.blockedUntil = now + 2 * 60 * 1000;
-    } else if (record.count >= 3) {
-      record.blockedUntil = now + 30 * 1000;
-    }
-
-    this.attempts.set(key, record);
   }
 
   getBlockedTime(key) {
     const record = this.attempts.get(key);
-    if (!record || Date.now() > record.blockedUntil) return 0;
-    return Math.ceil((record.blockedUntil - Date.now()) / 1000);
+    if (!record) return 0;
+    
+    const remaining = this.blockDuration - (Date.now() - record.lastAttempt);
+    return Math.ceil(remaining / 1000);
   }
 }
 

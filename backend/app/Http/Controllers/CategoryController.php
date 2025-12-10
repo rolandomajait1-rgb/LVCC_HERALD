@@ -160,8 +160,8 @@ class CategoryController extends Controller
         $articles = \App\Models\Article::published()
             ->with(['author', 'author.user', 'categories', 'tags'])
             ->whereHas('categories', function($q) use ($category) {
-                $q->where('name', $category)
-                  ->orWhere('slug', strtolower($category));
+                $q->whereRaw('LOWER(name) = ?', [strtolower($category)])
+                  ->orWhereRaw('LOWER(slug) = ?', [strtolower($category)]);
             })
             ->latest('published_at')
             ->paginate(12);

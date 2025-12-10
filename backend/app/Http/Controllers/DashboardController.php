@@ -15,17 +15,16 @@ class DashboardController extends Controller
     public function stats(Request $request)
     {
         try {
-            $users = \App\Models\User::count();
-            $articles = \App\Models\Article::where('status', 'published')->count();
-            $views = \App\Models\ArticleInteraction::where('type', 'view')->count();
-            $likes = \App\Models\ArticleInteraction::where('type', 'like')->count();
+            $stats = \Illuminate\Support\Facades\Cache::remember('dashboard_stats', 300, function () {
+                return [
+                    'users' => \App\Models\User::count(),
+                    'articles' => \App\Models\Article::where('status', 'published')->count(),
+                    'views' => \App\Models\ArticleInteraction::where('type', 'view')->count(),
+                    'likes' => \App\Models\ArticleInteraction::where('type', 'like')->count()
+                ];
+            });
 
-            return response()->json([
-                'users' => $users,
-                'articles' => $articles,
-                'views' => $views,
-                'likes' => $likes
-            ]);
+            return response()->json($stats);
         } catch (\Exception $e) {
             \Log::error('Dashboard stats error: ' . $e->getMessage());
             return response()->json([

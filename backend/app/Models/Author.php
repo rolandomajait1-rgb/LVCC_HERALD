@@ -25,10 +25,7 @@ class Author extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->withDefault(function ($user, $author) {
-            $user->name = $author->name;
-            return $user;
-        });
+        return $this->belongsTo(User::class);
     }
 
     public function articles(): HasMany

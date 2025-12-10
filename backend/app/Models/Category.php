@@ -32,7 +32,7 @@ class Category extends Model
                 $slug = $baseSlug;
                 $counter = 1;
                 
-                while (static::where('slug', $slug)->exists()) {
+                while (static::where('slug', $slug)->lockForUpdate()->exists()) {
                     $slug = $baseSlug . '-' . $counter;
                     $counter++;
                 }
@@ -47,7 +47,7 @@ class Category extends Model
                 $slug = $baseSlug;
                 $counter = 1;
                 
-                while (static::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+                while (static::where('slug', $slug)->where('id', '!=', $category->id)->lockForUpdate()->exists()) {
                     $slug = $baseSlug . '-' . $counter;
                     $counter++;
                 }

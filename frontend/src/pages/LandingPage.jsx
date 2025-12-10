@@ -46,7 +46,8 @@ function LandingPage() {
         setIsAlreadyVerified(false);
         setIsLoginOpen(true);
         setSearchParams({});
-        setTimeout(() => setShowVerified(false), 5000);
+        const timer = setTimeout(() => setShowVerified(false), 5000);
+        return () => clearTimeout(timer);
       }
     } else if (searchParams.get('already_verified') === 'true') {
       if (token) {
@@ -56,7 +57,8 @@ function LandingPage() {
         setIsAlreadyVerified(true);
         setIsLoginOpen(true);
         setSearchParams({});
-        setTimeout(() => setShowVerified(false), 5000);
+        const timer = setTimeout(() => setShowVerified(false), 5000);
+        return () => clearTimeout(timer);
       }
     }
   }, [searchParams, setSearchParams, navigate]);
