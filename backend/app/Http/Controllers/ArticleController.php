@@ -145,9 +145,11 @@ class ArticleController extends Controller
             ]);
 
             return response()->json($article->load('author.user', 'categories', 'tags'), 201);
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            return response()->json(['error' => 'Unauthorized to create articles'], 403);
         } catch (\Exception $e) {
             Log::error('Article creation failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to create article'], 500);
+            return response()->json(['error' => 'Failed to create article: ' . $e->getMessage()], 500);
         }
     }
 

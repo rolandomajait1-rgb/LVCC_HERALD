@@ -3,57 +3,62 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\Category;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class SetupController extends Controller
 {
-    public function seedDatabase(Request $request)
+    public function checkDatabase()
     {
         try {
-            // Check if articles already exist
-            $articleCount = DB::table('articles')->count();
+            DB::connection()->getPdo();
+            $categoriesCount = Category::count();
+            $usersCount = User::count();
             
-            if ($articleCount > 0) {
-                return response()->json([
-                    'message' => 'Database already has articles',
-                    'article_count' => $articleCount
-                ]);
-            }
-
-            // Run seeders
-            Artisan::call('db:seed', ['--force' => true]);
-
-            $newCount = DB::table('articles')->count();
-
             return response()->json([
-                'message' => 'Database seeded successfully',
-                'article_count' => $newCount
+                'status' => 'connected',
+                'categories' => $categoriesCount,
+                'users' => $usersCount
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to seed database',
+                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
-    public function checkDatabase()
+    public function seedDatabase()
     {
         try {
-            $articles = DB::table('articles')
-                ->select('id', 'title', 'slug', 'status')
-                ->limit(10)
-                ->get();
+            // Create default categories if they don't exist
+            $categories = ['News', 'Opinion', 'Features', 'Sports', 'Literary', 'Art', 'Specials'];
+            
+            foreach ($categories as $categoryName) {
+                Category::firstOrCreate(['name' => $categoryName]);
+            }
+
+            // Create admin user if doesn't exist
+            $adminEmail = 'admin@laverdad.edu.ph';
+            if (!User::where('email', $adminEmail)->exists()) {
+                User::create([
+                    'name' => 'Admin User',
+                    'email' => $adminEmail,
+                    'password' => Hash::make('admin123'),
+                    'role' => 'admin',
+                    'email_verified_at' => now(),
+                ]);
+            }
 
             return response()->json([
-                'total_articles' => DB::table('articles')->count(),
-                'published_articles' => DB::table('articles')->where('status', 'published')->count(),
-                'sample_articles' => $articles
+                'status' => 'success',
+                'message' => 'Database seeded successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to check database',
+                'status' => 'error',
                 'message' => $e->getMessage()
             ], 500);
         }

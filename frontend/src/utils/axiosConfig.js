@@ -14,17 +14,20 @@ axios.interceptors.request.use(
         const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
         const expiresAt = localStorage.getItem('token_expires_at') || sessionStorage.getItem('token_expires_at');
 
-        if (token && expiresAt && Date.now() < parseInt(expiresAt)) {
-            config.headers.Authorization = `Bearer ${token}`;
-        } else if (token && expiresAt && Date.now() >= parseInt(expiresAt)) {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('token_expires_at');
-            localStorage.removeItem('user_email');
-            localStorage.removeItem('user_name');
-            localStorage.removeItem('user_role');
-            sessionStorage.removeItem('auth_token');
-            sessionStorage.removeItem('token_expires_at');
-            window.dispatchEvent(new Event('authChange'));
+        if (token) {
+            if (expiresAt && Date.now() >= parseInt(expiresAt)) {
+                // Token expired, clear storage
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('token_expires_at');
+                localStorage.removeItem('user_email');
+                localStorage.removeItem('user_name');
+                localStorage.removeItem('user_role');
+                sessionStorage.removeItem('auth_token');
+                sessionStorage.removeItem('token_expires_at');
+                window.dispatchEvent(new Event('authChange'));
+            } else {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         }
 
         config.headers['X-Requested-With'] = 'XMLHttpRequest';
