@@ -60,14 +60,14 @@ Route::middleware('throttle:5,1')->post('/contact/subscribe', [ContactController
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/public', [ArticleController::class, 'publicIndex']);
-Route::get('/articles/by-slug/{slug}', [ArticleController::class, 'showBySlug']);
+Route::get('/articles/by-slug/{slug}', [ArticleController::class, 'showBySlug'])->where('slug', '[a-zA-Z0-9\-_]+');
 Route::get('/articles/id/{id}', [ArticleController::class, 'showById']);
 Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
 Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
 Route::get('/latest-articles', [ArticleController::class, 'latest']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
 Route::get('/tags', [TagController::class, 'getAllTags']);
-Route::get('/tags/{slug}/articles', [TagController::class, 'getArticlesByTag']);
+Route::get('/tags/{slug}/articles', [TagController::class, 'getArticlesByTag'])->where('slug', '[a-zA-Z0-9\-_]+');
 
 // Protected article routes
 Route::middleware('auth:sanctum')->group(function () {

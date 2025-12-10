@@ -1,36 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
     console.error('Error caught by boundary:', error, errorInfo);
-    // TODO: Send to error tracking service (Sentry)
   }
 
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
-            <p className="text-gray-600 mb-6">We're sorry for the inconvenience. Please try refreshing the page.</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-cyan-700 text-white px-6 py-2 rounded-lg hover:bg-cyan-800"
-            >
-              Refresh Page
-            </button>
-          </div>
+        <div className="p-4 text-center">
+          <h2 className="text-lg font-semibold text-red-600">Something went wrong</h2>
+          <button 
+            onClick={() => this.setState({ hasError: false })}
+            className="mt-2 bg-blue-500 text-white px-3 py-1 rounded text-sm"
+          >
+            Try again
+          </button>
         </div>
       );
     }
@@ -38,9 +32,5 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
-
-ErrorBoundary.propTypes = {
-  children: PropTypes.node.isRequired,
-};
 
 export default ErrorBoundary;

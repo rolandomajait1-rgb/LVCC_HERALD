@@ -1,19 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-export default function ContentSection({ title = '', bgColor = 'bg-gray-500', viewAllUrl = '#', children }) {
+const ContentSection = ({ title, bgColor, viewAllUrl, children }) => {
+  const navigate = useNavigate();
+
   return (
-    <section className="mb-8">
-      <div className={`flex justify-between items-center p-4 ${bgColor} text-white rounded-t-lg`}>
-        <h2 className="text-xl font-bold">{title}</h2>
-        <Link to={viewAllUrl} className="text-white hover:underline flex items-center font-bold text-base">
-          View All <ChevronRight size={16} className="ml-1" />
-        </Link>
+    <section className="mb-12">
+      <div className={`${bgColor} text-white p-4 flex justify-between items-center`}>
+        <h2 className="text-2xl font-serif font-bold">{title}</h2>
+        {viewAllUrl && (
+          <button
+            onClick={() => navigate(viewAllUrl)}
+            className="text-sm hover:underline"
+          >
+            View All
+          </button>
+        )}
       </div>
-      <div className="bg-white p-4 rounded-b-lg shadow">
+      <div className="bg-white p-6 shadow-sm">
         {children}
       </div>
     </section>
   );
-}
+};
+
+export default ContentSection;

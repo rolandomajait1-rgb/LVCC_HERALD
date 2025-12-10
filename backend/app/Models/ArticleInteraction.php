@@ -9,8 +9,6 @@ class ArticleInteraction extends Model
 {
     use HasFactory;
 
-    protected $table = 'article_user_interactions';
-
     protected $fillable = [
         'user_id',
         'article_id',
@@ -28,4 +26,3 @@ class ArticleInteraction extends Model
         return $this->belongsTo(Article::class);
     }
 }
-
