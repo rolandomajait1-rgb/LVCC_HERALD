@@ -157,15 +157,20 @@ class CategoryController extends Controller
 
     public function articles($category)
     {
-        $articles = \App\Models\Article::published()
-            ->with(['author', 'author.user', 'categories', 'tags'])
-            ->whereHas('categories', function($q) use ($category) {
-                $q->whereRaw('LOWER(name) = ?', [strtolower($category)])
-                  ->orWhereRaw('LOWER(slug) = ?', [strtolower($category)]);
-            })
-            ->latest('published_at')
-            ->paginate(12);
+        try {
+            $articles = \App\Models\Article::published()
+                ->with(['author', 'author.user', 'categories', 'tags'])
+                ->whereHas('categories', function($q) use ($category) {
+                    $q->whereRaw('LOWER(name) = ?', [strtolower($category)])
+                      ->orWhereRaw('LOWER(slug) = ?', [strtolower($category)]);
+                })
+                ->latest('published_at')
+                ->paginate(12);
 
-        return response()->json($articles);
+            return response()->json($articles);
+        } catch (\Exception $e) {
+            \Log::error('Category articles error: ' . $e->getMessage());
+            return response()->json(['data' => [], 'error' => 'Failed to fetch articles'], 500);
+        }
     }
 }

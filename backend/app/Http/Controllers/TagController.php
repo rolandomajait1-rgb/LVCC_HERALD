@@ -28,7 +28,7 @@ class TagController extends Controller
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Get all tags error: ' . $e->getMessage());
-            return response()->json([], 200);
+            return response()->json(['data' => [], 'error' => 'Failed to fetch tags'], 500);
         }
     }
 
@@ -85,7 +85,7 @@ class TagController extends Controller
             $tag = Tag::where('slug', $slug)->orWhere('name', $slug)->first();
             
             if (!$tag) {
-                return response()->json(['articles' => []]);
+                return response()->json(['data' => [], 'message' => 'Tag not found']);
             }
 
             $articles = \App\Models\Article::where('status', 'published')
@@ -108,10 +108,10 @@ class TagController extends Controller
                     ];
                 });
 
-            return response()->json(['articles' => $articles]);
+            return response()->json(['data' => $articles]);
         } catch (\Exception $e) {
             \Log::error('Tag articles fetch failed: ' . $e->getMessage());
-            return response()->json(['articles' => []]);
+            return response()->json(['data' => [], 'error' => 'Failed to fetch articles'], 500);
         }
     }
 
