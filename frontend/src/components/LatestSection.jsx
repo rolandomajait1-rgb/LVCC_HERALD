@@ -122,14 +122,11 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   return (
     <section className="mb-12" aria-label="Latest articles section">
-      <div className="flex justify-between items-center mb-5">
-        <h2 className="text-3xl font-bold text-gray-800">Latest</h2>
-       
-      </div>
+      <h2 className="text-3xl font-bold text-gray-800 mb-5">Latest</h2>
       <hr className="mb-6" />
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-2/3">
           {featuredArticle && (
             <div
               className="cursor-pointer"
@@ -144,47 +141,10 @@ export default function LatestSection({ onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="w-full lg:w-2/3">
-          {secondaryArticle && (
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img 
-                src={secondaryArticle.featured_image || PLACEHOLDER_IMAGE} 
-                alt={secondaryArticle.title}
-                className="w-full h-48 object-cover cursor-pointer"
-                onClick={() => navigate(`/article/${secondaryArticle.slug}`)}
-              />
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  {secondaryArticle.categories?.[0] && (
-                    <span className="text-xs font-semibold text-blue-600 uppercase">
-                      {secondaryArticle.categories[0].name}
-                    </span>
-                  )}
-                  <span className="text-xs text-gray-500">
-                    {formatArticleDate(secondaryArticle.published_at)}
-                  </span>
-                </div>
-                <h3 
-                  className="text-lg font-bold text-gray-800 mb-2 cursor-pointer hover:text-blue-600"
-                  onClick={() => navigate(`/article/${secondaryArticle.slug}`)}
-                >
-                  {secondaryArticle.title}
-                </h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-3">{secondaryArticle.excerpt}</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {latestArticles.slice(2, 5).map((article) => (
-                    <img
-                      key={article.id}
-                      src={article.featured_image || PLACEHOLDER_IMAGE}
-                      alt={article.title}
-                      className="w-full h-20 object-cover rounded cursor-pointer hover:opacity-80"
-                      onClick={() => navigate(`/article/${article.slug}`)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+        <div className="w-full lg:w-1/3 flex flex-col gap-4">
+          {sideArticles.map((article, index) => (
+            <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} />
+          ))}
         </div>
       </div>
     </section>
