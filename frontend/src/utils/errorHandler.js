@@ -1,3 +1,36 @@
+// API error handler function
+export const handleApiError = (error, showNotification) => {
+  console.error('API Error:', error);
+  
+  if (error.response) {
+    const status = error.response.status;
+    const message = error.response.data?.message || 'An error occurred';
+    
+    if (status === 401) {
+      showNotification('Authentication Error', 'Please login to continue', 'error');
+      return { message: 'Authentication required' };
+    } else if (status === 403) {
+      showNotification('Access Denied', 'You do not have permission to perform this action', 'error');
+      return { message: 'Access denied' };
+    } else if (status === 404) {
+      showNotification('Not Found', 'The requested resource was not found', 'error');
+      return { message: 'Resource not found' };
+    } else if (status >= 500) {
+      showNotification('Server Error', 'A server error occurred. Please try again later.', 'error');
+      return { message: 'Server error' };
+    } else {
+      showNotification('Error', message, 'error');
+      return { message };
+    }
+  } else if (error.request) {
+    showNotification('Network Error', 'Unable to connect to server. Please check your connection.', 'error');
+    return { message: 'Network error' };
+  } else {
+    showNotification('Error', 'An unexpected error occurred', 'error');
+    return { message: 'Unexpected error' };
+  }
+};
+
 // Global error handler to suppress React DevTools errors
 const originalConsoleError = console.error;
 

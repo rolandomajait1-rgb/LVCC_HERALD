@@ -91,46 +91,20 @@ export default function HomePage() {
       <Navigation />
 
       <main className="container mx-auto px-4 md:px-8 lg:px-12 py-8 grow">
-        
         {(userRole === 'admin' || userRole === 'moderator') && (
-          <header className="bg-cyan-700 text-white p-6 md:p-8 flex flex-col md:flex-row justify-between items-center shadow-md mb-6 gap-3">
-            <h1 className="text-xl md:text-2xl font-serif">Welcome, Admin</h1>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={handleOpenAdminDashboard}
-                className="flex items-center space-x-2 px-3 md:px-4 py-2 text-sm md:text-base font-medium text-white hover:text-blue-300"
-              >
-                <span className="hidden sm:inline">OPEN ADMIN DASHBOARD</span>
-                <span className="sm:hidden">DASHBOARD</span>
-                <FiExternalLink />
-              </button>
-            </div>
-          </header>
+          <div className="bg-cyan-700 text-white p-4 flex justify-between items-center mb-6">
+            <h1 className="text-lg font-serif">Welcome, Admin</h1>
+            <button
+              onClick={handleOpenAdminDashboard}
+              className="flex items-center gap-2 text-sm font-medium hover:text-gray-200"
+            >
+              <span>OPEN ADMIN DASHBOARD</span>
+              <FiExternalLink />
+            </button>
+          </div>
         )}
 
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="lg:w-2/3">
-            <LatestSection />
-          </div>
-          <div className="lg:w-1/3">
-            <h3 className="text-2xl font-serif text-gray-800 mb-6 pb-2 border-b border-gray-300">Explore</h3>
-            <div className="flex flex-wrap gap-2">
-              {hashtags.length > 0 ? (
-                hashtags.map((hashtag) => (
-                  <div 
-                    key={hashtag}
-                    className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors"
-                    onClick={() => navigate(`/tag/${hashtag.replace('#', '')}`)}
-                  >
-                    {hashtag}
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm">No tags available yet.</p>
-              )}
-            </div>
-          </div>
-        </div>
+        <LatestSection />
         
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (
