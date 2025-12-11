@@ -289,27 +289,47 @@ class ArticleController extends Controller
     public function destroy(Article $article)
     {
         try {
+            // Check if user is authenticated
+            if (!Auth::check()) {
+                return response()->json(['error' => 'Authentication required'], 401);
+            }
+
+            // Check authorization
             $this->authorize('delete', $article);
 
+            // Store article data for logging before deletion
+            $articleData = $article->toArray();
+            $articleId = $article->id;
+
+            // Delete related data first
             $article->categories()->detach();
             $article->tags()->detach();
             $article->interactions()->delete();
+            
+            // Delete the article
             $article->delete();
 
-            ActivityLog::create([
-                'user_id' => Auth::id(),
-                'action' => 'deleted',
-                'model_type' => 'Article',
-                'model_id' => $article->id,
-                'old_values' => $article->toArray(),
-            ]);
+            // Log the deletion
+            try {
+                ActivityLog::create([
+                    'user_id' => Auth::id(),
+                    'action' => 'deleted',
+                    'model_type' => 'Article',
+                    'model_id' => $articleId,
+                    'old_values' => $articleData,
+                ]);
+            } catch (\Exception $logError) {
+                Log::warning('Failed to log article deletion: ' . $logError->getMessage());
+            }
 
-            return response()->json(['message' => 'Article deleted successfully']);
+            return response()->json(['message' => 'Article deleted successfully'], 200);
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            Log::warning('Unauthorized delete attempt for article ' . $article->id . ' by user ' . Auth::id());
             return response()->json(['error' => 'Unauthorized. Only admins can delete articles.'], 403);
         } catch (\Exception $e) {
-            Log::error('Article deletion failed: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to delete article'], 500);
+            Log::error('Article deletion failed for article ' . $article->id . ': ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            return response()->json(['error' => 'Failed to delete article: ' . $e->getMessage()], 500);
         }
     }
 

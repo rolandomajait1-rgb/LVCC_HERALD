@@ -23,11 +23,13 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   // Check admin/moderator status on mount and when localStorage changes
   useEffect(() => {
     const checkRole = () => {
-      const hasAccess = getAuthToken() && (isAdmin() || isModerator());
+      const token = getAuthToken();
+      const role = getUserRole();
+      const hasAccess = token && (role === 'admin' || role === 'moderator');
       setShowAdminButtons(hasAccess);
     };
     checkRole();
-    const interval = setInterval(checkRole, 1000);
+    const interval = setInterval(checkRole, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -163,10 +165,26 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     } else {
       if (window.confirm('Are you sure you want to delete this article?')) {
         try {
-          await axios.delete(`/api/articles/${articleId}`);
-          window.location.reload();
+          const response = await axios.delete(`/api/articles/${articleId}`, {
+            timeout: 30000,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+          if (response.status === 200) {
+            alert('Article deleted successfully!');
+            window.location.reload();
+          }
         } catch (error) {
-          alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+          console.error('Delete error:', error);
+          if (error.code === 'ECONNABORTED') {
+            alert('Request timeout - please try again');
+          } else if (error.response?.status === 500) {
+            alert('Server error - please try again later');
+          } else {
+            alert('Failed to delete article: ' + (error.response?.data?.message || error.message));
+          }
         }
       }
     }
