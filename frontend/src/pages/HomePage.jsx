@@ -22,7 +22,6 @@ export default function HomePage() {
   const isAdminRoute = location.pathname.startsWith('/admin');
   const [notification, setNotification] = useState({ show: false, type: 'success', title: '', message: '' });
 
-
   const [newsArticles, setNewsArticles] = useState([]);
   const [literaryArticles, setLiteraryArticles] = useState([]);
   const [specialsArticles, setSpecialsArticles] = useState([]);
@@ -32,6 +31,7 @@ export default function HomePage() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const handleOpenAdminDashboard = () => {
     navigate('/admin/statistics');
   };
