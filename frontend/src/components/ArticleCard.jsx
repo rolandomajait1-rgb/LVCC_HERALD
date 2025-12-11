@@ -234,7 +234,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                   className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
                   title="Edit Article"
                 >
-                  <FaPencilAlt />
+                  <FaPencilAlt className="text-white" />
                 </button>
                 {getUserRole() === 'admin' && (
                   <button 
@@ -242,7 +242,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                     className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
                     title="Delete Article"
                   >
-                    <FaTrash />
+                    <FaTrash className="text-white" />
                   </button>
                 )}
               </div>
@@ -310,7 +310,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                   className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
                   title="Edit Article"
                 >
-                  <FaPencilAlt />
+                  <FaPencilAlt className="text-white" />
                 </button>
                 {getUserRole() === 'admin' && (
                   <button 
@@ -318,7 +318,7 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
                     className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
                     title="Delete Article"
                   >
-                    <FaTrash />
+                    <FaTrash className="text-white" />
                   </button>
                 )}
               </div>

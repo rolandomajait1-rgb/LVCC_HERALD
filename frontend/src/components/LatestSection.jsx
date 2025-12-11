@@ -91,8 +91,8 @@ export default function LatestSection({ onEdit, onDelete }) {
     author: latestArticles[0].author_name || latestArticles[0].author?.user?.name || latestArticles[0].author?.name || 'Unknown Author',
     isLarge: true,
     slug: latestArticles[0].slug,
-    onEdit: false,
-    onDelete: false,
+    onEdit: onEdit,
+    onDelete: onDelete,
     articleId: latestArticles[0].id,
   } : null;
 
@@ -105,8 +105,8 @@ export default function LatestSection({ onEdit, onDelete }) {
     author: article.author_name || article.author?.user?.name || article.author?.name || 'Unknown Author',
     slug: article.slug,
     onClick: () => article.slug && navigate(`/article/${article.slug}`),
-    onEdit: false,
-    onDelete: false,
+    onEdit: onEdit,
+    onDelete: onDelete,
     articleId: article.id,
     isSmall: true
   }));
