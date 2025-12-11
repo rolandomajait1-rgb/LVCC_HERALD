@@ -7,8 +7,15 @@ import { PLACEHOLDER_IMAGE } from '../utils/placeholder';
 
 const formatArticleDate = (publishedAt) => {
   const date = new Date(publishedAt);
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) + 
-    ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  return date.toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  }) + ' at ' + date.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit', 
+    hour12: true 
+  });
 };
 
 export default function LatestSection({ onEdit, onDelete }) {
