@@ -82,7 +82,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToRegister }) {
       sessionStorage.setItem('login_notification', 'Login Successfully!');
       sessionStorage.setItem('login_notification_message', 'Welcome back to La Verdad Herald');
       onClose();
-      if (userRole === 'admin') navigate('/home', { state: { fromLogin: true } });
+      if (userRole === 'admin') navigate('/admin', { state: { fromLogin: true } });
       else if (userRole === 'moderator') navigate('/moderator', { state: { fromLogin: true } });
       else navigate('/home', { state: { fromLogin: true } });
     } catch (error) {
