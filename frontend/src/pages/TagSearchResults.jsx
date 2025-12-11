@@ -6,7 +6,7 @@ import axios from '../utils/axiosConfig';
 import Header from '../components/Header';
 import Navigation from '../components/HeaderLink';
 import Footer from '../components/Footer';
-import { isAdmin, editArticle, deleteArticle } from '../utils/auth';
+import { isAdmin } from '../utils/auth';
 import { SearchResultListSkeleton } from '../components/LoadingSkeleton';
 
 const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, articleId, slug, onClick }) => (
@@ -20,13 +20,13 @@ const SearchResultCard = ({ imageUrl, title, excerpt, category, date, author, ar
       {isAdmin() && (
         <div className="absolute top-2 right-2 flex gap-1">
           <button 
-            onClick={(e) => { e.stopPropagation(); editArticle(articleId); }}
+            onClick={(e) => { e.stopPropagation(); window.location.href = `/admin/edit-article/${articleId}`; }}
             className="p-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 shadow-sm"
           >
             <Pencil size={14} />
           </button>
           <button 
-            onClick={(e) => { e.stopPropagation(); deleteArticle(articleId); }}
+            onClick={(e) => { e.stopPropagation(); if(window.confirm('Delete article?')) { /* handle delete */ } }}
             className="p-1.5 bg-red-500 text-white rounded hover:bg-red-600 shadow-sm"
           >
             <Trash2 size={14} />

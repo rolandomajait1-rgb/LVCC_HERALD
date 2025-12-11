@@ -25,3 +25,22 @@ export const ArticleSkeleton = () => (
     <div className="h-4 bg-gray-300 rounded w-1/2"></div>
   </div>
 );
+
+export const SearchResultListSkeleton = ({ count = 5 }) => {
+  return (
+    <div className="space-y-4">
+      {Array.from({ length: count }).map((_, index) => (
+        <div key={index} className="bg-white rounded-lg shadow-md p-4 animate-pulse">
+          <div className="flex space-x-4">
+            <div className="w-24 h-24 bg-gray-300 rounded"></div>
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+              <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+              <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
