@@ -380,18 +380,18 @@ export default function ArticleDetail() {
               </div>
               
               {/* Tags - Right side */}
-              {article.tags?.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  {article.tags.map(tag => (
+              {(article.tags?.length > 0 || article.tag_names?.length > 0) && (
+                <div className="flex flex-wrap gap-2 justify-end">
+                  {(article.tags || article.tag_names || []).map((tag, idx) => (
                     <span 
-                      key={tag.id} 
+                      key={tag.id || idx} 
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/tag/${tag.name}`);
+                        navigate(`/tag/${tag.name || tag}`);
                       }}
-                      className="text-sm text-gray-800 bg-white px-3 py-2 rounded border border-gray-300 cursor-pointer hover:bg-gray-50 transition-colors text-left"
+                      className="text-xs text-gray-800 bg-gray-100 px-3 py-1 rounded-full border border-gray-300 cursor-pointer hover:bg-gray-200 transition-colors"
                     >
-                      #{tag.name}
+                      #{tag.name || tag}
                     </span>
                   ))}
                 </div>
