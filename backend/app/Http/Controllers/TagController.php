@@ -21,19 +21,14 @@ class TagController extends Controller
     public function getAllTags()
     {
         try {
-            $tags = Tag::whereHas('articles', function ($query) {
-                $query->where('status', 'published');
-            })
-            ->withCount(['articles' => function ($query) {
-                $query->where('status', 'published');
-            }])
-            ->orderBy('articles_count', 'desc')
-            ->get(['id', 'name']);
+            $tags = Tag::select('id', 'name', 'slug')
+                ->orderBy('name', 'asc')
+                ->get();
             
             return response()->json($tags);
         } catch (\Exception $e) {
             \Log::error('Get all tags error: ' . $e->getMessage());
-            return response()->json([]);
+            return response()->json([], 200);
         }
     }
 
