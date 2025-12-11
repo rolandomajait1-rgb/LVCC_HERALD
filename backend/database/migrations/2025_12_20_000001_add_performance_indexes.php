@@ -8,22 +8,53 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->index('slug');
-            $table->index('status');
-            $table->index('published_at');
-            $table->index(['status', 'published_at']);
-        });
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index('slug');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index('status');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index('published_at');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index(['status', 'published_at']);
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('article_category', function (Blueprint $table) {
-            $table->index('article_id');
-            $table->index('category_id');
-        });
+        try {
+            Schema::table('article_category', function (Blueprint $table) {
+                $table->index('article_id');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('article_category', function (Blueprint $table) {
+                $table->index('category_id');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('article_tag', function (Blueprint $table) {
-            $table->index('article_id');
-            $table->index('tag_id');
-        });
+        try {
+            Schema::table('article_tag', function (Blueprint $table) {
+                $table->index('article_id');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('article_tag', function (Blueprint $table) {
+                $table->index('tag_id');
+            });
+        } catch (\Exception $e) {}
     }
 
     public function down(): void

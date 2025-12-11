@@ -112,7 +112,7 @@ export default function HomePage() {
           </div>
         )}
 
-        <LatestSection />
+        <LatestSection onDelete={openDeleteModal} />
         
         <ContentSection title="NEWS" bgColor="bg-blue-600" viewAllUrl="/category/news">
           {loading ? (

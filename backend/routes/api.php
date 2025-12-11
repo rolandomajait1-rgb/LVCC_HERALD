@@ -19,118 +19,143 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SetupController;
 
-// Setup routes (temporary for production setup)
+/*
+|--------------------------------------------------------------------------
+| API Routes - La Verdad Herald
+|--------------------------------------------------------------------------
+| Organized by: Public → Auth → User → Admin
+*/
+
+// ============================================================================
+// SYSTEM ROUTES
+// ============================================================================
+Route::get('/ping', fn() => response()->json(['message' => 'pong']));
+Route::get('/health', [\App\Http\Controllers\HealthController::class, 'check']);
 Route::get('/setup/seed', [SetupController::class, 'seedDatabase']);
 Route::get('/setup/check', [SetupController::class, 'checkDatabase']);
 
-// Ping route for testing
-Route::get('/ping', function () {
-    return response()->json(['message' => 'pong']);
+// ============================================================================
+// PUBLIC ROUTES (No Authentication Required)
+// ============================================================================
+
+// --- Authentication ---
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/login', [AuthenticationController::class, 'login']);
+    Route::post('/forgot-password', [AuthenticationController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthenticationController::class, 'resetPassword']);
 });
-
-// Health check
-Route::get('/health', [\App\Http\Controllers\HealthController::class, 'check']);
-
-// Team Members Routes
-Route::get('/team-members', [TeamMemberController::class, 'index']);
-Route::middleware('auth:sanctum')->post('/team-members/update', [TeamMemberController::class, 'update']);
-
-// Public API Routes with rate limiting
-Route::middleware('throttle:5,1')->post('/login', [AuthenticationController::class, 'login']);
 Route::middleware('throttle:3,1')->post('/register', [AuthenticationController::class, 'register']);
-Route::middleware('throttle:3,1')->post('/forgot-password', [AuthenticationController::class, 'forgotPassword']);
-Route::middleware('throttle:3,1')->post('/reset-password', [AuthenticationController::class, 'resetPassword']);
+Route::get('/email/verify/{id}/{hash}', [AuthenticationController::class, 'verifyEmail'])->middleware('signed')->name('verification.verify');
 
-// Search with rate limiting
-Route::middleware('throttle:30,1')->get('/articles/search', [ArticleController::class, 'search']);
-
-// Email Verification Routes
-Route::get('/email/verify/{id}/{hash}', [AuthenticationController::class, 'verifyEmail'])
-    ->middleware('signed')
-    ->name('verification.verify');
-
-Route::post('/email/resend', [AuthenticationController::class, 'resendVerificationEmail'])
-    ->middleware('auth:sanctum');
-
-Route::middleware('throttle:5,1')->post('/contact/feedback', [ContactController::class, 'sendFeedback']);
-Route::middleware('throttle:5,1')->post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
-Route::middleware('throttle:5,1')->post('/contact/join-herald', [ContactController::class, 'joinHerald']);
-Route::middleware('throttle:5,1')->post('/contact/subscribe', [ContactController::class, 'subscribe']);
-
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/articles', [ArticleController::class, 'index']);
+// --- Articles (Public) ---
 Route::get('/articles/public', [ArticleController::class, 'publicIndex']);
 Route::get('/articles/by-slug/{slug}', [ArticleController::class, 'showBySlug'])->where('slug', '[a-zA-Z0-9\-_]+');
 Route::get('/articles/id/{id}', [ArticleController::class, 'showById']);
-Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
-Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
 Route::get('/latest-articles', [ArticleController::class, 'latest']);
+Route::middleware('throttle:30,1')->get('/articles/search', [ArticleController::class, 'search']);
+
+// --- Categories (Public) ---
+Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}/articles', [CategoryController::class, 'articles']);
+
+// --- Tags (Public) ---
 Route::get('/tags', [TagController::class, 'getAllTags']);
 Route::get('/tags/{slug}/articles', [TagController::class, 'getArticlesByTag'])->where('slug', '[a-zA-Z0-9\-_]+');
 
-// Protected article routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/articles', [ArticleController::class, 'store']);
-    Route::get('/articles/{article}', [ArticleController::class, 'show']);
-    Route::put('/articles/{article}', [ArticleController::class, 'update']);
-    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
-    Route::post('/articles/{article}/like', [ArticleController::class, 'like']);
-    Route::get('/articles/author/{authorId}', [ArticleController::class, 'getArticlesByAuthor']);
+// --- Authors (Public) ---
+Route::get('/authors/{authorName}', [AuthorController::class, 'showByName']);
+Route::get('/articles/author-public/{authorId}', [ArticleController::class, 'getArticlesByAuthorPublic']);
+
+// --- Team Members (Public) ---
+Route::get('/team-members', [TeamMemberController::class, 'index']);
+
+// --- Contact Forms ---
+Route::middleware('throttle:5,1')->group(function () {
+    Route::post('/contact/feedback', [ContactController::class, 'sendFeedback']);
+    Route::post('/contact/request-coverage', [ContactController::class, 'requestCoverage']);
+    Route::post('/contact/join-herald', [ContactController::class, 'joinHerald']);
+    Route::post('/contact/subscribe', [ContactController::class, 'subscribe']);
 });
 
-// API Routes with Sanctum authentication
+// ============================================================================
+// AUTHENTICATED ROUTES (Requires Login)
+// ============================================================================
 Route::middleware('auth:sanctum')->group(function () {
-    // User API
+    
+    // --- User Profile ---
     Route::get('/user', [AuthenticationController::class, 'userInfo']);
-
-    // Logout API
     Route::post('/logout', [AuthenticationController::class, 'logOut']);
-
-    // Change Password API
     Route::post('/change-password', [AuthController::class, 'changePasswordApi']);
-
-    // Delete Account API
     Route::post('/delete-account', [AuthController::class, 'deleteAccountApi']);
-
-    // User liked and shared articles
+    Route::post('/email/resend', [AuthenticationController::class, 'resendVerificationEmail']);
+    
+    // --- User Articles ---
     Route::get('/user/liked-articles', [ArticleController::class, 'getLikedArticles']);
     Route::get('/user/shared-articles', [ArticleController::class, 'getSharedArticles']);
-
-    // Categories API
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::get('/categories/{category}', [CategoryController::class, 'show']);
-    Route::put('/categories/{category}', [CategoryController::class, 'update']);
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
-
-    // Tags API
-    Route::apiResource('tags', TagController::class);
-
-    // Subscribers API
-    Route::apiResource('subscribers', SubscriberController::class);
-
-    // Logs API
-    Route::get('/logs', [LogController::class, 'index']);
-    Route::get('/logs/{log}', [LogController::class, 'show']);
-
-    // Admin & Moderator shared routes
+    Route::post('/articles/{article}/like', [ArticleController::class, 'like']);
+    
+    // --- Articles (Authenticated) ---
+    Route::get('/articles/{article}', [ArticleController::class, 'show']);
+    Route::get('/articles/author/{authorId}', [ArticleController::class, 'getArticlesByAuthor']);
+    Route::post('/articles', [ArticleController::class, 'store']);
+    Route::put('/articles/{article}', [ArticleController::class, 'update']);
+    Route::delete('/articles/{article}', [ArticleController::class, 'destroy']);
+    
+    // ========================================================================
+    // ADMIN & MODERATOR ROUTES
+    // ========================================================================
     Route::middleware(['role:admin,moderator'])->group(function () {
+        
+        // --- Dashboard ---
         Route::get('/admin/dashboard-stats', [DashboardController::class, 'stats']);
         Route::get('/admin/recent-activity', [DashboardController::class, 'recentActivity']);
         Route::get('/admin/audit-logs', [LogController::class, 'auditLogs']);
+        
+        // --- Drafts ---
         Route::apiResource('drafts', DraftController::class);
+        
+        // --- Categories ---
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::get('/categories/{category}', [CategoryController::class, 'show']);
+        Route::put('/categories/{category}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+        
+        // --- Tags ---
+        Route::apiResource('tags', TagController::class);
+        
+        // --- Subscribers ---
+        Route::apiResource('subscribers', SubscriberController::class);
+        
+        // --- Logs ---
+        Route::get('/logs', [LogController::class, 'index']);
+        Route::get('/logs/{log}', [LogController::class, 'show']);
     });
-
-    // Admin-only routes
+    
+    // ========================================================================
+    // ADMIN ONLY ROUTES
+    // ========================================================================
     Route::middleware(['role:admin'])->group(function () {
+        
+        // --- Admin Access ---
         Route::get('/admin/check-access', [UserController::class, 'checkAdmin']);
+        Route::post('/admin/fix-categories', [AdminController::class, 'fixCategories']);
+        
+        // --- User Management ---
+        Route::apiResource('admin/users', UserController::class);
+        Route::post('/admin/users/{id}/revoke', [UserController::class, 'revokeAccess']);
+        
+        // --- Moderator Management ---
         Route::get('/admin/moderators', [UserController::class, 'getModerators']);
         Route::post('/admin/moderators', [UserController::class, 'addModerator']);
         Route::delete('/admin/moderators/{id}', [UserController::class, 'removeModerator']);
-        Route::post('/admin/users/{id}/revoke', [UserController::class, 'revokeAccess']);
-        Route::apiResource('admin/users', UserController::class);
+        
+        // --- Staff Management ---
         Route::apiResource('staff', StaffController::class);
+        
+        // --- Author Management ---
         Route::apiResource('authors', AuthorController::class);
-        Route::post('/admin/fix-categories', [AdminController::class, 'fixCategories']);
+        
+        // --- Team Members ---
+        Route::post('/team-members/update', [TeamMemberController::class, 'update']);
     });
 });

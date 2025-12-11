@@ -8,31 +8,71 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::table('articles', function (Blueprint $table) {
-            $table->index(['status', 'published_at']);
-            $table->index('slug');
-            $table->index('author_id');
-        });
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index(['status', 'published_at']);
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index('slug');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('articles', function (Blueprint $table) {
+                $table->index('author_id');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('categories', function (Blueprint $table) {
-            $table->index('slug');
-            $table->index('name');
-        });
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->index('slug');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('categories', function (Blueprint $table) {
+                $table->index('name');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('tags', function (Blueprint $table) {
-            $table->index('slug');
-            $table->index('name');
-        });
+        try {
+            Schema::table('tags', function (Blueprint $table) {
+                $table->index('slug');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('tags', function (Blueprint $table) {
+                $table->index('name');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->index('email');
-            $table->index('role');
-        });
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->index('email');
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('users', function (Blueprint $table) {
+                $table->index('role');
+            });
+        } catch (\Exception $e) {}
 
-        Schema::table('article_interactions', function (Blueprint $table) {
-            $table->index(['article_id', 'type']);
-            $table->index(['user_id', 'type']);
-        });
+        try {
+            Schema::table('article_interactions', function (Blueprint $table) {
+                $table->index(['article_id', 'type']);
+            });
+        } catch (\Exception $e) {}
+        
+        try {
+            Schema::table('article_interactions', function (Blueprint $table) {
+                $table->index(['user_id', 'type']);
+            });
+        } catch (\Exception $e) {}
     }
 
     public function down()

@@ -120,30 +120,33 @@ export default function LatestSection({ onEdit, onDelete }) {
 
   const secondaryArticle = latestArticles[1] || null;
 
+  const userRole = localStorage.getItem('user_role');
+
   return (
     <section className="mb-12" aria-label="Latest articles section">
-      <h2 className="text-3xl font-bold text-gray-800 mb-5">Latest</h2>
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-3xl font-bold text-gray-800">Latest</h2>
+      </div>
       <hr className="mb-6" />
 
       <div className="flex flex-col lg:flex-row gap-6">
         <div className="w-full lg:w-2/3">
           {featuredArticle && (
-            <div
-              className="cursor-pointer"
+            <ArticleCard 
+              {...featuredArticle}
               onClick={() => featuredArticle.slug && navigate(`/article/${featuredArticle.slug}`)}
-              role="link"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && featuredArticle.slug && navigate(`/article/${featuredArticle.slug}`)}
-              aria-label={`Read article: ${featuredArticle.title}`}
-            >
-              <ArticleCard {...featuredArticle} />
-            </div>
+              onDelete={userRole === 'admin' ? onDelete : undefined}
+            />
           )}
         </div>
 
         <div className="w-full lg:w-1/3 flex flex-col gap-4">
           {sideArticles.map((article, index) => (
-            <ArticleCard key={latestArticles[index + 1]?.id || index} {...article} />
+            <ArticleCard 
+              key={latestArticles[index + 1]?.id || index} 
+              {...article}
+              onDelete={userRole === 'admin' ? onDelete : undefined}
+            />
           ))}
         </div>
       </div>

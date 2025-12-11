@@ -8,17 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('article_user_interactions', function (Blueprint $table) {
-            // Drop the existing enum constraint
-            $table->dropColumn('type');
-        });
+        // Update any null type values to 'viewed' before modifying
+        \DB::statement("UPDATE article_user_interactions SET type = 'viewed' WHERE type IS NULL OR type = ''");
         
-        Schema::table('article_user_interactions', function (Blueprint $table) {
-            // Add new enum with 'viewed' type
-            $table->enum('type', ['liked', 'shared', 'viewed'])->after('article_id');
-            // Make user_id nullable for guest views
-            $table->foreignId('user_id')->nullable()->change();
-        });
+        // Make user_id nullable
+        \DB::statement("ALTER TABLE article_user_interactions ALTER COLUMN user_id DROP NOT NULL");
+        
+        // Drop old constraint and add new one with 'viewed'
+        \DB::statement("ALTER TABLE article_user_interactions DROP CONSTRAINT IF EXISTS article_user_interactions_type_check");
+        \DB::statement("ALTER TABLE article_user_interactions ADD CONSTRAINT article_user_interactions_type_check CHECK (type IN ('liked', 'shared', 'viewed'))");
     }
 
     public function down(): void

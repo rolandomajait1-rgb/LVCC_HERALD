@@ -34,36 +34,36 @@ const RelatedCard = ({ article, onClick, navigate, articleId }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md border border-gray-300 overflow-hidden flex flex-col hover:shadow-lg transition-all relative">
-      <div className="relative h-48 overflow-hidden cursor-pointer" onClick={onClick}>
-        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+    <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300">
+      <div className="relative h-56 overflow-hidden cursor-pointer group" onClick={onClick}>
+        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         {(isAdmin() || isModerator()) && (
-          <div className="absolute top-2 right-2 flex gap-1">
-            <button onClick={handleEdit} className="bg-blue-500 text-white p-2 rounded shadow-lg hover:bg-blue-600">
-              <Pencil size={16} />
+          <div className="absolute top-3 right-3 flex gap-2">
+            <button onClick={handleEdit} className="bg-blue-500 text-white p-2.5 rounded-lg shadow-lg hover:bg-blue-600 transition-colors">
+              <Pencil size={18} />
             </button>
             {isAdmin() && (
-              <button onClick={handleDelete} className="bg-red-500 text-white p-2 rounded shadow-lg hover:bg-red-600">
-                <Trash2 size={16} />
+              <button onClick={handleDelete} className="bg-red-500 text-white p-2.5 rounded-lg shadow-lg hover:bg-red-600 transition-colors">
+                <Trash2 size={18} />
               </button>
             )}
           </div>
         )}
       </div>
-      <div className="p-4 flex flex-col grow">
-        <div className="flex justify-between items-center mb-2">
-          <span className={`text-[10px] font-bold px-2 py-1 rounded uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
-          <span className="text-gray-500 text-[9px]">{article.date}</span>
+      <div className="p-5 flex flex-col grow">
+        <div className="flex justify-between items-center mb-3">
+          <span className={`text-xs font-bold px-3 py-1 rounded-full uppercase ${getCategoryColor(article.category)}`}>{article.category}</span>
+          <span className="text-gray-500 text-xs">{article.date}</span>
         </div>
-        <h3 className="text-sm font-bold text-gray-900 mb-2 leading-snug hover:text-blue-600 transition-colors line-clamp-2 cursor-pointer" onClick={onClick}>
+        <h3 className="text-base font-bold text-gray-900 mb-3 leading-tight hover:text-blue-600 transition-colors line-clamp-2 cursor-pointer" onClick={onClick}>
           {article.title}
         </h3>
         {article.excerpt && (
-          <p className="text-xs text-gray-600 mb-3 line-clamp-3 leading-relaxed">
+          <p className="text-sm text-gray-600 mb-4 line-clamp-3 leading-relaxed">
             {article.excerpt}
           </p>
         )}
-        <p className="text-xs text-gray-700 font-medium mt-auto">
+        <p className="text-sm text-gray-700 font-medium mt-auto">
           {article.author}
         </p>
       </div>
@@ -343,27 +343,27 @@ export default function ArticleDetail() {
               {article.title}
             </h1>
             
-            {/* Author/Date and Tags on same line */}
+            {/* Author/Date and Tags */}
             <div className="flex justify-between items-start mb-6">
               {/* Author and Date - Left side */}
               <div className="text-sm text-gray-600 text-left">
                 <div>
                   <span>Written by </span>
                   <span 
-                    className="font-semibold text-gray-800 cursor-pointer hover:text-blue-600 hover:underline transition-colors"
+                    className="font-semibold text-blue-600 cursor-pointer hover:underline transition-colors"
                     onClick={() => navigate(`/author/${encodeURIComponent(article.author_name || article.author?.user?.name || 'Unknown Author')}`)}
                   >
                     {article.author_name || article.author?.user?.name || 'Unknown Author'}
                   </span>
                 </div>
-                <div className="mt-1">
+                <div className="mt-1 text-gray-500">
                   {formatDateTime(article.published_at)}
                 </div>
               </div>
               
               {/* Tags - Right side */}
               {(article.tags?.length > 0 || article.tag_names?.length > 0) && (
-                <div className="flex flex-wrap gap-2 justify-end">
+                <div className="flex flex-wrap gap-2 justify-end max-w-md">
                   {(article.tags || article.tag_names || []).map((tag, idx) => (
                     <span 
                       key={tag.id || idx} 
@@ -371,7 +371,7 @@ export default function ArticleDetail() {
                         e.stopPropagation();
                         navigate(`/tag/${tag.name || tag}`);
                       }}
-                      className="text-xs text-gray-800 bg-gray-100 px-3 py-1 rounded-full border border-gray-300 cursor-pointer hover:bg-gray-200 transition-colors"
+                      className="text-xs font-medium text-gray-700 bg-white px-3 py-1.5 rounded-md border border-gray-300 cursor-pointer hover:bg-gray-50 hover:border-gray-400 transition-all"
                     >
                       #{tag.name || tag}
                     </span>
@@ -384,16 +384,22 @@ export default function ArticleDetail() {
 
           {/* Image Section */}
           {article.featured_image && (
-            <div className="w-full bg-gray-100 p-4 md:p-10 border-t-2 border-gray-200">
-              <div className="w-full rounded-lg overflow-hidden shadow-inner">
-                <img
-                  src={article.featured_image}
-                  alt={article.title}
-                  className="w-full object-contain"
-                  style={{ height: '500px' }}
-                />
+            <div className="w-full px-6 md:px-10 mb-8">
+              <div className="bg-gradient-to-br from-gray-200 via-gray-100 to-gray-200 rounded-3xl p-8 md:p-12 shadow-lg">
+                <div className="bg-white rounded-2xl overflow-hidden shadow-md">
+                  <img
+                    src={article.featured_image}
+                    alt={article.title}
+                    className="w-full h-auto object-contain"
+                    style={{ maxHeight: '600px' }}
+                  />
+                </div>
               </div>
-              <p className="text-xs text-gray-500 italic text-center mt-3">Cartoon: Marianne Toazo</p>
+              {article.author_name && (
+                <p className="text-sm text-gray-600 text-center mt-4">
+                  Art by: {article.author_name}
+                </p>
+              )}
             </div>
           )}
 
@@ -434,10 +440,10 @@ export default function ArticleDetail() {
         
         {/* Related Articles Section */}
         {relatedArticles.length > 0 && (
-          <div className="max-w-4xl mx-auto mt-12 mb-16 px-4">
-            <div className="border-t-2 border-gray-200 pt-8 pb-8">
-              <h2 className="text-3xl font-serif font-bold text-gray-900 mb-8 text-left">More from this Category</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="max-w-6xl mx-auto mt-16 mb-16 px-6">
+            <div className="border-t border-gray-300 pt-12">
+              <h2 className="text-4xl font-serif font-bold text-gray-900 mb-10 text-left">More from this Category</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {relatedArticles.map((relatedArticle) => (
                   <RelatedCard 
                     key={relatedArticle.id}
