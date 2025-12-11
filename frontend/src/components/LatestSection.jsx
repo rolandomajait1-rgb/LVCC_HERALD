@@ -124,12 +124,12 @@ export default function LatestSection({ onEdit, onDelete }) {
     <section className="mb-12" aria-label="Latest articles section">
       <div className="flex justify-between items-center mb-5">
         <h2 className="text-3xl font-bold text-gray-800">Latest</h2>
-        <h3 className="text-2xl font-serif text-gray-800">Explore</h3>
+       
       </div>
       <hr className="mb-6" />
 
       <div className="flex flex-col lg:flex-row gap-6">
-        <div className="w-full lg:w-2/3">
+        <div className="w-full lg:w-1/3">
           {featuredArticle && (
             <div
               className="cursor-pointer"
@@ -144,7 +144,7 @@ export default function LatestSection({ onEdit, onDelete }) {
           )}
         </div>
 
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-2/3">
           {secondaryArticle && (
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <img 
