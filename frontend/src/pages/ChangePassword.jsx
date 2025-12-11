@@ -68,6 +68,11 @@ export default function ChangePassword() {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onCopy={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onDrag={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
               />
             </div>
 
@@ -83,6 +88,11 @@ export default function ChangePassword() {
                 required
                 minLength={8}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onCopy={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onDrag={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
               />
               <p className="text-xs text-gray-500 mt-1">
                 Must be at least 8 characters with uppercase, lowercase, number, and special character
@@ -100,6 +110,11 @@ export default function ChangePassword() {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onCopy={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onDrag={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
               />
             </div>
 

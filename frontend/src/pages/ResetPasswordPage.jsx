@@ -100,6 +100,11 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
                 placeholder="Enter new password"
                 className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+                onCopy={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onDrag={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
               />
               <button
                 type="button"
@@ -135,6 +140,11 @@ export default function ResetPasswordPage() {
                 autoComplete="new-password"
                 placeholder="Confirm new password"
                 className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${errors.password_confirmation ? 'border-red-500' : 'border-gray-300'}`}
+                onCopy={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onCut={(e) => e.preventDefault()}
+                onDrag={(e) => e.preventDefault()}
+                onDrop={(e) => e.preventDefault()}
               />
               <button
                 type="button"
