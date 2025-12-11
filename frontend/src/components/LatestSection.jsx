@@ -181,5 +181,5 @@ export default function LatestSection({ onEdit, onDelete }) {
         </div>
       </div>
     </section>
-  );}
+  );
 }
