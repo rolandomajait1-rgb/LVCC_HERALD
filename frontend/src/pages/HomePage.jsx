@@ -14,6 +14,7 @@ import { getUserRole } from '../utils/auth';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from '../utils/axiosConfig';
+import DeleteModal from '../components/DeleteModal';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -31,9 +32,30 @@ export default function HomePage() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
 
   const handleOpenAdminDashboard = () => {
     navigate('/admin/statistics');
+  };
+
+  const handleDeleteArticle = async () => {
+    try {
+      await axios.delete(`/api/articles/${deleteId}`);
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      setNotification({ show: true, type: 'success', title: 'Article deleted successfully!' });
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (err) {
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      setNotification({ show: true, type: 'error', title: 'Failed to delete article' });
+    }
+  };
+
+  const openDeleteModal = (articleId) => {
+    setDeleteId(articleId);
+    setShowDeleteModal(true);
   };
 
   useEffect(() => {
@@ -68,6 +90,11 @@ export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 gap-4 ">
       <Notification {...notification} />
+      <DeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => { setShowDeleteModal(false); setDeleteId(null); }}
+        onConfirm={handleDeleteArticle}
+      />
       <Header />
       <Navigation />
 
@@ -107,6 +134,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'News'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -133,6 +161,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Literary'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -159,6 +188,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Specials'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -185,6 +215,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Opinion'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -211,6 +242,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Art'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -237,6 +269,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Features'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
@@ -263,6 +296,7 @@ export default function HomePage() {
                   category={article.categories?.[0]?.name || 'Sports'}
                   slug={article.slug}
                   onClick={() => navigate(`/article/${article.slug}`)}
+                  onDelete={userRole === 'admin' ? openDeleteModal : undefined}
                 />
               ))}
             </div>
