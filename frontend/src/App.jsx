@@ -117,6 +117,38 @@ function AnimatedRoutes() {
         />
 
         <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AdminDashboard />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/moderator"
+          element={
+            <ProtectedRoute>
+              <motion.div
+                initial="initial"
+                animate="in"
+                exit="out"
+                variants={pageVariants}
+                transition={pageTransition}
+              >
+                <AdminDashboard />
+              </motion.div>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/open-admin-dashboard"
           element={
             <motion.div
