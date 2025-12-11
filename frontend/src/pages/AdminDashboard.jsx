@@ -13,6 +13,7 @@ import axios from '../utils/axiosConfig';
 import { FiExternalLink } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { getUserRole } from '../utils/auth';
+import DeleteModal from '../components/DeleteModal';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -98,30 +99,11 @@ export default function AdminDashboard() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl">
-            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">Are you sure?</h3>
-            <p className="text-gray-600 text-sm text-center mb-6">
-              Are you sure you want to delete this article? This action will permanently delete this article.
-            </p>
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handleDeleteArticle}
-                className="w-full bg-red-500 text-white py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors"
-              >
-                Delete
-              </button>
-              <button
-                onClick={() => { setShowDeleteModal(false); setDeleteId(null); }}
-                className="w-full bg-white text-gray-700 py-3 rounded-lg font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => { setShowDeleteModal(false); setDeleteId(null); }}
+        onConfirm={handleDeleteArticle}
+      />
       <Notification {...notification} />
       <Header />
       <Navigation />

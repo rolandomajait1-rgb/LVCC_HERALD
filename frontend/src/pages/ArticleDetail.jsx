@@ -12,6 +12,7 @@ import Footer from '../components/Footer';
 import HeaderLink from '../components/HeaderLink';
 import { isAdmin, isModerator, getUserRole } from '../utils/auth';
 import getCategoryColor from '../utils/getCategoryColor';
+import DeleteModal from '../components/DeleteModal';
 
 const RelatedCard = ({ article, onClick, navigate, articleId }) => {
   const handleEdit = (e) => {
@@ -283,30 +284,11 @@ export default function ArticleDetail() {
         onClose={closeNotification}
       />
 
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl p-8 max-w-md w-full mx-4 shadow-xl">
-            <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">Are you sure?</h3>
-            <p className="text-gray-600 text-sm text-center mb-8">
-              Are you sure you want to delete this article? This action will permanently delete this article.
-            </p>
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={handleDelete}
-                className="w-full bg-red-600 text-white py-4 rounded-full font-semibold hover:bg-red-700 transition-colors text-base"
-              >
-                Delete
-              </button>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="w-full bg-white text-black py-4 rounded-full font-semibold border-2 border-gray-300 hover:bg-gray-50 transition-colors text-base"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+      />
 
       <div className="min-h-screen bg-white font-sans">
         <article className="max-w-4xl mx-auto">
