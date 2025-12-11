@@ -5,6 +5,7 @@ import { store } from './store/store'
 import App from './App.jsx'
 import ErrorBoundary from './components/ErrorBoundary';
 import './utils/axiosConfig';
+import './utils/errorHandler';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

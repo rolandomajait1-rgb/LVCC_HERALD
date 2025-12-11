@@ -165,6 +165,16 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
     } else {
       if (window.confirm('Are you sure you want to delete this article?')) {
         try {
+          // Suppress React DevTools errors during delete operation
+          const originalError = console.error;
+          console.error = (...args) => {
+            const message = args[0];
+            if (typeof message === 'string' && message.includes('installHook.js')) {
+              return; // Suppress React DevTools errors
+            }
+            originalError.apply(console, args);
+          };
+          
           const response = await axios.delete(`/api/articles/${articleId}`, {
             timeout: 30000,
             headers: {
@@ -172,6 +182,10 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
               'Accept': 'application/json'
             }
           });
+          
+          // Restore console.error
+          console.error = originalError;
+          
           if (response.status === 200) {
             alert('Article deleted successfully!');
             window.location.reload();

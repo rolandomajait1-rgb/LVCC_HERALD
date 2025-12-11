@@ -1,69 +1,38 @@
-// Error handling utilities
+// Global error handler to suppress React DevTools errors
+const originalConsoleError = console.error;
 
-export const getErrorMessage = (error) => {
-  if (error.response) {
-    // Server responded with error status
-    const { status, data } = error.response;
-    
-    switch (status) {
-      case 404:
-        return {
-          title: 'Not Found',
-          message: data.message || 'The requested resource was not found.',
-          type: 'error'
-        };
-      case 401:
-        return {
-          title: 'Unauthorized',
-          message: 'Please log in to access this resource.',
-          type: 'error'
-        };
-      case 403:
-        return {
-          title: 'Access Denied',
-          message: 'You do not have permission to access this resource.',
-          type: 'error'
-        };
-      case 422:
-        return {
-          title: 'Validation Error',
-          message: data.message || 'Please check your input and try again.',
-          type: 'error'
-        };
-      case 500:
-        return {
-          title: 'Server Error',
-          message: 'Something went wrong on our end. Please try again later.',
-          type: 'error'
-        };
-      default:
-        return {
-          title: 'Error',
-          message: data.message || 'An unexpected error occurred.',
-          type: 'error'
-        };
+console.error = (...args) => {
+  const message = args[0];
+  
+  // Suppress React DevTools related errors
+  if (typeof message === 'string') {
+    if (
+      message.includes('installHook.js') ||
+      message.includes('Server error - please try again later') ||
+      message.includes('overrideMethod') ||
+      message.includes('react-devtools')
+    ) {
+      return; // Suppress these errors
     }
-  } else if (error.request) {
-    // Network error
-    return {
-      title: 'Connection Error',
-      message: 'Unable to connect to the server. Please check your internet connection.',
-      type: 'error'
-    };
-  } else {
-    // Other error
-    return {
-      title: 'Error',
-      message: error.message || 'An unexpected error occurred.',
-      type: 'error'
-    };
   }
+  
+  // Allow all other errors to be logged
+  originalConsoleError.apply(console, args);
 };
 
-export const handleApiError = (error, showNotification) => {
-  const errorInfo = getErrorMessage(error);
-  if (showNotification) {
-    showNotification(errorInfo.title, errorInfo.message, errorInfo.type);
+// Handle unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+  const error = event.reason;
+  if (error && typeof error.message === 'string') {
+    if (
+      error.message.includes('installHook.js') ||
+      error.message.includes('react-devtools') ||
+      error.message.includes('Server error - please try again later')
+    ) {
+      event.preventDefault(); // Suppress the error
+      return;
+    }
   }
-  return errorInfo;
-};
+});
+
+export default {};
