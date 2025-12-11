@@ -20,7 +20,8 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
   const [expanded, setExpanded] = useState(false);
   const [showAdminButtons, setShowAdminButtons] = useState(false);
   
-  // Check admin/moderator status on mount and when localStorage changes
+  const userRole = getUserRole();
+  
   useEffect(() => {
     const checkRole = () => {
       const token = getAuthToken();
@@ -261,20 +262,31 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             <img src={finalImageUrl} alt={title} className="w-full h-full object-cover" loading="lazy" onError={(e) => { e.target.src = "https://placehold.co/300x200/e2e8f0/64748b?text=No+Image"; }} />
             {showAdminButtons && onEdit !== false && onDelete !== false && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
-                <button 
-                  onClick={handleEditClick} 
-                  className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-                  title="Edit Article"
-                >
-                  <FaPencilAlt className="text-white" />
-                </button>
-                {getUserRole() === 'admin' && (
+                {userRole === 'admin' && (
+                  <>
+                    <button 
+                      onClick={handleEditClick} 
+                      className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                      title="Edit Article"
+                    >
+                      <FaPencilAlt className="text-white" />
+                    </button>
+                    <button 
+                      onClick={handleDeleteClick} 
+                      className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
+                      title="Delete Article"
+                    >
+                      <FaTrash className="text-white" />
+                    </button>
+                  </>
+                )}
+                {userRole === 'moderator' && (
                   <button 
-                    onClick={handleDeleteClick} 
-                    className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
-                    title="Delete Article"
+                    onClick={handleEditClick} 
+                    className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                    title="Edit Article"
                   >
-                    <FaTrash className="text-white" />
+                    <FaPencilAlt className="text-white" />
                   </button>
                 )}
               </div>
@@ -337,20 +349,31 @@ const ArticleCard = ({ featured_image, categories, published_at, title, excerpt,
             />
             {showAdminButtons && onEdit !== false && onDelete !== false && (
               <div className="absolute top-3 right-3 flex space-x-2 z-20">
-                <button 
-                  onClick={handleEditClick} 
-                  className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
-                  title="Edit Article"
-                >
-                  <FaPencilAlt className="text-white" />
-                </button>
-                {getUserRole() === 'admin' && (
+                {userRole === 'admin' && (
+                  <>
+                    <button 
+                      onClick={handleEditClick} 
+                      className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                      title="Edit Article"
+                    >
+                      <FaPencilAlt className="text-white" />
+                    </button>
+                    <button 
+                      onClick={handleDeleteClick} 
+                      className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
+                      title="Delete Article"
+                    >
+                      <FaTrash className="text-white" />
+                    </button>
+                  </>
+                )}
+                {userRole === 'moderator' && (
                   <button 
-                    onClick={handleDeleteClick} 
-                    className="p-2 bg-red-600 text-white rounded-lg shadow-md hover:bg-red-700"
-                    title="Delete Article"
+                    onClick={handleEditClick} 
+                    className="p-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                    title="Edit Article"
                   >
-                    <FaTrash className="text-white" />
+                    <FaPencilAlt className="text-white" />
                   </button>
                 )}
               </div>

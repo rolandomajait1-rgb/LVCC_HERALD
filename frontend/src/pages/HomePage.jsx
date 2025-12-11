@@ -32,8 +32,6 @@ export default function HomePage() {
   const [sportsArticles, setSportsArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hashtags, setHashtags] = useState([]);
-
   const handleOpenAdminDashboard = () => {
     navigate('/admin/statistics');
   };
@@ -65,24 +63,6 @@ export default function HomePage() {
     };
 
     fetchHomePageArticles();
-  }, []);
-
-  useEffect(() => {
-    const fetchAllTags = async () => {
-      try {
-        const response = await axios.get('/api/tags');
-        console.log('Tags response:', response.data);
-        if (response.data && response.data.length > 0) {
-          setHashtags(response.data.map(t => `#${t.name}`));
-        } else {
-          console.log('No tags found in response');
-        }
-      } catch (error) {
-        console.error('Error fetching tags:', error);
-        setHashtags([]);
-      }
-    };
-    fetchAllTags();
   }, []);
 
   return (
